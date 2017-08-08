@@ -94,10 +94,10 @@ public class KnowledgeRepoController {
             response.setMessage("FAIL");
             return response;
         }
-        for (KnowledgeIndex index : data) {
+/*        for (KnowledgeIndex index : data) {
             System.out.println(index.getkTitle());
             System.out.println(index.getkAnswer());
-        }
+        }*/
         response.setData(data);
         return response;
     }

@@ -1,0 +1,15 @@
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s01', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s02', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s03', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s04', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s05', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s06', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s07', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s08', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s09', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s10', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s11', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s12', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s13', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s14', 'r1');
+INSERT INTO knowledgerepo.tb_resources_role (sId, rId) VALUES ('s15', 'r1');

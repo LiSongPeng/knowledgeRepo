@@ -10,6 +10,9 @@ import java.util.Map;
  * Created by Letg4 on 2017/9/6.
  */
 public interface ResourceService {
-    public List<TreeGridData<Resource>> queryAsTree();
+    public List<TreeGridData> queryAsTree();
     public List<Resource> querySearch(Map<String,Object> param);
+    public List<Resource> queryByUser(String userid);
+
+    List<String> getResources(String roleId);
 }

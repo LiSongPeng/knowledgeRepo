@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.util.*;
 
@@ -55,10 +56,8 @@ public  class BaseController<T> {
         pageBean.setPageSize(pageSize);
         pageBean.setSidx(sidx);
         pageBean.setSord(sord);
-        if(pageBean.getContent()==null||pageBean.getContent().size()==0){
-            pageBean.setContent(new ArrayList<T>());
-            pageBean.getContent().add(this.target);
-        }
+        pageBean.setContent(new ArrayList<T>());
+        pageBean.getContent().add(this.target);
         Map<String,Object> jsmap=new HashMap<>();
         PageBean<Map<String,Object>> repb=baseService.query(pageBean);
         jsmap.put("totalPages",repb.getTotalPages());
@@ -69,9 +68,15 @@ public  class BaseController<T> {
         return jsmap;
     }
 
+    @RequestMapping("/queryById.form")
+    @ResponseBody
+    public Map<String, Object> queryById(@RequestParam("id") String id){
+        return baseService.queryById(id,this.getTableName());
+    }
+
     @RequestMapping("/update.form")
     @ResponseBody
-    public String update(HttpServletRequest request){
+    public Map<String,Object> update(HttpServletRequest request){
         Enumeration em = request.getParameterNames();
         String id=request.getParameter("id");
         Map<String,Object> attrs=new HashMap<>();
@@ -84,38 +89,50 @@ public  class BaseController<T> {
         }
         int total=0;
         total+=baseService.update(this.getTableName(),id,attrs);
-        return ""+total;
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",total);
+        return result;
     }
 
     @RequestMapping("/add.form")
     @ResponseBody
-    public String add(HttpServletRequest request){
+    public Map<String, Object> add(HttpServletRequest request){
         Enumeration em = request.getParameterNames();
+        Field[] fields = target.getClass().getDeclaredFields();
+        List<String> attrnames=new ArrayList<>();
+        for(Field field:fields){
+            attrnames.add(field.getName());
+        }
         Map<String,Object> attrs=new HashMap<>();
         while (em.hasMoreElements()) {
             String name = (String) em.nextElement();
-            System.out.println("name:name");
-            if ("oper".equals(name))
-                continue;
-            String value = request.getParameter(name);
-            attrs.put(name,value);
+            if (attrnames.contains(name)) {
+                String value = request.getParameter(name);
+                System.out.println(name+":::"+value);
+                attrs.put(name, value);
+            }
         }
+        attrs.put("createUserId",request.getParameter("createUserId"));
         Date crttime=new Date(System.currentTimeMillis());
         attrs.put("createTime",crttime);
-        int total=baseService.add(this.getTableName(),attrs);
-        return ""+total;
+        String total=baseService.add(this.getTableName(),attrs);
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",total);
+        return result;
     }
 
     @RequestMapping("/delete.form")
     @ResponseBody
-    public String delete(HttpServletRequest request){
+    public Map<String, Object> delete(HttpServletRequest request){
         String id = request.getParameter("id");
         int total=0;
         String[] idlist=id.split(",");
         for (String delid:idlist) {
             total+=baseService.delete(this.getTableName(),delid);
         }
-        return ""+total;
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",total);
+        return result;
     }
 
     public String getTableName(){

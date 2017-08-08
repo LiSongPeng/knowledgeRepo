@@ -1,0 +1,2 @@
+INSERT INTO knowledgerepo.tb_role (id, rName, deleteStatus, rDescription, createUserId, createTime) VALUES ('r1', 'admin', 1, 'rouro', 'sdf', '2017-09-07 11:40:16');
+INSERT INTO knowledgerepo.tb_role (id, rName, deleteStatus, rDescription, createUserId, createTime) VALUES ('r2', 'asd2', 1, 'rouroururou', 'sdf', '2017-09-07 11:40:16');

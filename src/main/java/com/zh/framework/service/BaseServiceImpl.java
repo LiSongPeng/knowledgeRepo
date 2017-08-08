@@ -32,6 +32,7 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         String tbname=entity.getClass().getSimpleName();
         tbname=("tb_"+tbname).toLowerCase();
         System.out.println("!!!!11111"+tbname);
+        System.out.println("!!!!11111"+entity);
         param.put("entity",entity);
         param.put("tableName",tbname);
         param.put("sidx",pageBean.getSidx());
@@ -41,6 +42,10 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         PageInfoConvertor<Map<String,Object>> picvt=new PageInfoConvertor<>(pageInfo);
         return picvt.toPageBean();
     }
+    @Override
+    public Map<String,Object> queryById(String id, String tableName){
+        return baseMapper.queryById(id,tableName);
+    }
 
     @Override
     public int delete(String tableName,String id) {
@@ -48,12 +53,12 @@ public class BaseServiceImpl<T> implements BaseService<T>{
     }
 
     @Override
-    public int add(String tableName,Map<String,Object> attrs) {
-        if (attrs.get("id")==null||"".equals(attrs.get("id"))){
-            String uuid=UUID.randomUUID().toString();
-            attrs.put("id",uuid );
-        }
-       return baseMapper.add(tableName,attrs);
+    public String add(String tableName,Map<String,Object> attrs) {
+
+        String uuid=UUID.randomUUID().toString();
+        attrs.put("id",uuid );
+        baseMapper.add(tableName,attrs);
+       return (String)attrs.get("id");
     }
 
     @Override

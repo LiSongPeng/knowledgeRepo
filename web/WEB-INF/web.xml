@@ -47,4 +47,16 @@
         <filter-name>corsFilter</filter-name>
         <url-pattern>*.form</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>characterFilter</filter-name>
+        <filter-class>com.zh.framework.util.CharacterFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterFilter</filter-name>
+        <url-pattern>*.form</url-pattern>
+    </filter-mapping>
 </web-app>
