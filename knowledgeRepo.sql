@@ -4,6 +4,7 @@
 -- ------------------------------------------------------
 -- Server version	5.7.19-0ubuntu0.16.04.1
 CREATE SCHEMA `knowledgeRepo` CHARACTER SET 'utf8';
+USE `knowledgeRepo`;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
