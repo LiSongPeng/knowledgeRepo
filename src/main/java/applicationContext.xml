@@ -1,36 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <aop:aspectj-autoproxy/>
+    <context:component-scan base-package="service"/>
+    <!--mybatis configuration-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="url" value="${url}"/>
+        <property name="maxWait" value="${maxWait}"/>
+        <property name="username" value="${username}"/>
+        <property name="driverClassName" value="${driver}"/>
+        <property name="password" value="${password}"/>
+        <property name="minIdle" value="${minIdle}"/>
+        <property name="initialSize" value="${initialSize}"/>
+        <property name="maxActive" value="${maxActive}"/>
+        <property name="maxIdle" value="${maxIdle}"/>
+    </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:mapper/*"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <tx:annotation-driven/>
     <!-- lucene configuration -->
     <bean id="factoryBean" class="utils.Factory"></bean>
     <bean id="directory" scope="singleton" factory-bean="factoryBean" factory-method="getDirectory"
           destroy-method="close"></bean>
-    <bean id="analyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
+    <bean id="analyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer" destroy-method="close"/>
     <bean id="indexWriterConfig" class="org.apache.lucene.index.IndexWriterConfig">
-        <constructor-arg name="analyzer">
-            <ref bean="analyzer"/>
-        </constructor-arg>
+        <constructor-arg name="analyzer" ref="analyzer"/>
         <property name="openMode" value="CREATE_OR_APPEND"/>
     </bean>
     <bean id="indexWriter" scope="singleton" class="org.apache.lucene.index.IndexWriter" destroy-method="close">
-        <constructor-arg name="d">
-            <ref bean="directory"/>
-        </constructor-arg>
-        <constructor-arg name="conf">
-            <ref bean="indexWriterConfig"/>
-        </constructor-arg>
+        <constructor-arg name="d" ref="directory"/>
+        <constructor-arg name="conf" ref="indexWriterConfig"/>
     </bean>
     <bean id="directoryReader" class="org.apache.lucene.index.DirectoryReader" factory-method="open"
           destroy-method="close">
-        <constructor-arg>
-            <ref bean="directory"></ref>
-        </constructor-arg>
+        <constructor-arg ref="directory"/>
     </bean>
     <bean id="indexSearcher" scope="singleton" class="org.apache.lucene.search.IndexSearcher">
-        <constructor-arg>
-            <ref bean="directoryReader"/>
-        </constructor-arg>
+        <constructor-arg ref="directoryReader"/>
     </bean>
 </beans>
