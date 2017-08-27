@@ -49,6 +49,15 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc-portlet:4.3.9.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:4.3.9.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-websocket:4.3.9.RELEASE" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-analyzers-common:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-analyzers-smartcn:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-core:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-highlighter:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-join:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-memory:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queries:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queryparser:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-sandbox:6.6.0" />
         </element>
       </element>
     </root>

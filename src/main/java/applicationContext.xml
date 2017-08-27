@@ -3,4 +3,34 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!-- lucene configuration -->
+    <bean id="factoryBean" class="utils.Factory"></bean>
+    <bean id="directory" scope="singleton" factory-bean="factoryBean" factory-method="getDirectory"
+          destroy-method="close"></bean>
+    <bean id="analyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
+    <bean id="indexWriterConfig" class="org.apache.lucene.index.IndexWriterConfig">
+        <constructor-arg name="analyzer">
+            <ref bean="analyzer"/>
+        </constructor-arg>
+        <property name="openMode" value="CREATE_OR_APPEND"/>
+    </bean>
+    <bean id="indexWriter" scope="singleton" class="org.apache.lucene.index.IndexWriter" destroy-method="close">
+        <constructor-arg name="d">
+            <ref bean="directory"/>
+        </constructor-arg>
+        <constructor-arg name="conf">
+            <ref bean="indexWriterConfig"/>
+        </constructor-arg>
+    </bean>
+    <bean id="directoryReader" class="org.apache.lucene.index.DirectoryReader" factory-method="open"
+          destroy-method="close">
+        <constructor-arg>
+            <ref bean="directory"></ref>
+        </constructor-arg>
+    </bean>
+    <bean id="indexSearcher" scope="singleton" class="org.apache.lucene.search.IndexSearcher">
+        <constructor-arg>
+            <ref bean="directoryReader"/>
+        </constructor-arg>
+    </bean>
 </beans>
