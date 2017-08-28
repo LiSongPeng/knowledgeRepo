@@ -35,7 +35,7 @@
     </bean>
     <bean id="directory" scope="singleton" factory-bean="factoryBean" factory-method="getDirectory"
           destroy-method="close"></bean>
-    <bean id="analyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer" destroy-method="close"/>
+    <bean id="analyzer" class="org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer" destroy-method="close"/>
     <bean id="indexWriterConfig" class="org.apache.lucene.index.IndexWriterConfig">
         <constructor-arg name="analyzer" ref="analyzer"/>
         <property name="openMode" value="CREATE_OR_APPEND"/>
@@ -48,7 +48,7 @@
           destroy-method="close">
         <constructor-arg ref="directory"/>
     </bean>
-    <bean id="indexSearcher" scope="singleton" class="org.apache.lucene.search.IndexSearcher">
+    <bean id="indexSearcher" scope="singleton" class="org.apache.lucene.search.suggest.document.SuggestIndexSearcher">
         <constructor-arg ref="directoryReader"/>
     </bean>
 </beans>

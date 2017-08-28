@@ -48,13 +48,4 @@ public class Response {
         if (!message.equals(response.message)) return false;
         return data.equals(response.data);
     }
-
-    @Override
-    public int hashCode() {
-        int result = flag;
-        result = 31 * result + message.hashCode();
-        if (data != null)
-            result = 31 * result + data.hashCode();
-        return result;
-    }
 }

@@ -262,6 +262,20 @@
             <artifactId>lucene-analyzers-smartcn</artifactId>
             <version>6.6.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-misc -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-misc</artifactId>
+            <version>6.6.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-suggest -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-suggest</artifactId>
+            <version>6.6.0</version>
+        </dependency>
     </dependencies>
 
 </project>

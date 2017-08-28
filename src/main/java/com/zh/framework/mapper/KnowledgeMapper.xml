@@ -8,7 +8,6 @@
         <result property="kTitle" column="kTitle"/>
         <result property="kAnswer" column="kAnswer"/>
         <result property="kUseCount" column="kUseCount"/>
-        <result property="kUseCount" column="kUseCount"/>
         <result property="kUserTimeLast" column="kUserTimeLast"/>
         <result property="kApprStatus" column="kApprStatus"/>
         <result property="kApprUserId" column="kApprUserId"/>

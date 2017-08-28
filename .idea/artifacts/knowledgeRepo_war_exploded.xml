@@ -58,6 +58,8 @@
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queries:6.6.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queryparser:6.6.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-sandbox:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-misc:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-suggest:6.6.0" />
         </element>
       </element>
     </root>
