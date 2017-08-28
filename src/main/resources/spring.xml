@@ -6,9 +6,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <aop:aspectj-autoproxy/>
-    <context:component-scan base-package="service"/>
+    <context:component-scan base-package="com.zh.framework.service"/>
     <!--mybatis configuration-->
-    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <context:property-placeholder location="classpath:config.properties"/>
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="url" value="${url}"/>
         <property name="maxWait" value="${maxWait}"/>
@@ -22,15 +22,17 @@
     </bean>
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="configLocation" value="classpath:mybatis-config.xml"/>
-        <property name="mapperLocations" value="classpath:mapper/*"/>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <property name="mapperLocations" value="classpath:com/zh/framework/mapper/BaseMapper.java"/>
     </bean>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
     <tx:annotation-driven/>
     <!-- lucene configuration -->
-    <bean id="factoryBean" class="utils.Factory"></bean>
+    <bean id="factoryBean" class="com.zh.framework.util.Factory">
+        <property name="indexDirectory" value="${indexDirectory}"/>
+    </bean>
     <bean id="directory" scope="singleton" factory-bean="factoryBean" factory-method="getDirectory"
           destroy-method="close"></bean>
     <bean id="analyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer" destroy-method="close"/>
