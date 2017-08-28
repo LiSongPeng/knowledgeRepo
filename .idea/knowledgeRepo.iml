@@ -91,5 +91,7 @@
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-join:6.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-memory:6.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers-smartcn:6.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-misc:6.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-suggest:6.6.0" level="project" />
   </component>
 </module>
