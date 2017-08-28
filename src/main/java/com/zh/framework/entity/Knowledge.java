@@ -1,7 +1,9 @@
 package com.zh.framework.entity;
 
 import java.sql.Date;
-
+/**
+ * created by lihuibo on 17-8-28 上午9:56
+ */
 public class Knowledge {
     private String id;
     private String kTitle;

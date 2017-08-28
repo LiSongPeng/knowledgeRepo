@@ -6,7 +6,9 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+/**
+ * created by lihuibo on 17-8-28 上午9:56
+ */
 public class Factory {
     private String indexDirectory;
 
