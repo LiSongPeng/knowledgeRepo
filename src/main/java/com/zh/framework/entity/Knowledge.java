@@ -1,10 +1,16 @@
 package com.zh.framework.entity;
 
 import java.sql.Date;
+
 /**
  * created by lihuibo on 17-8-28 上午9:56
  */
 public class Knowledge {
+    public static final String INSERT_WAITING = "录入待审批";
+    public static final String UPDATE_WAITING = "编辑待审批";
+    public static final String APPROVED = "通过";
+    public static final String UNAPPROVED = "不通过";
+    public static final String DELETE_WAITING = "删除待审批";
     private String id;
     private String kTitle;
     private String kAnswer;
@@ -121,9 +127,10 @@ public class Knowledge {
         if (!kAnswer.equals(knowledge.kAnswer)) return false;
         if (!kUserTimeLast.equals(knowledge.kUserTimeLast)) return false;
         if (!kApprStatus.equals(knowledge.kApprStatus)) return false;
-        if (!kApprUserId.equals(knowledge.kApprUserId)) return false;
-        if (!kApprTime.equals(knowledge.kApprTime)) return false;
-        if (!kApprMemo.equals(knowledge.kApprMemo)) return false;
+        if (kApprUserId != null ? !kApprUserId.equals(knowledge.kApprUserId) : knowledge.kApprUserId != null)
+            return false;
+        if (kApprTime != null ? !kApprTime.equals(knowledge.kApprTime) : knowledge.kApprTime != null) return false;
+        if (kApprMemo != null ? !kApprMemo.equals(knowledge.kApprMemo) : knowledge.kApprMemo != null) return false;
         if (!createUserId.equals(knowledge.createUserId)) return false;
         return createTime.equals(knowledge.createTime);
     }
@@ -136,9 +143,9 @@ public class Knowledge {
         result = 31 * result + kUseCount;
         result = 31 * result + kUserTimeLast.hashCode();
         result = 31 * result + kApprStatus.hashCode();
-        result = 31 * result + kApprUserId.hashCode();
-        result = 31 * result + kApprTime.hashCode();
-        result = 31 * result + kApprMemo.hashCode();
+        result = 31 * result + (kApprUserId != null ? kApprUserId.hashCode() : 0);
+        result = 31 * result + (kApprTime != null ? kApprTime.hashCode() : 0);
+        result = 31 * result + (kApprMemo != null ? kApprMemo.hashCode() : 0);
         result = 31 * result + createUserId.hashCode();
         result = 31 * result + createTime.hashCode();
         return result;

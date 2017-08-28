@@ -4,6 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <!-- 配置管理器 -->
 <configuration>
+    <typeAliases>
+        <typeAlias alias="Knowledge" type="com.zh.framework.entity.Knowledge"/>
+    </typeAliases>
     <plugins>
         <plugin interceptor="com.github.pagehelper.PageInterceptor">
 
