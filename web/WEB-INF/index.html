@@ -26,7 +26,7 @@
 		<link rel="stylesheet" href="../components/stylesheets/ace/ace-rtl.min.css" />
 		<link rel="stylesheet" href="../components/stylesheets/ace/ace-my-skins.css" />
 		<!--[if lte IE 8]>
-		  <link rel="stylesheet" href="../components/stylesheets/ace/ace-ie.min.css" />
+		<link rel="stylesheet" href="../components/stylesheets/ace/ace-ie.min.css" />
 		<![endif]-->
 
 		<!-- inline styles related to this page -->
@@ -557,8 +557,30 @@
 		<script src="../components/javascripts/ace-elements.min.js"></script>
 		<script src="../components/javascripts/ace.min.js"></script>
 
+		<!--angularjs scripts-->
+
+		<script src="../components/javascripts/angular.min.js"></script>
+		<script src="../components/javascripts/angular-route.js"></script>
 		<!-- inline scripts related to this page -->
 
+		<script>
+			var indexapp=angular.module('indexapp',['ngRoute']);
+			indexapp.controller('navListCtrl',['$scope','$http',navController]);
+			indexapp.config(['$routeProvider',function () {
+				$routeProvider
+					.when('/')
+            }]);
+
+			function navController($scope,$http) {
+			    $scope.refreshResList=function () {
+                    $http.get('/user/resList').then(function success(response) {
+                        $scope.resList=data.resList;
+                    });
+                };
+                $scope.refreshResList();
+				$scope.on('refreshNavList',$scope.refreshResList);
+            }
+		</script>
 
 </body>
 </html>
