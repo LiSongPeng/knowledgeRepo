@@ -5,22 +5,30 @@ import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.KnowledgeIndex;
 import com.zh.framework.mapper.KnowledgeMapper;
+import com.zh.framework.util.Constant;
 import com.zh.framework.util.TypeTester;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 import org.apache.lucene.document.*;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.highlight.*;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.print.Doc;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,22 +38,13 @@ import java.util.List;
 @Service
 public class KnowledgeRepoService {
     private KnowledgeMapper knowledgeMapper;
-    private IndexWriter indexWriter;
-    private IndexSearcher indexSearcher;
     private static final String INDEX_ID = "id";
     private static final String K_TITLE = "kTitle";
     private static final String K_ANSWER = "kAnswer";
     private static final String K_USE_COUNT = "kUseCount";
     private static final String K_USE_COUNT_SORT = "kUseCountSort";
 
-    @Resource(name = "indexWriter")
-    public void setIndexWriter(IndexWriter indexWriter) {
-        this.indexWriter = indexWriter;
-    }
-
-    @Resource(name = "indexSearcher")
-    public void setIndexSearcher(IndexSearcher indexSearcher) {
-        this.indexSearcher = indexSearcher;
+    public KnowledgeRepoService() {
     }
 
     @Resource(name = "knowledgeMapper")
@@ -93,9 +92,14 @@ public class KnowledgeRepoService {
     public List<KnowledgeIndex> searchIndex(String keyWord, int page, int pageSize) throws Exception {
         if (TypeTester.isEmpty(keyWord) || TypeTester.isNegative(page) || TypeTester.isNegative(pageSize))
             return null;
-        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, indexWriter.getAnalyzer());
+        Analyzer analyzer = new SmartChineseAnalyzer();
+        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, analyzer);
         Sort sort = new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField(K_USE_COUNT_SORT, SortField.Type.INT, true)});
         Query query = parser.parse(keyWord);
+        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
+        Directory directory = FSDirectory.open(path);
+        DirectoryReader reader = DirectoryReader.open(directory);
+        IndexSearcher indexSearcher = new IndexSearcher(reader);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, page * pageSize, sort, true, false).scoreDocs;
         SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("[-", "-]");
         QueryScorer queryScorer = new QueryScorer(query);
@@ -118,12 +122,14 @@ public class KnowledgeRepoService {
             kAnswer = doc.get(K_ANSWER);
             kUseCount = doc.get(K_USE_COUNT);
             index.setkUseCount(kUseCount);
-            kTitleStream = indexWriter.getAnalyzer().tokenStream(K_TITLE, kTitle);
+            kTitleStream = analyzer.tokenStream(K_TITLE, kTitle);
             index.setkTitle(highlighter.getBestFragment(kTitleStream, kTitle));
-            kAnswerStream = indexWriter.getAnalyzer().tokenStream(K_ANSWER, kAnswer);
+            kAnswerStream = analyzer.tokenStream(K_ANSWER, kAnswer);
             index.setkAnswer(highlighter.getBestFragment(kAnswerStream, kAnswer));
             indexList.add(index);
         }
+        reader.close();
+        directory.close();
         return indexList;
     }
 
@@ -137,7 +143,11 @@ public class KnowledgeRepoService {
         if (TypeTester.isEmpty(keyWord))
             return null;
 //        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, indexWriter.getAnalyzer());
-        QueryParser parser = new QueryParser(K_TITLE, indexWriter.getAnalyzer());
+        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
+        Directory directory = FSDirectory.open(path);
+        DirectoryReader reader = DirectoryReader.open(directory);
+        IndexSearcher indexSearcher = new IndexSearcher(reader);
+        QueryParser parser = new QueryParser(K_TITLE, new SmartChineseAnalyzer());
         Sort sort = new Sort(SortField.FIELD_SCORE);
         Query query = parser.parse(keyWord);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, 6, sort).scoreDocs;
@@ -149,6 +159,8 @@ public class KnowledgeRepoService {
             kTitle = doc.get(K_TITLE);
             hintList.add(kTitle);
         }
+        reader.close();
+        directory.close();
         return hintList;
     }
 
@@ -164,8 +176,14 @@ public class KnowledgeRepoService {
         doc.add(new Field(K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
         doc.add(new StoredField(K_USE_COUNT, k.getkUseCount()));
         doc.add(new NumericDocValuesField(K_USE_COUNT_SORT, k.getkUseCount()));
+        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
+        Directory directory = FSDirectory.open(path);
+        IndexWriterConfig config = new IndexWriterConfig(new SmartChineseAnalyzer());
+        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+        IndexWriter indexWriter = new IndexWriter(directory, config);
         indexWriter.addDocument(doc);
-        indexWriter.commit();
+        indexWriter.close();
+        directory.close();
     }
 
     /**
@@ -180,8 +198,14 @@ public class KnowledgeRepoService {
         newDoc.add(new Field(K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
         newDoc.add(new StoredField(K_USE_COUNT, k.getkUseCount()));
         newDoc.add(new NumericDocValuesField(K_USE_COUNT_SORT, k.getkUseCount()));
+        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
+        Directory directory = FSDirectory.open(path);
+        IndexWriterConfig config = new IndexWriterConfig(new SmartChineseAnalyzer());
+        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+        IndexWriter indexWriter = new IndexWriter(directory, config);
         indexWriter.updateDocument(new Term(INDEX_ID, k.getId()), newDoc);
-        indexWriter.commit();
+        indexWriter.close();
+        directory.close();
     }
 
     /**
@@ -193,6 +217,11 @@ public class KnowledgeRepoService {
     public boolean removeIndex(String id) throws Exception {
         if (TypeTester.isEmpty(id))
             return false;
+        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
+        Directory directory = FSDirectory.open(path);
+        IndexWriterConfig config = new IndexWriterConfig(new SmartChineseAnalyzer());
+        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+        IndexWriter indexWriter = new IndexWriter(directory, config);
         QueryParser queryParser = new QueryParser(INDEX_ID, indexWriter.getAnalyzer());
         Query query = queryParser.parse(id);
 /*        TopDocs docs = indexSearcher.search(query, 1);
@@ -200,7 +229,8 @@ public class KnowledgeRepoService {
             return;
         Document hitDoc = indexSearcher.doc(docs.scoreDocs[0].doc);*/
         long result = indexWriter.deleteDocuments(query);
-        indexWriter.commit();
+        indexWriter.close();
+        directory.close();
         return result > 0;
     }
 
@@ -245,4 +275,5 @@ public class KnowledgeRepoService {
     public boolean approveKnowledge(String id) {
         return false;
     }
+
 }

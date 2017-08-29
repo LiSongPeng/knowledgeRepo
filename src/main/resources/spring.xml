@@ -7,6 +7,7 @@
 
     <aop:aspectj-autoproxy/>
     <context:annotation-config/>
+    <tx:annotation-driven/>
     <context:component-scan base-package="com.zh.framework.service,com.zh.framework.mapper"/>
     <!--mybatis configuration-->
     <context:property-placeholder location="classpath:config.properties"/>
@@ -32,28 +33,5 @@
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.zh.framework.mapper"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-    </bean>
-    <tx:annotation-driven/>
-    <!-- lucene configuration -->
-    <bean id="factoryBean" class="com.zh.framework.util.Factory">
-        <property name="indexDirectory" value="${indexDirectory}"/>
-    </bean>
-    <bean id="directory" scope="singleton" factory-bean="factoryBean" factory-method="getDirectory"
-          destroy-method="close"></bean>
-    <bean id="analyzer" class="org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer" destroy-method="close"/>
-    <bean id="indexWriterConfig" class="org.apache.lucene.index.IndexWriterConfig">
-        <constructor-arg name="analyzer" ref="analyzer"/>
-        <property name="openMode" value="CREATE_OR_APPEND"/>
-    </bean>
-    <bean id="indexWriter" scope="singleton" class="org.apache.lucene.index.IndexWriter" destroy-method="close">
-        <constructor-arg name="d" ref="directory"/>
-        <constructor-arg name="conf" ref="indexWriterConfig"/>
-    </bean>
-    <bean id="directoryReader" class="org.apache.lucene.index.DirectoryReader" factory-method="open"
-          destroy-method="close">
-        <constructor-arg ref="directory"/>
-    </bean>
-    <bean id="indexSearcher" scope="singleton" class="org.apache.lucene.search.suggest.document.SuggestIndexSearcher">
-        <constructor-arg ref="directoryReader"/>
     </bean>
 </beans>
