@@ -9,6 +9,7 @@ import com.zh.framework.util.TypeTester;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,7 +162,6 @@ public class KnowledgeRepoService {
         doc.add(new Field(INDEX_ID, k.getId(), TextField.TYPE_STORED));
         doc.add(new Field(K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
         doc.add(new Field(K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
-        doc.add(new Field(K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
         doc.add(new StoredField(K_USE_COUNT, k.getkUseCount()));
         doc.add(new NumericDocValuesField(K_USE_COUNT_SORT, k.getkUseCount()));
         indexWriter.addDocument(doc);
@@ -173,29 +174,14 @@ public class KnowledgeRepoService {
      * @param k 知识k
      */
     public void updateIndex(Knowledge k) throws Exception {
-        QueryParser queryParser = new QueryParser(INDEX_ID, indexWriter.getAnalyzer());
-        Query query = queryParser.parse(k.getId());
-        TopDocs docs = indexSearcher.search(query, 1);
-        if (docs.totalHits == 0)
-            return;
-        Document hitDoc = indexSearcher.doc(docs.scoreDocs[0].doc);
-        String kTitle = hitDoc.get(K_TITLE);
-        String kAnswer = hitDoc.get(K_ANSWER);
-        String kUseCount = hitDoc.get(K_USE_COUNT);
-        if (!kTitle.equals(k.getkTitle())) {
-            hitDoc.removeField(K_TITLE);
-            hitDoc.add(new Field(K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
-        }
-        if (!kAnswer.equals(k.getkAnswer())) {
-            hitDoc.removeField(K_ANSWER);
-            hitDoc.add(new Field(K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
-        }
-        if (Integer.valueOf(kUseCount) != (k.getkUseCount())) {
-            hitDoc.removeField(K_USE_COUNT);
-            hitDoc.removeField(K_USE_COUNT_SORT);
-            hitDoc.add(new StoredField(K_USE_COUNT, k.getkUseCount()));
-            hitDoc.add(new NumericDocValuesField(K_USE_COUNT_SORT, k.getkUseCount()));
-        }
+        Document newDoc = new Document();
+        newDoc.add(new Field(INDEX_ID, k.getId(), TextField.TYPE_STORED));
+        newDoc.add(new Field(K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
+        newDoc.add(new Field(K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
+        newDoc.add(new StoredField(K_USE_COUNT, k.getkUseCount()));
+        newDoc.add(new NumericDocValuesField(K_USE_COUNT_SORT, k.getkUseCount()));
+        indexWriter.updateDocument(new Term(INDEX_ID, k.getId()), newDoc);
+        indexWriter.commit();
     }
 
     /**

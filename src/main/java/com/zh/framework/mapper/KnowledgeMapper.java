@@ -1,6 +1,7 @@
 package com.zh.framework.mapper;
 
 import com.zh.framework.entity.Knowledge;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -15,11 +16,11 @@ public interface KnowledgeMapper {
 
     public Knowledge queryKnowledgeById(String id);
 
-    public void updateUseCount(int count, String id);
+    public void updateUseCount(@Param("count") int count, @Param("id") String id);
 
     public void updateKnowledge(Knowledge k);
 
-    public void updateKnowledgeStatus(String id, String status);
+    public void updateKnowledgeStatus(@Param("id") String id, @Param("status") String status);
 
     public void deleteKnowledge(String id);
 
