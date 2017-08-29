@@ -1,6 +1,7 @@
 package com.zh.framework.service;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.KnowledgeIndex;
 import com.zh.framework.mapper.KnowledgeMapper;
@@ -53,17 +54,18 @@ public class KnowledgeService {
     /**
      * 列表显示
      *
-     * @param orderBy  根据那个字段排序
+     * @param orderBy  根据哪个字段排序
      * @param page     要显示的页码
      * @param pageSize 要显示的每页面数据数
      * @return 结果集
      */
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<Knowledge> listDisplay(String orderBy, int page, int pageSize) {
+    public PageInfo<Knowledge> listDisplay(String orderBy, int page, int pageSize) {
         PageHelper pageHelper = new PageHelper();
         pageHelper.startPage(page, pageSize);
         List<Knowledge> list = knowledgeMapper.queryKnowledgesAndSort(orderBy);
-        return list;
+        PageInfo<Knowledge> pageInfo = new PageInfo<>(list);
+        return pageInfo;
     }
 
     /**

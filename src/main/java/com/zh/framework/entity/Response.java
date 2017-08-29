@@ -5,10 +5,12 @@ import java.util.List;
 /**
  * created by lihuibo on 17-8-28 上午10:05
  */
-public class Response {
-    private int flag;//返回标志,200 出错,201 系统异常 ...
-    private String message;
-    private List<Object> data;
+public class Response<T> {
+    private int flag;//返回标志,200 成功,201 出错
+    public static final int SUCCESS = 200;
+    public static final int FAIL = 201;
+    private String message;//信息
+    private T data;//数据
 
     public Response() {
     }
@@ -29,11 +31,11 @@ public class Response {
         this.message = message;
     }
 
-    public List<Object> getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(List<Object> data) {
+    public void setData(T data) {
         this.data = data;
     }
 
