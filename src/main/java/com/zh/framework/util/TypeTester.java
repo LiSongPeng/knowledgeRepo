@@ -5,7 +5,7 @@ package com.zh.framework.util;
  */
 public class TypeTester {
     public static boolean isEmpty(String str) {
-        return "".equals(str);
+        return str == null ? true : "".equals(str);
     }
 
     public static boolean isNegative(int value) {

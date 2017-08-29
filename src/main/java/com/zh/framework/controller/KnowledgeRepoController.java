@@ -6,6 +6,7 @@ import com.zh.framework.entity.KnowledgeIndex;
 import com.zh.framework.entity.Response;
 import com.zh.framework.service.KnowledgeRepoService;
 import com.zh.framework.util.Constant;
+import com.zh.framework.util.TypeTester;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,8 @@ public class KnowledgeRepoController {
     @GetMapping("/getKnowledgeList.form")
     @ResponseBody
     public Response<PageInfo> getKnowledgeList(@RequestParam("orderBy") String orderBy, @RequestParam("page") int page) {
+        if (TypeTester.isEmpty(orderBy))
+            orderBy = null;
         PageInfo<Knowledge> pageInfo = knowledgeRepoService.listDisplay(orderBy, page, Constant.PAGE_SIZE);
         Response<PageInfo> response = new Response<>();
         response.setFlag(Response.SUCCESS);

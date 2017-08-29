@@ -24,13 +24,13 @@
     <select id="queryKnowledgeById" resultType="Knowledge">
         SELECT * FROM tb_knowledge k WHERE k.id=#{id}
     </select>
-    <select id="queryKnowledgesAndSort" resultMap="knowledgeMap">
+    <select id="queryKnowledgesAndSort" resultType="Knowledge">
         <choose>
             <when test="orderBy!=null">
-                SELECT * FROM tb_knowledge ORDER BY tb_knowledge.#{orderBy} DEC
+                SELECT * FROM tb_knowledge ORDER BY tb_knowledge.#{orderBy}
             </when>
             <otherwise>
-                SELECT * FROM tb_knowledge ORDER BY tb_knowledge.kUseCount DEC
+                SELECT * FROM tb_knowledge ORDER BY tb_knowledge.kUseCount
             </otherwise>
         </choose>
     </select>
