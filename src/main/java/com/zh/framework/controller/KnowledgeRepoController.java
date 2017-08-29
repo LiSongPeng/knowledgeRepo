@@ -4,7 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.KnowledgeIndex;
 import com.zh.framework.entity.Response;
-import com.zh.framework.service.KnowledgeService;
+import com.zh.framework.service.KnowledgeRepoService;
 import com.zh.framework.util.Constant;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -23,17 +23,17 @@ import java.util.List;
 @Scope("prototype")
 @RequestMapping("/repo")
 public class KnowledgeRepoController {
-    private KnowledgeService knowledgeService;
+    private KnowledgeRepoService knowledgeRepoService;
 
-    @Resource(name = "knowledgeService")
-    public void setKnowledgeService(KnowledgeService knowledgeService) {
-        this.knowledgeService = knowledgeService;
+    @Resource(name = "knowledgeRepoService")
+    public void setKnowledgeRepoService(KnowledgeRepoService knowledgeRepoService) {
+        this.knowledgeRepoService = knowledgeRepoService;
     }
 
     @GetMapping("/getKnowledgeList.form")
     @ResponseBody
     public Response<PageInfo> getKnowledgeList(@RequestParam("orderBy") String orderBy, @RequestParam("page") int page) {
-        PageInfo<Knowledge> pageInfo = knowledgeService.listDisplay(orderBy, page, Constant.PAGE_SIZE);
+        PageInfo<Knowledge> pageInfo = knowledgeRepoService.listDisplay(orderBy, page, Constant.PAGE_SIZE);
         Response<PageInfo> response = new Response<>();
         response.setFlag(Response.SUCCESS);
         response.setMessage("SUCCESS");
@@ -49,7 +49,7 @@ public class KnowledgeRepoController {
         response.setMessage("SUCCESS");
         Knowledge k;
         try {
-            k = knowledgeService.viewKnowledgeDetail(id);
+            k = knowledgeRepoService.viewKnowledgeDetail(id);
         } catch (Exception e) {
             e.printStackTrace();
             response.setFlag(Response.FAIL);
@@ -68,7 +68,7 @@ public class KnowledgeRepoController {
         response.setMessage("SUCCESS");
         List<String> hints;
         try {
-            hints = knowledgeService.inputHint(keyWord);
+            hints = knowledgeRepoService.inputHint(keyWord);
         } catch (Exception e) {
             e.printStackTrace();
             response.setFlag(Response.FAIL);
@@ -87,12 +87,16 @@ public class KnowledgeRepoController {
         response.setMessage("SUCCESS");
         List<KnowledgeIndex> data;
         try {
-            data = knowledgeService.searchIndex(keyWord, page, Constant.PAGE_SIZE);
+            data = knowledgeRepoService.searchIndex(keyWord, page, Constant.PAGE_SIZE);
         } catch (Exception e) {
             e.printStackTrace();
             response.setFlag(Response.FAIL);
             response.setMessage("FAIL");
             return response;
+        }
+        for (KnowledgeIndex index : data) {
+            System.out.println(index.getkTitle());
+            System.out.println(index.getkAnswer());
         }
         response.setData(data);
         return response;

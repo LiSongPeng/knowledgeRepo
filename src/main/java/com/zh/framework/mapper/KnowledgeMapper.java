@@ -1,12 +1,15 @@
 package com.zh.framework.mapper;
 
 import com.zh.framework.entity.Knowledge;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 /**
  * created by lihuibo on 17-8-28 上午9:59
  */
+@Repository
 public interface KnowledgeMapper {
     public List<Knowledge> queryKnowledgesAndSort(String orderBy);
 

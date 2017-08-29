@@ -24,22 +24,9 @@
           <file>file://$MODULE_DIR$/src/main/resources/spring.xml</file>
         </fileset>
         <fileset id="fileset2" name="Spring MVC Application Context" removed="false">
+          <dependency>fileset</dependency>
           <file>file://$MODULE_DIR$/src/main/resources/spring-servlet.xml</file>
         </fileset>
-      </configuration>
-    </facet>
-    <facet type="web" name="Web2">
-      <configuration>
-        <descriptors>
-          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/out/artifacts/knowledgeRepo_war_exploded/WEB-INF/web.xml" />
-        </descriptors>
-        <webroots>
-          <root url="file://$MODULE_DIR$/out/artifacts/knowledgeRepo_war_exploded" relative="/" />
-        </webroots>
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/java" />
-          <root url="file://$MODULE_DIR$/src/main/resources" />
-        </sourceRoots>
       </configuration>
     </facet>
   </component>

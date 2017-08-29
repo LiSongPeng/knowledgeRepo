@@ -25,8 +25,8 @@ import java.util.List;
 /**
  * created by lihuibo on 17-8-28 上午9:58
  */
-@Service("knowledgeService")
-public class KnowledgeService {
+@Service
+public class KnowledgeRepoService {
     private KnowledgeMapper knowledgeMapper;
     private IndexWriter indexWriter;
     private IndexSearcher indexSearcher;
@@ -95,7 +95,7 @@ public class KnowledgeService {
         Sort sort = new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField(K_USE_COUNT_SORT, SortField.Type.INT, true)});
         Query query = parser.parse(keyWord);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, page * pageSize, sort, true, false).scoreDocs;
-        SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<span class='highlight'>", "</span>");
+        SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("[-", "-]");
         QueryScorer queryScorer = new QueryScorer(query);
         Fragmenter fragmenter = new SimpleSpanFragmenter(queryScorer);
         Highlighter highlighter = new Highlighter(formatter, queryScorer);
