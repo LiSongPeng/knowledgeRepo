@@ -106,7 +106,7 @@ public class KnowledgeService {
         String id, kTitle, kAnswer, kUseCount;
         TokenStream kTitleStream;
         TokenStream kAnswerStream;
-        for (int i = (page - 1) * pageSize; i < page * pageSize; i++) {
+        for (int i = (page - 1) * pageSize; i < scoreDocs.length && i < page * pageSize; i++) {
             index = new KnowledgeIndex();
             index.setScore(scoreDocs[i].score);
             doc = indexSearcher.doc(scoreDocs[i].doc);
