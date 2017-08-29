@@ -12,7 +12,7 @@ public interface KnowledgeMapper {
 
     public Knowledge queryKnowledgeById(String id);
 
-    public void updateUseCount(int count);
+    public void updateUseCount(int count, String id);
 
     public void updateKnowledge(Knowledge k);
 

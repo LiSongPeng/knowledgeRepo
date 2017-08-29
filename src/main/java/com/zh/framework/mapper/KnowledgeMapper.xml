@@ -35,7 +35,7 @@
         </choose>
     </select>
     <update id="updateUseCount">
-        UPDATE tb_knowledge k SET k.kUseCount=#{count}
+        UPDATE tb_knowledge k SET k.kUseCount=#{count} WHERE k.id=#{id}
     </update>
     <update id="updateKnowledge" parameterType="Knowledge">
         UPDATE tb_knowledge k SET
