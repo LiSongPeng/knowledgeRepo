@@ -99,6 +99,8 @@ public class KnowledgeRepoService {
         Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
         Directory directory = FSDirectory.open(path);
         DirectoryReader reader = DirectoryReader.open(directory);
+        if (reader.numDocs() == 0)
+            return null;
         IndexSearcher indexSearcher = new IndexSearcher(reader);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, page * pageSize, sort, true, false).scoreDocs;
         SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("[-", "-]");
@@ -146,6 +148,8 @@ public class KnowledgeRepoService {
         Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
         Directory directory = FSDirectory.open(path);
         DirectoryReader reader = DirectoryReader.open(directory);
+        if (reader.numDocs() == 0)
+            return null;
         IndexSearcher indexSearcher = new IndexSearcher(reader);
         QueryParser parser = new QueryParser(K_TITLE, new SmartChineseAnalyzer());
         Sort sort = new Sort(SortField.FIELD_SCORE);
