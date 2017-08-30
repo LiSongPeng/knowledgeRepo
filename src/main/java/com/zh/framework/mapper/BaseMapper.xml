@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.framework.mapper.BaseMapper">
+    <resultMap id="knowledgeMap" type="Knowledge">
+        <id property="id" column="id"/>
+        <result property="kTitle" column="kTitle"/>
+        <result property="kAnswer" column="kAnswer"/>
+        <result property="kUseCount" column="kUseCount"/>
+        <result property="kUserTimeLast" column="kUserTimeLast"/>
+        <result property="kApprStatus" column="kApprStatus"/>
+        <result property="kApprUserId" column="kApprUserId"/>
+        <result property="kApprTime" column="kApprTime"/>
+        <result property="kApprMemo" column="kApprMemo"/>
+        <result property="createUserId" column="createUserId"/>
+        <result property="createTime" column="createTime"/>
+    </resultMap>
+
+    <select id="query" resultType="Knowledge" parameterType="java.lang.String" statementType="STATEMENT">
+        select
+        *
+        from ${tableName}
+
+    </select>
+
+
+    <delete id="delete" parameterType="java.lang.Integer" statementType="STATEMENT">
+        DELETE  FROM ${tableName} WHERE id=${id}
+
+    </delete>
+
+
+
+    <!--<select id="query" resultType="Knowledge">-->
+        <!--SELECT * FROM tb_knowledge-->
+    <!--</select>-->
+
+
+</mapper>

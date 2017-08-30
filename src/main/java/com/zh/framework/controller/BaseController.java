@@ -1,4 +1,10 @@
 package com.zh.framework.controller;
 
-public abstract class BaseController {
+import org.springframework.beans.factory.annotation.Autowired;
+
+public  class BaseController<T> {
+
+    @Autowired
+    T service;
+
 }
