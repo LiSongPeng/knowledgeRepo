@@ -3,8 +3,8 @@ package com.zh.framework.mapper;
 import com.zh.framework.entity.Knowledge;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Repository
 public interface KnowledgeMapper {
-    public List<Knowledge> queryKnowledgesAndSort(@Param("orderBy") String orderBy);
+    public List<Knowledge> queryKnowledgesAndSort(@Param("orderBy") String orderBy, @Param("order") int order);
 
     public Knowledge queryKnowledgeById(String id);
 
@@ -25,4 +25,6 @@ public interface KnowledgeMapper {
     public void deleteKnowledge(String id);
 
     public void addKnowledge(Knowledge k);
+
+    public void updateLastUseTime(@Param("time") Date time, @Param("id") String id);
 }

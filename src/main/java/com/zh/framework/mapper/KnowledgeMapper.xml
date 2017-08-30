@@ -40,7 +40,14 @@
                 kUseCount
             </otherwise>
         </choose>
-        DESC
+        <choose>
+            <when test="order==1">
+                ASC
+            </when>
+            <otherwise>
+                DESC
+            </otherwise>
+        </choose>
     </select>
     <update id="updateUseCount">
         UPDATE tb_knowledge k SET k.kUseCount=#{count} WHERE k.id=#{id}
@@ -74,6 +81,9 @@
     </update>
     <update id="updateKnowledgeStatus">
         UPDATE tb_knowledge k SET k.kApprStatus=#{status} WHERE k.id=#{id}
+    </update>
+    <update id="updateLastUseTime">
+        UPDATE tb_knowledge k SET k.kUserTimeLast=#{time} WHERE k.id=#{id}
     </update>
     <delete id="deleteKnowledge">
         DELETE FROM tb_knowledge k WHERE k.id=#{id}
