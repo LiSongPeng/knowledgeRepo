@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Repository
 public interface KnowledgeMapper {
-    public List<Knowledge> queryKnowledgesAndSort(String orderBy);
+    public List<Knowledge> queryKnowledgesAndSort(@Param("orderBy") String orderBy);
 
     public Knowledge queryKnowledgeById(String id);
 
