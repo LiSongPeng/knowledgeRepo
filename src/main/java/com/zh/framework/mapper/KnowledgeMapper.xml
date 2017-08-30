@@ -6,7 +6,7 @@
     <resultMap id="knowledgeMap" type="Knowledge">
         <id property="id" column="id"/>
         <result property="kTitle" column="kTitle"/>
-        <result property="kAnswer" column="kAnswer"/>
+        <result property="kAnswer" column="kAnswer" typeHandler="com.zh.framework.util.StringBlobHandler"/>
         <result property="kUseCount" column="kUseCount"/>
         <result property="kUserTimeLast" column="kUserTimeLast"/>
         <result property="kApprStatus" column="kApprStatus"/>
@@ -18,24 +18,32 @@
     </resultMap>
     <insert id="addKnowledge" parameterType="Knowledge">
         INSERT INTO tb_knowledge(id,kTitle,kAnswer,createTime,createUserId) VALUES (
-          #{id},#{kTitle},#{kAnswer},#{createTime},#{createUserId}
+          #{id},#{kTitle},#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},#{createTime},#{createUserId}
         )
     </insert>
     <select id="queryKnowledgeById" resultMap="knowledgeMap">
         SELECT * FROM tb_knowledge k WHERE k.id=#{id}
     </select>
     <select id="queryKnowledgesAndSort" resultMap="knowledgeMap">
+        SELECT * FROM tb_knowledge ORDER BY tb_knowledge.
         <choose>
-            <when test="orderBy!=null">
-                SELECT * FROM tb_knowledge ORDER BY tb_knowledge.#{orderBy} DEC
+            <when test="orderBy=='kUserTimeLast'">
+                kUserTimeLast
+            </when>
+            <when test="orderBy=='id'">
+                id
+            </when>
+            <when test="orderBy=='createTime'">
+                createTime
             </when>
             <otherwise>
-                SELECT * FROM tb_knowledge ORDER BY tb_knowledge.kUseCount DEC
+                kUseCount
             </otherwise>
         </choose>
+        DESC
     </select>
     <update id="updateUseCount">
-        UPDATE tb_knowledge k SET k.kUseCount=#{count}
+        UPDATE tb_knowledge k SET k.kUseCount=#{count} WHERE k.id=#{id}
     </update>
     <update id="updateKnowledge" parameterType="Knowledge">
         UPDATE tb_knowledge k SET
@@ -43,7 +51,7 @@
             k.kTitle=#{kTitle},
         </if>
         <if test="k.kAnswer!=null">
-            k.kAnswer=#{kAnswer},
+            k.kAnswer=#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},
         </if>
         <if test="k.kApprStatus!=null">
             k.kApprStatus=#{kApprStatus},

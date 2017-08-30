@@ -8,6 +8,7 @@ public class KnowledgeIndex {
     private String kTitle;
     private String kAnswer;
     private String kUseCount;
+    private float score;
 
     public KnowledgeIndex() {
     }
@@ -42,5 +43,13 @@ public class KnowledgeIndex {
 
     public void setkUseCount(String kUseCount) {
         this.kUseCount = kUseCount;
+    }
+
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
     }
 }
