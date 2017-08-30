@@ -8,7 +8,7 @@
         <typeAlias alias="Knowledge" type="com.zh.framework.entity.Knowledge"/>
     </typeAliases>
     <typeHandlers>
-        <typeHandler handler="com.zh.framework.util.StringBlobHandler" javaType="java.lang.String" jdbcType="BLOB"/>
+        <typeHandler handler="com.zh.framework.util.StringBlobHandler"/>
     </typeHandlers>
     <plugins>
         <plugin interceptor="com.github.pagehelper.PageInterceptor">

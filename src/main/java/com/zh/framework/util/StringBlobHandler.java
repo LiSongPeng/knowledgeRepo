@@ -2,6 +2,7 @@ package com.zh.framework.util;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.MappedJdbcTypes;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.sql.*;
 /**
  * created by lihuibo on 17-8-29 下午8:42
  */
+@MappedJdbcTypes(JdbcType.BLOB)
 public class StringBlobHandler extends BaseTypeHandler<String> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
