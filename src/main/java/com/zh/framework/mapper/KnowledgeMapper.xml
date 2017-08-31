@@ -25,22 +25,33 @@
         SELECT * FROM tb_knowledge k WHERE k.id=#{id}
     </select>
     <select id="queryKnowledgesAndSort" resultMap="knowledgeMap">
+        SELECT * FROM tb_knowledge ORDER BY tb_knowledge.
         <choose>
-            <when test="orderBy!=null">
-                SELECT * FROM tb_knowledge ORDER BY tb_knowledge.#{orderBy}
+            <when test="orderBy=='kUserTimeLast'">
+                kUserTimeLast
+            </when>
+            <when test="orderBy=='id'">
+                id
+            </when>
+            <when test="orderBy=='createTime'">
+                createTime
             </when>
             <otherwise>
-                SELECT * FROM tb_knowledge ORDER BY tb_knowledge.kUseCount
+                kUseCount
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="order==1">
+                ASC
+            </when>
+            <otherwise>
+                DESC
             </otherwise>
         </choose>
     </select>
-
-    <!--知识使用次数-->
     <update id="updateUseCount">
         UPDATE tb_knowledge k SET k.kUseCount=#{count} WHERE k.id=#{id}
     </update>
-
-    <!--知识录入-->
     <update id="updateKnowledge" parameterType="Knowledge">
         UPDATE tb_knowledge k SET
         <if test="k.kTitle!=null">
@@ -68,12 +79,12 @@
             k.createTime=#{createTime}
         </if>
     </update>
-
     <update id="updateKnowledgeStatus">
         UPDATE tb_knowledge k SET k.kApprStatus=#{status} WHERE k.id=#{id}
     </update>
-
-    <!--知识删除-->
+    <update id="updateLastUseTime">
+        UPDATE tb_knowledge k SET k.kUserTimeLast=#{time} WHERE k.id=#{id}
+    </update>
     <delete id="deleteKnowledge">
         DELETE FROM tb_knowledge k WHERE k.id=#{id}
     </delete>

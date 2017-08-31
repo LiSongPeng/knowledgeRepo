@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 /**
  * created by lihuibo on 17-8-28 上午9:58
@@ -61,10 +62,10 @@ public class KnowledgeRepoService {
      * @return 结果集
      */
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public PageInfo<Knowledge> listDisplay(String orderBy, int page, int pageSize) {
-        PageHelper pageHelper = new PageHelper();
-        pageHelper.startPage(page, pageSize);
-        List<Knowledge> list = knowledgeMapper.queryKnowledgesAndSort(orderBy);
+    public PageInfo<Knowledge> listDisplay(String orderBy, int page, int pageSize, int order) {
+/*        PageHelper pageHelper = new PageHelper();
+        pageHelper.startPage(page, pageSize);*/
+        List<Knowledge> list = knowledgeMapper.queryKnowledgesAndSort(orderBy, order);
         PageInfo<Knowledge> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }
@@ -79,6 +80,7 @@ public class KnowledgeRepoService {
     public Knowledge viewKnowledgeDetail(String id) throws Exception {
         Knowledge k = knowledgeMapper.queryKnowledgeById(id);
         knowledgeMapper.updateUseCount(k.getkUseCount() + 1, id);
+        knowledgeMapper.updateLastUseTime(new Date(), id);
         updateIndex(k);
         return k;
     }

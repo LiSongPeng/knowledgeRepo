@@ -1,6 +1,6 @@
 package com.zh.framework.entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * created by lihuibo on 17-8-28 上午9:56

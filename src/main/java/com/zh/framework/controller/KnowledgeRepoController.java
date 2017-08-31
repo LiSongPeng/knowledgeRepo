@@ -36,10 +36,13 @@ public class KnowledgeRepoController {
 
     @GetMapping("/getKnowledgeList.form")
     @ResponseBody
-    public Response<PageInfo> getKnowledgeList(@RequestParam("orderBy") String orderBy, @RequestParam("page") int page) {
+    public Response<PageInfo> getKnowledgeList(/*@RequestParam(value = "orderBy", required = false) String orderBy, @RequestParam(value = "page", required = false) int page, @RequestParam(value = "order", required = false) int order*/) {
+        String orderBy = null;
+        int page = 0;
+        int order = 0;
         if (TypeTester.isEmpty(orderBy))
             orderBy = null;
-        PageInfo<Knowledge> pageInfo = knowledgeRepoService.listDisplay(orderBy, page, Constant.PAGE_SIZE);
+        PageInfo<Knowledge> pageInfo = knowledgeRepoService.listDisplay(orderBy, page, Constant.PAGE_SIZE, order);//order 1 升序 其他值 降序
         Response<PageInfo> response = new Response<>();
         response.setFlag(Response.SUCCESS);
         response.setMessage("SUCCESS");
