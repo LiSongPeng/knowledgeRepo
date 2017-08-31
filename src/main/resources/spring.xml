@@ -14,10 +14,14 @@
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="url" value="${url}"/>
         <property name="maxWait" value="${maxWait}"/>
+        <!--<property name="username" value="root"/>-->
+        <!--<property name="password" value="123456"/>-->
         <property name="username" value="${username}"/>
-        <property name="driverClassName" value="${driver}"/>
-        <property name="minIdle" value="${minIdle}"/>
         <property name="password" value="${password}"/>
+
+        <property name="driverClassName" value="${driver}"/>
+
+        <property name="minIdle" value="${minIdle}"/>
         <property name="initialSize" value="${initialSize}"/>
         <property name="maxActive" value="${maxActive}"/>
         <property name="maxIdle" value="${maxIdle}"/>
