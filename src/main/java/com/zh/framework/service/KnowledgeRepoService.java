@@ -1,6 +1,5 @@
 package com.zh.framework.service;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.KnowledgeIndex;
@@ -86,14 +85,19 @@ public class KnowledgeRepoService {
      * 根据关键字检索索引
      *
      * @param keyWord 关键字
+     * @param orderBy
      * @return 检索结果
      */
-    public List<KnowledgeIndex> searchIndex(String keyWord, int page, int pageSize) throws Exception {
+    public PageInfo<KnowledgeIndex> searchIndex(String keyWord, int page, int pageSize, int orderBy) throws Exception {
         if (TypeTester.isEmpty(keyWord) || TypeTester.isNegative(page) || TypeTester.isNegative(pageSize))
             return null;
         Analyzer analyzer = new SmartChineseAnalyzer();
         MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, analyzer);
-        Sort sort = new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField(K_USE_COUNT_SORT, SortField.Type.INT, true)});
+        Sort sort = new Sort(SortField.FIELD_SCORE);//默认按相关度排序
+        if (orderBy == Constant.ORDER_BY_K_USE_COUNT)
+            sort = new Sort(new SortField(K_USE_COUNT_SORT, SortField.Type.INT, true));
+        if (orderBy == Constant.ORDER_BY_K_USE_COUNT_RELEVANCE)
+            sort = new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField(K_USE_COUNT_SORT, SortField.Type.INT, true)});
         Query query = parser.parse(keyWord);
         Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
         Directory directory = FSDirectory.open(path);
@@ -113,7 +117,8 @@ public class KnowledgeRepoService {
         String id, kTitle, kAnswer, kUseCount, tmp;
         TokenStream kTitleStream;
         TokenStream kAnswerStream;
-        for (int i = (page - 1) * pageSize; i < scoreDocs.length && i < page * pageSize; i++) {
+        int docsSize = scoreDocs.length;
+        for (int i = (page - 1) * pageSize; i < docsSize && i < page * pageSize; i++) {
             index = new KnowledgeIndex();
             index.setScore(scoreDocs[i].score);
             doc = indexSearcher.doc(scoreDocs[i].doc);
@@ -133,7 +138,21 @@ public class KnowledgeRepoService {
         }
         reader.close();
         directory.close();
-        return indexList;
+        PageInfo<KnowledgeIndex> pageInfo = new PageInfo<>(indexList);
+        pageInfo.setHasPreviousPage(page > 1);
+        pageInfo.setHasNextPage(page * pageSize < docsSize);
+        pageInfo.setPageSize(pageSize);
+        pageInfo.setPageNum(page);
+        int pages = docsSize / pageSize;
+        pageInfo.setPages(docsSize % pageSize == 0 ? pages : pages + 1);
+        pageInfo.setSize(indexList.size());
+        pageInfo.setIsFirstPage(page == 1);
+        pageInfo.setPrePage(page - 1);
+        pageInfo.setNextPage(page + 1);
+        pageInfo.setTotal(docsSize);
+        pageInfo.setIsFirstPage(page == 1);
+        pageInfo.setIsLastPage(page == pageInfo.getPages());
+        return pageInfo;
     }
 
     /**
