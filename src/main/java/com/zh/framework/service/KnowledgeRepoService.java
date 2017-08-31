@@ -88,16 +88,17 @@ public class KnowledgeRepoService {
      * @param orderBy
      * @return 检索结果
      */
-    public PageInfo<KnowledgeIndex> searchIndex(String keyWord, int page, int pageSize, int orderBy) throws Exception {
+    public PageInfo<KnowledgeIndex> searchIndex(String keyWord, int page, int pageSize, int orderBy, int order) throws Exception {
         if (TypeTester.isEmpty(keyWord) || TypeTester.isNegative(page) || TypeTester.isNegative(pageSize))
             return null;
         Analyzer analyzer = new SmartChineseAnalyzer();
         MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, analyzer);
-        Sort sort = new Sort(SortField.FIELD_SCORE);//默认按相关度排序
+        boolean reverse = order == 1 ? true : false;
+        Sort sort = new Sort(new SortField(null, SortField.Type.SCORE, reverse));//默认按相关度排序
         if (orderBy == Constant.ORDER_BY_K_USE_COUNT)
-            sort = new Sort(new SortField(K_USE_COUNT_SORT, SortField.Type.INT, true));
+            sort = new Sort(new SortField(K_USE_COUNT_SORT, SortField.Type.INT, !reverse));
         if (orderBy == Constant.ORDER_BY_K_USE_COUNT_RELEVANCE)
-            sort = new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField(K_USE_COUNT_SORT, SortField.Type.INT, true)});
+            sort = new Sort(new SortField[]{new SortField(null, SortField.Type.SCORE, reverse), new SortField(K_USE_COUNT_SORT, SortField.Type.INT, !reverse)});
         Query query = parser.parse(keyWord);
         Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
         Directory directory = FSDirectory.open(path);

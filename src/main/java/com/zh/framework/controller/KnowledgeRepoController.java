@@ -111,13 +111,13 @@ public class KnowledgeRepoController {
 
     @GetMapping("/searchIndex.form")
     @ResponseBody
-    public Response<PageInfo> searchIndex(@RequestParam("keyWord") String keyWord, @RequestParam("page") int page, @RequestParam("orderBy") int orderBy/*, HttpServletResponse servletResponse*/) {
+    public Response<PageInfo> searchIndex(@RequestParam("keyWord") String keyWord, @RequestParam("page") int page, @RequestParam("orderBy") int orderBy,@RequestParam("order") int order/*, HttpServletResponse servletResponse*/) {
         Response<PageInfo> response = new Response<>();
         response.setFlag(Response.SUCCESS);
         response.setMessage("SUCCESS");
         PageInfo<KnowledgeIndex> pageInfo;
         try {
-            pageInfo = knowledgeRepoService.searchIndex(keyWord, page, Constant.PAGE_SIZE, orderBy);
+            pageInfo = knowledgeRepoService.searchIndex(keyWord, page, Constant.PAGE_SIZE, orderBy,order);
         } catch (Exception e) {
             e.printStackTrace();
             response.setFlag(Response.FAIL);
