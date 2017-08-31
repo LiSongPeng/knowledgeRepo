@@ -88,9 +88,32 @@ public class KnowledgeRepoController {
         return response;
     }
 
+    @GetMapping("/searchIndexNoPage.form")
+    @ResponseBody
+    public Response<List> searchIndexNoPage(@RequestParam("keyWord") String keyWord) {
+        Response<List> response = new Response<>();
+        response.setFlag(Response.SUCCESS);
+        response.setMessage("SUCCESS");
+        List<KnowledgeIndex> data;
+        try {
+            data = knowledgeRepoService.searchIndexNoPage(keyWord);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFlag(Response.FAIL);
+            response.setMessage("FAIL");
+            return response;
+        }
+        for (KnowledgeIndex index : data) {
+            System.out.println(index.getkTitle());
+            System.out.println(index.getkAnswer());
+        }
+        response.setData(data);
+        return response;
+    }
+
     @GetMapping("/searchIndex.form")
     @ResponseBody
-    public Response<List> searchIndex(@RequestParam("keyWord") String keyWord, int page) {
+    public Response<List> searchIndex(@RequestParam("keyWord") String keyWord, int page,int orderBy) {
         Response<List> response = new Response<>();
         response.setFlag(Response.SUCCESS);
         response.setMessage("SUCCESS");
