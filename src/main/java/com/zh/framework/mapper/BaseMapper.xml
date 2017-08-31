@@ -6,7 +6,7 @@
     <resultMap id="knowledgeMap" type="Knowledge">
         <id property="id" column="id"/>
         <result property="kTitle" column="kTitle"/>
-        <result property="kAnswer" column="kAnswer"/>
+        <result property="kAnswer" column="kAnswer" typeHandler="com.zh.framework.util.StringBlobHandler"/>
         <result property="kUseCount" column="kUseCount"/>
         <result property="kUserTimeLast" column="kUserTimeLast"/>
         <result property="kApprStatus" column="kApprStatus"/>
@@ -16,25 +16,5 @@
         <result property="createUserId" column="createUserId"/>
         <result property="createTime" column="createTime"/>
     </resultMap>
-
-    <select id="query" resultType="Knowledge" parameterType="java.lang.String" statementType="STATEMENT">
-        select
-        *
-        from ${tableName}
-
-    </select>
-
-
-    <delete id="delete" parameterType="java.lang.Integer" statementType="STATEMENT">
-        DELETE  FROM ${tableName} WHERE id=${id}
-
-    </delete>
-
-
-
-    <!--<select id="query" resultType="Knowledge">-->
-        <!--SELECT * FROM tb_knowledge-->
-    <!--</select>-->
-
 
 </mapper>

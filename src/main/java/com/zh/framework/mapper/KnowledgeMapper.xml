@@ -34,9 +34,13 @@
             </otherwise>
         </choose>
     </select>
+
+    <!--知识使用次数-->
     <update id="updateUseCount">
         UPDATE tb_knowledge k SET k.kUseCount=#{count} WHERE k.id=#{id}
     </update>
+
+    <!--知识录入-->
     <update id="updateKnowledge" parameterType="Knowledge">
         UPDATE tb_knowledge k SET
         <if test="k.kTitle!=null">
@@ -64,9 +68,12 @@
             k.createTime=#{createTime}
         </if>
     </update>
+
     <update id="updateKnowledgeStatus">
         UPDATE tb_knowledge k SET k.kApprStatus=#{status} WHERE k.id=#{id}
     </update>
+
+    <!--知识删除-->
     <delete id="deleteKnowledge">
         DELETE FROM tb_knowledge k WHERE k.id=#{id}
     </delete>
