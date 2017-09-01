@@ -61,6 +61,7 @@ public class KnowledgeIndexHandler extends Handler {
                     break;
                 case CLOSE:
                     close();
+                    break;
                 case BUILD_ALL:
                     buildAllIndex((List<Knowledge>) message.data);
                     break;

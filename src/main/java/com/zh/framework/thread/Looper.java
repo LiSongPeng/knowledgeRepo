@@ -28,6 +28,7 @@ public class Looper {
             handler = message.target;
             handler.handleMessage(message);
         }
+//        System.out.println("Looper thread quit!");
     }
 
     public final static void prepare() {
