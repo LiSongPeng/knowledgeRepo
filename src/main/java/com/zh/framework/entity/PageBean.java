@@ -3,40 +3,41 @@ package com.zh.framework.entity;
 import java.util.List;
 
 public class PageBean<T> {
-    private int  totalPages;
-    private int currentPage;
-    private int  pageSize;
-    private List<T> content;
 
-    public int getTotalPages() {
-        return totalPages;
+    private int  page;
+    private int total;
+    private int  records;
+    private List<T> rows;
+
+    public int getRecords() {
+        return records;
     }
 
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
+    public void setRecords(int records) {
+        this.records = records;
     }
 
-    public int getCurrentPage() {
-        return currentPage;
+    public int getTotal() {
+        return total;
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
-    public int getPageSize() {
-        return pageSize;
+    public int getPage() {
+        return page;
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public void setPage(int page) {
+        this.page = page;
     }
 
-    public List<T> getContent() {
-        return content;
+    public List<T> getRows() {
+        return rows;
     }
 
-    public void setContent(List<T> content) {
-        this.content = content;
+    public void setRows(List<T> rows) {
+        this.rows = rows;
     }
 }

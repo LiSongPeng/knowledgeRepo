@@ -15,6 +15,14 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
 
     @Override
+    public void insertKnowledge(Knowledge k) {
+        knowledgeMapper.insertKnowledge(k);
+    }
+
+
+
+
+    @Override
     public List<Knowledge> queryKnowledgesAndSort(String orderBy) {
         return null;
     }
@@ -29,10 +37,7 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
     }
 
-    @Override
-    public void updateKnowledge(Knowledge k) {
-        knowledgeMapper.updateKnowledge(k);
-    }
+
 
     @Override
     public void updateKnowledgeStatus(String id, String status) {

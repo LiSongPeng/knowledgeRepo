@@ -52,32 +52,50 @@
     <update id="updateUseCount">
         UPDATE tb_knowledge k SET k.kUseCount=#{count} WHERE k.id=#{id}
     </update>
+
+
+
+
+    <insert id="insertKnowledge1" parameterType="Knowledge">
+    INSERT INTO tb_knowledge(kTitle,kAnswer,kUseCount,kApprStatus,kApprUserId,kApprTime,kApprMemo,createUserId,createTime)
+    VALUES (#{kTitle},#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},#{kUseCount},#{kApprStatus},#{kApprUserId},#{kApprTime},#{kApprMemo},#{createUserId},#{createTime})
+</insert>
+
+    <insert id="insertKnowledge" parameterType="Knowledge">
+        INSERT INTO tb_knowledge(kTitle,kAnswer,kUseCount,kApprStatus,kApprUserId,kApprTime,kApprMemo,createUserId,createTime)
+        VALUES (#{k.kTitle},#{2,typeHandler=com.zh.framework.util.StringBlobHandler},#{3},#{4},#{5},#{6},#{7},#{8},#{9})
+    </insert>
+
+
+
+
+
     <update id="updateKnowledge" parameterType="Knowledge">
         UPDATE tb_knowledge k SET
-        <if test="k.kTitle!=null">
+
             k.kTitle=#{kTitle},
-        </if>
-        <if test="k.kAnswer!=null">
+
+
             k.kAnswer=#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},
-        </if>
-        <if test="k.kApprStatus!=null">
+
+
             k.kApprStatus=#{kApprStatus},
-        </if>
-        <if test="k.kApprUserId!=null">
+
+
             k.kApprUserId=#{kApprUserId},
-        </if>
-        <if test="k.kApprTime!=null">
+
+
             k.kApprTime=#{kApprTime},
-        </if>
-        <if test="k.kApprMemo!=null">
+
+
             k.kApprMemo=#{kApprMemo},
-        </if>
-        <if test="k.createUserId!=null">
+
+
             k.createUserId=#{createUserId},
-        </if>
-        <if test="k.createTime!=null">
+
+
             k.createTime=#{createTime}
-        </if>
+
     </update>
     <update id="updateKnowledgeStatus">
         UPDATE tb_knowledge k SET k.kApprStatus=#{status} WHERE k.id=#{id}

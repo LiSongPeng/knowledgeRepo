@@ -17,10 +17,10 @@ public interface BaseMapper<T> {
 
    // public List pagedQuery(String tableName, int pageNumber,int pageSize);
 
-
-    public void add(@Param("tableName") String tableName,@Param("entity") T entity);
-
-    public void update(@Param("tableName") String tableName,@Param("entity") T entity);
+//
+//    public void add(String tableName,T entity);
+//
+//    public void update(@Param("tableName") String tableName,@Param("entity") T entity);
 
 
 
