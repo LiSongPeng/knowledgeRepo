@@ -27,4 +27,6 @@ public interface KnowledgeMapper {
     public void addKnowledge(Knowledge k);
 
     public void updateLastUseTime(@Param("time") Date time, @Param("id") String id);
+
+    List<Knowledge> queryAllKnowledge();
 }
