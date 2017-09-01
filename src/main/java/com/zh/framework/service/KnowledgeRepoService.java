@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.KnowledgeIndex;
 import com.zh.framework.mapper.KnowledgeMapper;
+import com.zh.framework.thread.Looper;
+import com.zh.framework.thread.Message;
 import com.zh.framework.util.Constant;
 import com.zh.framework.util.TypeTester;
 import org.apache.lucene.analysis.Analyzer;
@@ -35,13 +37,29 @@ import java.util.Date;
 @Service
 public class KnowledgeRepoService {
     private KnowledgeMapper knowledgeMapper;
-    private static final String INDEX_ID = "id";
-    private static final String K_TITLE = "kTitle";
-    private static final String K_ANSWER = "kAnswer";
-    private static final String K_USE_COUNT = "kUseCount";
-    private static final String K_USE_COUNT_SORT = "kUseCountSort";
+    private KnowledgeIndexHandler handler;
+    private Directory directory;
+    private DirectoryReader reader;
+    private IndexSearcher indexSearcher;
+
+    private class LooperThread extends Thread {
+        @Override
+        public void run() {
+            Looper.prepare();
+            handler = new KnowledgeIndexHandler();
+            Looper.loop();
+        }
+    }
 
     public KnowledgeRepoService() {
+        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
+        try {
+            directory = FSDirectory.open(path);
+            reader = DirectoryReader.open(directory);
+            indexSearcher = new IndexSearcher(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Resource(name = "knowledgeMapper")
@@ -92,20 +110,16 @@ public class KnowledgeRepoService {
         if (TypeTester.isEmpty(keyWord) || TypeTester.isNegative(page) || TypeTester.isNegative(pageSize))
             return null;
         Analyzer analyzer = new SmartChineseAnalyzer();
-        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, analyzer);
+        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{Constant.K_TITLE, Constant.K_ANSWER}, analyzer);
         boolean reverse = order == 1 ? true : false;
         Sort sort = new Sort(new SortField(null, SortField.Type.SCORE, reverse));//默认按相关度排序
         if (orderBy == Constant.ORDER_BY_K_USE_COUNT)
-            sort = new Sort(new SortField(K_USE_COUNT_SORT, SortField.Type.INT, !reverse));
+            sort = new Sort(new SortField(Constant.K_USE_COUNT_SORT, SortField.Type.INT, !reverse));
         if (orderBy == Constant.ORDER_BY_K_USE_COUNT_RELEVANCE)
-            sort = new Sort(new SortField[]{new SortField(null, SortField.Type.SCORE, reverse), new SortField(K_USE_COUNT_SORT, SortField.Type.INT, !reverse)});
+            sort = new Sort(new SortField[]{new SortField(null, SortField.Type.SCORE, reverse), new SortField(Constant.K_USE_COUNT_SORT, SortField.Type.INT, !reverse)});
         Query query = parser.parse(keyWord);
-        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
-        Directory directory = FSDirectory.open(path);
-        DirectoryReader reader = DirectoryReader.open(directory);
         if (reader.numDocs() == 0)
             return null;
-        IndexSearcher indexSearcher = new IndexSearcher(reader);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, page * pageSize, sort, true, false).scoreDocs;
         SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<B style='color:red'>", "</B>");
         QueryScorer queryScorer = new QueryScorer(query);
@@ -123,22 +137,20 @@ public class KnowledgeRepoService {
             index = new KnowledgeIndex();
             index.setScore(scoreDocs[i].score);
             doc = indexSearcher.doc(scoreDocs[i].doc);
-            id = doc.get(INDEX_ID);
+            id = doc.get(Constant.INDEX_ID);
             index.setId(id);
-            kTitle = doc.get(K_TITLE);
-            kAnswer = doc.get(K_ANSWER);
-            kUseCount = doc.get(K_USE_COUNT);
+            kTitle = doc.get(Constant.K_TITLE);
+            kAnswer = doc.get(Constant.K_ANSWER);
+            kUseCount = doc.get(Constant.K_USE_COUNT);
             index.setkUseCount(kUseCount);
-            kTitleStream = analyzer.tokenStream(K_TITLE, kTitle);
+            kTitleStream = analyzer.tokenStream(Constant.K_TITLE, kTitle);
             tmp = highlighter.getBestFragment(kTitleStream, kTitle);
             index.setkTitle(tmp == null ? kTitle : tmp);
-            kAnswerStream = analyzer.tokenStream(K_ANSWER, kAnswer);
+            kAnswerStream = analyzer.tokenStream(Constant.K_ANSWER, kAnswer);
             tmp = highlighter.getBestFragment(kAnswerStream, kAnswer);
             index.setkAnswer(tmp == null ? kAnswer : tmp);
             indexList.add(index);
         }
-        reader.close();
-        directory.close();
         PageInfo<KnowledgeIndex> pageInfo = new PageInfo<>(indexList);
         pageInfo.setHasPreviousPage(page > 1);
         pageInfo.setHasNextPage(page * pageSize < docsSize);
@@ -166,15 +178,11 @@ public class KnowledgeRepoService {
         if (TypeTester.isEmpty(keyWord))
             return null;
         Analyzer analyzer = new SmartChineseAnalyzer();
-        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, analyzer);
+        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{Constant.K_TITLE, Constant.K_ANSWER}, analyzer);
         Query query = parser.parse(keyWord);
-        Sort sort = new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField(K_USE_COUNT_SORT, SortField.Type.INT, true)});
-        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
-        Directory directory = FSDirectory.open(path);
-        DirectoryReader reader = DirectoryReader.open(directory);
+        Sort sort = new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField(Constant.K_USE_COUNT_SORT, SortField.Type.INT, true)});
         if (reader.numDocs() == 0)
             return null;
-        IndexSearcher indexSearcher = new IndexSearcher(reader);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, 100, sort, true, false).scoreDocs;
         List<KnowledgeIndex> indexList = new ArrayList<>();
         KnowledgeIndex index;
@@ -184,18 +192,16 @@ public class KnowledgeRepoService {
             index = new KnowledgeIndex();
             index.setScore(scoreDocs[i].score);
             doc = indexSearcher.doc(scoreDocs[i].doc);
-            id = doc.get(INDEX_ID);
+            id = doc.get(Constant.INDEX_ID);
             index.setId(id);
-            kTitle = doc.get(K_TITLE);
-            kAnswer = doc.get(K_ANSWER);
-            kUseCount = doc.get(K_USE_COUNT);
+            kTitle = doc.get(Constant.K_TITLE);
+            kAnswer = doc.get(Constant.K_ANSWER);
+            kUseCount = doc.get(Constant.K_USE_COUNT);
             index.setkUseCount(kUseCount);
             index.setkTitle(kTitle);
             index.setkAnswer(kAnswer);
             indexList.add(index);
         }
-        reader.close();
-        directory.close();
         return indexList;
     }
 
@@ -209,13 +215,9 @@ public class KnowledgeRepoService {
         if (TypeTester.isEmpty(keyWord))
             return null;
 //        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, indexWriter.getAnalyzer());
-        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
-        Directory directory = FSDirectory.open(path);
-        DirectoryReader reader = DirectoryReader.open(directory);
         if (reader.numDocs() == 0)
             return null;
-        IndexSearcher indexSearcher = new IndexSearcher(reader);
-        QueryParser parser = new QueryParser(K_TITLE, new SmartChineseAnalyzer());
+        QueryParser parser = new QueryParser(Constant.K_TITLE, new SmartChineseAnalyzer());
         Sort sort = new Sort(SortField.FIELD_SCORE);
         Query query = parser.parse(keyWord);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, 6, sort).scoreDocs;
@@ -224,11 +226,9 @@ public class KnowledgeRepoService {
         String kTitle;
         for (int i = 0; i < scoreDocs.length; i++) {
             doc = indexSearcher.doc(scoreDocs[i].doc);
-            kTitle = doc.get(K_TITLE);
+            kTitle = doc.get(Constant.K_TITLE);
             hintList.add(kTitle);
         }
-        reader.close();
-        directory.close();
         return hintList;
     }
 
@@ -238,41 +238,20 @@ public class KnowledgeRepoService {
      * @param k 知识
      */
     public void buildAIndex(Knowledge k) throws IOException {
-        Document doc = new Document();
-        doc.add(new Field(INDEX_ID, k.getId(), TextField.TYPE_STORED));
-        doc.add(new Field(K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
-        doc.add(new Field(K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
-        doc.add(new StoredField(K_USE_COUNT, k.getkUseCount()));
-        doc.add(new NumericDocValuesField(K_USE_COUNT_SORT, k.getkUseCount()));
-        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
-        Directory directory = FSDirectory.open(path);
-        IndexWriterConfig config = new IndexWriterConfig(new SmartChineseAnalyzer());
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-        IndexWriter indexWriter = new IndexWriter(directory, config);
-        indexWriter.addDocument(doc);
-        indexWriter.close();
-        directory.close();
+        Message message = new Message();
+        message.what = KnowledgeIndexHandler.BUILD;
+        message.data = k;
+        handler.sendMessage(message);
     }
 
     public void buildAllIndex() throws IOException {
         List<Knowledge> list = knowledgeMapper.queryAllKnowledge();
-        Document doc;
-        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
-        Directory directory = FSDirectory.open(path);
-        IndexWriterConfig config = new IndexWriterConfig(new SmartChineseAnalyzer());
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-        IndexWriter indexWriter = new IndexWriter(directory, config);
-        for (int i = 0; i < list.size(); i++) {
-            doc = new Document();
-            doc.add(new Field(INDEX_ID, list.get(i).getId(), TextField.TYPE_STORED));
-            doc.add(new Field(K_TITLE, list.get(i).getkTitle(), TextField.TYPE_STORED));
-            doc.add(new Field(K_ANSWER, list.get(i).getkAnswer(), TextField.TYPE_STORED));
-            doc.add(new StoredField(K_USE_COUNT, list.get(i).getkUseCount()));
-            doc.add(new NumericDocValuesField(K_USE_COUNT_SORT, list.get(i).getkUseCount()));
-            indexWriter.addDocument(doc);
-        }
-        indexWriter.close();
-        directory.close();
+        if (list == null || list.size() == 0)
+            return;
+        Message message = new Message();
+        message.what = KnowledgeIndexHandler.BUILD_ALL;
+        message.data = list;
+        handler.sendMessage(message);
     }
 
     /**
@@ -281,20 +260,12 @@ public class KnowledgeRepoService {
      * @param k 知识k
      */
     public void updateIndex(Knowledge k) throws Exception {
-        Document newDoc = new Document();
-        newDoc.add(new Field(INDEX_ID, k.getId(), TextField.TYPE_STORED));
-        newDoc.add(new Field(K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
-        newDoc.add(new Field(K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
-        newDoc.add(new StoredField(K_USE_COUNT, k.getkUseCount()));
-        newDoc.add(new NumericDocValuesField(K_USE_COUNT_SORT, k.getkUseCount()));
-        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
-        Directory directory = FSDirectory.open(path);
-        IndexWriterConfig config = new IndexWriterConfig(new SmartChineseAnalyzer());
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-        IndexWriter indexWriter = new IndexWriter(directory, config);
-        indexWriter.updateDocument(new Term(INDEX_ID, k.getId()), newDoc);
-        indexWriter.close();
-        directory.close();
+        if (k == null)
+            return;
+        Message message = new Message();
+        message.what = KnowledgeIndexHandler.UPDATE;
+        message.data = k;
+        handler.sendMessage(message);
     }
 
     /**
@@ -303,24 +274,13 @@ public class KnowledgeRepoService {
      * @param id 索引知识id
      * @Return 删除与否
      */
-    public boolean removeIndex(String id) throws Exception {
+    public void removeIndex(String id) throws Exception {
         if (TypeTester.isEmpty(id))
-            return false;
-        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
-        Directory directory = FSDirectory.open(path);
-        IndexWriterConfig config = new IndexWriterConfig(new SmartChineseAnalyzer());
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-        IndexWriter indexWriter = new IndexWriter(directory, config);
-        QueryParser queryParser = new QueryParser(INDEX_ID, indexWriter.getAnalyzer());
-        Query query = queryParser.parse(id);
-/*        TopDocs docs = indexSearcher.search(query, 1);
-        if (docs.totalHits == 0)
             return;
-        Document hitDoc = indexSearcher.doc(docs.scoreDocs[0].doc);*/
-        long result = indexWriter.deleteDocuments(query);
-        indexWriter.close();
-        directory.close();
-        return result > 0;
+        Message message = new Message();
+        message.what = KnowledgeIndexHandler.REMOVE;
+        message.data = id;
+        handler.sendMessage(message);
     }
 
     /**
@@ -365,4 +325,15 @@ public class KnowledgeRepoService {
         return false;
     }
 
+    public void close() {
+        Message message = new Message();
+        message.what = KnowledgeIndexHandler.CLOSE;
+        handler.sendMessage(message);
+        try {
+            directory.close();
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
