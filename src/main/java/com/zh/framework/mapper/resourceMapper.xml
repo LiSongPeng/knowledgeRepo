@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.framework.mapper.BaseMapper">
+
+    <resultMap id="resourceMap" type="Resource">
+        <id property="id" column="id" javaType="String" jdbcType="varchar"/>
+        <result property="sParentId" column="sParentId"/>
+        <result property="sName" column="sName"/>
+        <result property="sType" column="sType"/>
+        <result property="sUrl" column="sUrl"/>
+        <result property="sIcon" column="sIcon"/>
+        <result property="sIndex" column="sIndex"/>
+        <result property="deleteStatus" column="deleteStatus"/>
+        <result property="createTime" column="createTime" javaType="Date" jdbcType="datetime"/>
+        <association property="createUserId" column="createUserId" javaType="com.zh.framework.entity.User">
+            <id property="id" column="id" javaType="String" jdbcType="varchar"/>
+            <result property="uName" column="uName"/>
+            <result property="uDescription" column="uDescription"/>
+        </association>
+    </resultMap>
+    
+    <insert id="add" parameterType="Resource">
+        INSERT INTO tb_Resource(id,sParentId,sName,sType,sUrl,sIcon,sIndex,createUserId,createTime)
+        VALUES (#{id},#{sParentId},#{sName},#{sType},#{sUrl},#{sIcon},#{sIndex},#{createUserId},#{createTime})
+    </insert>
+
+    <update id="update" parameterType="Resource">
+        UPDATE tb_resource SET
+          <set>
+              <if test="sName != null and sName !=''">
+                  sName=#{sName}
+              </if>
+              <if test="sType != null" >
+                    sType=#{sType}
+              </if>
+              <if test="sUrl != null">
+                  sUrl=#{sUrl}
+              </if>
+              <if test="sIcon != null">
+                  sIcon=#{sIcon}
+              </if>
+              <if test="sIndex != null">
+                  sIndex=#{sIndex}
+              </if>
+              <if test="deleteStatus !=null">
+                  deleteStatus=#{deleteStatus}
+              </if>
+          </set>
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM tb_resource WHERE id=#{id}
+    </delete>
+
+    <select id="query" resultMap="resourceMap" parameterType="java.util.Map">
+        SELECT r.id,r.sParentId,r.sName,r.sType,r.sUrl,r.sIcon,r.sIndex,r.deleteStatus,r.createTime,
+        u.id,u.uName,u.uDescription
+        FROM tb_resource r LEFT OUTER JOIN tb_user u ON r.createUserId = u.id
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+            <if test="sParentId != null and sParentId != ''">
+                sParentId = #{sParentId}
+            </if>
+            <if test="sName != null and sName !=''">
+                sName LIKE #{sName}
+            </if>
+            <if test="sUrl != null and sUrl !=''">
+                sUrl LIKE #{sUrl}
+            </if>
+        </where>
+    </select>
+
+    <select id="count" resultType="java.lang.long" parameterType="java.util.Map">
+        SELECT count(*) FROM tb_resource
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+            <if test="sParentId != null and sParentId != ''">
+                sParentId = #{sParentId}
+            </if>
+            <if test="sName != null and sName !=''">
+                sName LIKE #{sName}
+            </if>
+            <if test="sUrl != null and sUrl !=''">
+                sUrl LIKE #{sUrl}
+            </if>
+        </where>
+    </select>
+</mapper>
