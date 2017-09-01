@@ -28,6 +28,8 @@ public interface KnowledgeMapper {
 
     public void updateLastUseTime(@Param("time") Date time, @Param("id") String id);
 
+    List<Knowledge> queryAllKnowledge();
+
     public void insertKnowledge(@Param("k")Knowledge k);
 
 }
