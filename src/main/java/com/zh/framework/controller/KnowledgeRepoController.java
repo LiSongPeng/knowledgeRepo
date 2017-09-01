@@ -7,15 +7,11 @@ import com.zh.framework.entity.Response;
 import com.zh.framework.service.KnowledgeRepoService;
 import com.zh.framework.util.Constant;
 import com.zh.framework.util.TypeTester;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -111,26 +107,19 @@ public class KnowledgeRepoController {
 
     @GetMapping("/searchIndex.form")
     @ResponseBody
-    public Response<PageInfo> searchIndex(@RequestParam("keyWord") String keyWord, @RequestParam("page") int page, @RequestParam("orderBy") int orderBy,@RequestParam("order") int order/*, HttpServletResponse servletResponse*/) {
+    public Response<PageInfo> searchIndex(@RequestParam("keyWord") String keyWord, @RequestParam("page") int page, @RequestParam("orderBy") int orderBy, @RequestParam("order") int order) {
         Response<PageInfo> response = new Response<>();
         response.setFlag(Response.SUCCESS);
         response.setMessage("SUCCESS");
         PageInfo<KnowledgeIndex> pageInfo;
         try {
-            pageInfo = knowledgeRepoService.searchIndex(keyWord, page, Constant.PAGE_SIZE, orderBy,order);
+            pageInfo = knowledgeRepoService.searchIndex(keyWord, page, Constant.PAGE_SIZE, orderBy, order);
         } catch (Exception e) {
             e.printStackTrace();
             response.setFlag(Response.FAIL);
             response.setMessage("FAIL");
             return response;
         }
-        for (KnowledgeIndex index : pageInfo.getList()) {
-            System.out.println(index.getkTitle());
-            System.out.println(index.getkAnswer());
-        }
-/*        servletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        servletResponse.setHeader("Access-Control-Allow-Methods", "POST,GET,DELETE,PUT");
-        servletResponse.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");*/
         response.setData(pageInfo);
         return response;
     }
