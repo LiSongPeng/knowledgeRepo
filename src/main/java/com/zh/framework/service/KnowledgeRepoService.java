@@ -19,10 +19,12 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.search.highlight.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,14 +37,15 @@ import java.util.Date;
  * created by lihuibo on 17-8-28 上午9:58
  */
 @Service
+@Scope("singleton")
 public class KnowledgeRepoService {
     private KnowledgeMapper knowledgeMapper;
     private KnowledgeIndexHandler handler;
-    private Directory directory;
-    private DirectoryReader reader;
-    private IndexSearcher indexSearcher;
+    Directory directory;
+    DirectoryReader reader;
 
-    private class LooperThread extends Thread {
+    private class LooperThread extends Thread {//Looper线程,接收KnowledgeService请求,并作出响应
+
         @Override
         public void run() {
             Looper.prepare();
@@ -56,10 +59,10 @@ public class KnowledgeRepoService {
         try {
             directory = FSDirectory.open(path);
             reader = DirectoryReader.open(directory);
-            indexSearcher = new IndexSearcher(reader);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        new LooperThread().start();
     }
 
     @Resource(name = "knowledgeMapper")
@@ -95,6 +98,7 @@ public class KnowledgeRepoService {
         Knowledge k = knowledgeMapper.queryKnowledgeById(id);
         knowledgeMapper.updateUseCount(k.getkUseCount() + 1, id);
         knowledgeMapper.updateLastUseTime(new Date(), id);
+        k.setkUseCount(k.getkUseCount() + 1);
         updateIndex(k);
         return k;
     }
@@ -118,8 +122,12 @@ public class KnowledgeRepoService {
         if (orderBy == Constant.ORDER_BY_K_USE_COUNT_RELEVANCE)
             sort = new Sort(new SortField[]{new SortField(null, SortField.Type.SCORE, reverse), new SortField(Constant.K_USE_COUNT_SORT, SortField.Type.INT, !reverse)});
         Query query = parser.parse(keyWord);
+        DirectoryReader newReader = DirectoryReader.openIfChanged(reader);
+        if (newReader != null)
+            reader = newReader;
         if (reader.numDocs() == 0)
             return null;
+        IndexSearcher indexSearcher = new IndexSearcher(reader);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, page * pageSize, sort, true, false).scoreDocs;
         SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<B style='color:red'>", "</B>");
         QueryScorer queryScorer = new QueryScorer(query);
@@ -181,8 +189,12 @@ public class KnowledgeRepoService {
         MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{Constant.K_TITLE, Constant.K_ANSWER}, analyzer);
         Query query = parser.parse(keyWord);
         Sort sort = new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField(Constant.K_USE_COUNT_SORT, SortField.Type.INT, true)});
+        DirectoryReader newReader = DirectoryReader.openIfChanged(reader);
+        if (newReader != null)
+            reader = newReader;
         if (reader.numDocs() == 0)
             return null;
+        IndexSearcher indexSearcher = new IndexSearcher(reader);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, 100, sort, true, false).scoreDocs;
         List<KnowledgeIndex> indexList = new ArrayList<>();
         KnowledgeIndex index;
@@ -220,6 +232,10 @@ public class KnowledgeRepoService {
         QueryParser parser = new QueryParser(Constant.K_TITLE, new SmartChineseAnalyzer());
         Sort sort = new Sort(SortField.FIELD_SCORE);
         Query query = parser.parse(keyWord);
+        DirectoryReader newReader = DirectoryReader.openIfChanged(reader);
+        if (newReader != null)
+            reader = newReader;
+        IndexSearcher indexSearcher = new IndexSearcher(reader);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, 6, sort).scoreDocs;
         List<String> hintList = new ArrayList<>();
         Document doc;
@@ -325,6 +341,7 @@ public class KnowledgeRepoService {
         return false;
     }
 
+    @PreDestroy
     public void close() {
         Message message = new Message();
         message.what = KnowledgeIndexHandler.CLOSE;
