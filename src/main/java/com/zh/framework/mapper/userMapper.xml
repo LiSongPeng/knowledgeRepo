@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.framework.mapper.BaseMapper">
+    <resultMap id="userMap" type="User">
+        <id property="id" column="id" javaType="String" jdbcType="varchar"/>
+        <result property="uName" column="uName"/>
+        <result property="uPassword" column="uPassword"/>
+        <result property="deleteStatus" column="deleteStatus"/>
+        <result property="uDescription" column="uDescription"/>
+        <result property="createUserId" column="createUserId"/>
+        <result property="createTime" column="createTime" javaType="Date" jdbcType="datetime"/>
+        <result property="uLastOnLine" column="uLastOnLine" javaType="Date" jdbcType="datetime"/>
+    </resultMap>
+
+    <insert id="add" parameterType="User">
+        INSERT INTO tb_user(id,uName,uPassword,uDescription,createUserId,createTime)
+        values (#{id},#{uName},#{uPassword},#{uDescripion},#{createUserId},#{createTime})
+    </insert>
+
+    <update id="update" parameterType="User">
+        UPDATE tb_user set 
+          <set>
+              <if test="uName !=null and uName!= ''">
+                  uName=#{uName},
+              </if>
+              <if test="uPassword !=null and uPassword!=''">
+                  uPassword=#{uPassword},
+              </if>
+              <if test="uDescription !=null and uDescription!=''">
+                  uDescription=#{uDescription},
+              </if>
+              <if test="uLastOnLine !=null and uLastOnLine!=''">
+                  uLastOnLine=#{uLastOnLine}
+              </if>
+          </set>
+        where id = #{id};
+    </update>
+    
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM tb_user WHERE id=#{id}
+    </delete>
+    
+    <select id="count" resultType="java.lang.long" parameterType="java.util.Map">
+        SELECT count(*) FROM tb_user
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+            <if test="uName != null and uName !=''">
+                and uName LIKE #{uName}
+            </if>
+            <if test="createTime != null and createTime !=''">
+                AND convert(VARCHAR ,createTime,120) LIKE #{createTime}
+            </if>
+            <if test="uLastOnLine != null and uLastOnLine !=''">
+                and convert(VARCHAR ,uLastOnLine,120) LIKE #{uLastOnLine}
+            </if>
+        </where>
+    </select>
+    <select id="query" resultMap="userMap" parameterType="java.util.Map">
+        SELECT id,uName,uPassword,uDescription,createUserId,createTime,uLastOnLine FROM tb_user
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+            <if test="uName != null and uName !=''">
+                and uName LIKE #{uName}
+            </if>
+            <if test="createTime != null and createTime !=''">
+                AND convert(VARCHAR ,createTime,120) LIKE #{createTime}
+            </if>
+            <if test="uLastOnLine != null and uLastOnLine !=''">
+                and convert(VARCHAR ,uLastOnLine,120) LIKE #{uLastOnLine}
+            </if>
+        </where>
+    </select>
+
+</mapper>
