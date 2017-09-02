@@ -30,6 +30,7 @@ public class KnowledgeIndexHandler extends Handler {
     public static final int UPDATE = 3;
     public static final int CLOSE = 4;
     public static final int BUILD_ALL = 5;
+    public static volatile boolean isIndexed = false;
     private Directory directory;
     private IndexWriter indexWriter;
 
@@ -118,6 +119,7 @@ public class KnowledgeIndexHandler extends Handler {
             indexWriter.addDocument(doc);
         }
         indexWriter.commit();
+        isIndexed = true;
     }
 
     public void close() {

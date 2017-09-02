@@ -55,19 +55,23 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
     }
 
     public KnowledgeRepoServiceImpl() {
-        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
-        try {
-            directory = FSDirectory.open(path);
-            reader = DirectoryReader.open(directory);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        new LooperThread().start();
+        LooperThread thread = new LooperThread();
+        thread.start();
+        while (!thread.isAlive()) ;//确保Looper线程及时激活
     }
 
     @Resource(name = "knowledgeMapper")
     public void setKnowledgeMapper(KnowledgeMapper knowledgeMapper) {
         this.knowledgeMapper = knowledgeMapper;
+        Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
+        try {
+            buildAllIndex();
+            while (!KnowledgeIndexHandler.isIndexed) ;//确保数据库索引已建立
+            directory = FSDirectory.open(path);
+            reader = DirectoryReader.open(directory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
