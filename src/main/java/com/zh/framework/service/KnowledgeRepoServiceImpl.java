@@ -1,5 +1,6 @@
 package com.zh.framework.service;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.KnowledgeIndex;
@@ -42,7 +43,7 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
     private KnowledgeMapper knowledgeMapper;
     private KnowledgeIndexHandler handler;
     Directory directory;
-    DirectoryReader reader;
+    volatile DirectoryReader reader;
 
     private class LooperThread extends Thread {//Looper线程,接收KnowledgeService请求,并作出响应
 
@@ -77,8 +78,8 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public PageInfo<Knowledge> listDisplay(String orderBy, int page, int pageSize, int order) {
-/*        PageHelper pageHelper = new PageHelper();
-        pageHelper.startPage(page, pageSize);*/
+        PageHelper pageHelper = new PageHelper();
+        pageHelper.startPage(page, pageSize);
         List<Knowledge> list = knowledgeMapper.queryKnowledgesAndSort(orderBy, order);
         PageInfo<Knowledge> pageInfo = new PageInfo<>(list);
         return pageInfo;
@@ -263,30 +264,6 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
         message.what = KnowledgeIndexHandler.REMOVE;
         message.data = id;
         handler.sendMessage(message);
-    }
-
-    @Override
-    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<Knowledge> knowledgeList() {
-        return null;
-    }
-
-    @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public boolean editKnowledge(Knowledge k) {
-        return false;
-    }
-
-    @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public boolean deleteKnowledge(String id) {
-        return false;
-    }
-
-    @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public boolean approveKnowledge(String id) {
-        return false;
     }
 
     @PreDestroy

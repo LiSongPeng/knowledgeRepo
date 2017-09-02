@@ -91,33 +91,4 @@ public interface KnowledgeRepoService {
      */
     public void removeIndex(String id) throws Exception;
 
-    /**
-     * 知识列表
-     *
-     * @return
-     */
-    public List<Knowledge> knowledgeList();
-
-    /**
-     * 修改Knowledge k
-     *
-     * @param k Knowledge
-     */
-    public boolean editKnowledge(Knowledge k);
-
-    /**
-     * 删除知识,将知识状态改为删除待审核
-     *
-     * @param id 知识id
-     * @return 是否删除
-     */
-    public boolean deleteKnowledge(String id);
-
-    /**
-     * 知识审批
-     *
-     * @param id 知识id
-     * @return 审批是否成功
-     */
-    public boolean approveKnowledge(String id);
 }
