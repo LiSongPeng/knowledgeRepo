@@ -66,12 +66,21 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
         this.knowledgeMapper = knowledgeMapper;
         Path path = Paths.get(".", Constant.INDEX_DIRECTORY);
         try {
-            buildAllIndex();
-            while (!KnowledgeIndexHandler.isIndexed) ;//确保数据库索引已建立
             directory = FSDirectory.open(path);
-            reader = DirectoryReader.open(directory);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        try {
+            reader = DirectoryReader.open(directory);
+        } catch (IOException e) {
+            try {
+                buildAllIndex();//数据库索引未建立,尝试新建
+                while (!KnowledgeIndexHandler.isIndexed) ;//确保数据库索引已建立
+                reader = DirectoryReader.open(directory);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                System.out.println("索引创建失败!");
+            }
         }
     }
 
