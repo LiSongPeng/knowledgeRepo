@@ -11,7 +11,7 @@
     <context:component-scan base-package="com.zh.framework.service,com.zh.framework.mapper"/>
     <!--mybatis configuration-->
     <context:property-placeholder location="classpath:config.properties"/>
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="url" value="${url}"/>
         <property name="maxWait" value="${maxWait}"/>
         <!--<property name="username" value="root"/>-->
