@@ -1,6 +1,7 @@
 package com.zh.framework.entity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Letg4 on 2017/8/30.
@@ -14,8 +15,10 @@ public class Resource {
     private String sIcon;
     private int sIndex;
     private int deleteStatus;
-    private User createUserId;
+    private User createUser;
     private Date createTime;
+    private List<Role> Roles;
+
 
     public Resource(){}
 
@@ -83,12 +86,12 @@ public class Resource {
         this.deleteStatus = deleteStatus;
     }
 
-    public User getCreateUserId() {
-        return createUserId;
+    public User getCreateUser() {
+        return createUser;
     }
 
-    public void setCreateUserId(User createUserId) {
-        this.createUserId = createUserId;
+    public void setCreateUser(User createUser) {
+        this.createUser = createUser;
     }
 
     public Date getCreateTime() {
@@ -97,5 +100,13 @@ public class Resource {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public List<Role> getRoles() {
+        return Roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        Roles = roles;
     }
 }

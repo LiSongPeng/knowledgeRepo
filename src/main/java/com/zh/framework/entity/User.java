@@ -1,6 +1,7 @@
 package com.zh.framework.entity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Letg4 on 2017/8/30.
@@ -14,6 +15,7 @@ public class User {
     private String createUserId;
     private Date createTime;
     private Date uLastOnline;
+    private List<Role> roles;
 
     public User() {
     }
@@ -80,5 +82,13 @@ public class User {
 
     public void setuLastOnline(Date uLastOnline) {
         this.uLastOnline = uLastOnline;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
