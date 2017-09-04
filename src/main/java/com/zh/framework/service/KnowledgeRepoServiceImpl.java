@@ -238,8 +238,6 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
     @Override
     public void buildAllIndex() throws IOException {
         List<Knowledge> list = knowledgeMapper.queryAllKnowledge();
-        if (list == null || list.size() == 0)
-            return;
         Message message = new Message();
         message.what = KnowledgeIndexHandler.BUILD_ALL;
         message.data = list;
