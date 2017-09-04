@@ -64,7 +64,7 @@ public class KnowledgeController extends BaseController<Knowledge> {
 
     }
 
-   // private HttpServletResponse response;
+
     @GetMapping("/page.form")
     @ResponseBody
 
@@ -77,8 +77,7 @@ public class KnowledgeController extends BaseController<Knowledge> {
         System.out.println(aa);
 
         System.out.println(aa);
-        //response.addHeader("Access-Control-Allow-Origin", "*");
-        //ServletActionContext.getResponse().setHeader("Access-Control-Allow-Origin", "*");
+
         return aa;
 
     }

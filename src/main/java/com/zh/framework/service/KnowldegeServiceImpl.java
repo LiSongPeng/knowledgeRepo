@@ -16,7 +16,7 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
     @Override
     public void insertKnowledge(Knowledge k) {
-        knowledgeMapper.insertKnowledge(k);
+//        knowledgeMapper.insertKnowledge(k);
     }
 
 

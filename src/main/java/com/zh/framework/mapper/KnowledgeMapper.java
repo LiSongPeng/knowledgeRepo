@@ -18,7 +18,7 @@ public interface KnowledgeMapper {
 
     public void updateUseCount(@Param("count") int count, @Param("id") String id);
 
-    public void updateKnowledge(@Param("k")Knowledge k);
+    public void updateKnowledge(Knowledge k);
 
     public void updateKnowledgeStatus(@Param("id") String id, @Param("status") String status);
 
@@ -28,8 +28,5 @@ public interface KnowledgeMapper {
 
     public void updateLastUseTime(@Param("time") Date time, @Param("id") String id);
 
-    List<Knowledge> queryAllKnowledge();
-
-    public void insertKnowledge(@Param("k")Knowledge k);
-
+    public List<Knowledge> queryAllKnowledge();
 }

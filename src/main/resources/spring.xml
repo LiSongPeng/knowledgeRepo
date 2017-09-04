@@ -11,7 +11,7 @@
     <context:component-scan base-package="com.zh.framework.service,com.zh.framework.mapper"/>
     <!--mybatis configuration-->
     <context:property-placeholder location="classpath:config.properties"/>
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="url" value="${url}"/>
         <property name="maxWait" value="${maxWait}"/>
         <property name="username" value="root"/>
@@ -29,7 +29,7 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:mybatis.xml"/>
-        <property name="mapperLocations" value="classpath:com/zh/framework/mapper/*.xml"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
     </bean>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
