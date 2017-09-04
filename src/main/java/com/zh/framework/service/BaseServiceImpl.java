@@ -21,7 +21,10 @@ public class BaseServiceImpl<T> implements BaseService<T>{
     public PageBean<T> query(PageBean<T> pageBean) {
         PageHelper.startPage(pageBean.getCurrentPage(),pageBean.getPageSize());
         Map<String,Object> param=new HashMap<String, Object>() ;
-        T entity=pageBean.getContent().get(0);
+        T entity = null;
+        if(pageBean.getContent()!=null&&pageBean.getContent().size()>0){
+            entity = pageBean.getContent().get(0);
+        }
         String tbname="tb_"+GenericsUtils.getSuperClassGenricType(pageBean.getClass()).getSimpleName();
         param.put("entity",entity);
         param.put("tableName",tbname);
