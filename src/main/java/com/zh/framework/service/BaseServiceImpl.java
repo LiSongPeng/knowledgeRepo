@@ -25,7 +25,7 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         if(pageBean.getContent()!=null&&pageBean.getContent().size()>0){
             entity = pageBean.getContent().get(0);
         }
-        String tbname="tb_"+GenericsUtils.getSuperClassGenricType(pageBean.getClass()).getSimpleName();
+        String tbname="tb_"+GenericsUtils.getSuperClassGenricType(this.getClass()).getSimpleName();
         param.put("entity",entity);
         param.put("tableName",tbname);
         param.put("sidx",pageBean.getSidx());
@@ -34,6 +34,7 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         PageBean<T> pb=new PageBean<T>();
         pb.setTotalPages(pageInfo.getPages());
         pb.setPageSize(pageInfo.getPageSize());
+        pb.setTotalCounts(pageInfo.getTotal());
         pb.setCurrentPage(pageInfo.getPageNum());
         pb.setContent(pageInfo.getList());
         return pb;

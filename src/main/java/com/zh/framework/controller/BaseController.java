@@ -6,32 +6,61 @@ import com.zh.framework.entity.PageBean;
 import com.zh.framework.mapper.BaseMapper;
 import com.zh.framework.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public  class BaseController<T> {
 
     @Autowired
-    private BaseService<T> service;
+    //BaseMapper<T> service;
+
+    private BaseService<T> baseService;
     /**
-     * 分页查询
+     * 普通查询
      *
-     * @param pageBean 查询的信息。包括分页等。
+     * @param
      *
      */
-    public PageBean<T> query(PageBean<T> pageBean){
 
-        return service.query(pageBean);
+    @RequestMapping("/query")
+    @ResponseBody
+    public Map<String,Object> query(
+            @RequestParam("gridModel") List<T> gridModel,
+            @RequestParam("currentPages") int currentPages,
+            @RequestParam("pageSize") int pageSize,
+            @RequestParam("sord") String sord,
+            @RequestParam("sidx") String sidx
+    ){
+        PageBean<T> pageBean=new PageBean<T>();
+        pageBean.setCurrentPage(currentPages);
+        pageBean.setPageSize(pageSize);
+        pageBean.setSidx(sidx);
+        pageBean.setSord(sord);
+        Map<String,Object> jsmap=new HashMap<>();
+        PageBean<T> repb=baseService.query(pageBean);
+        jsmap.put("totalPages",repb.getTotalPages());
+        jsmap.put("currentPages",repb.getCurrentPage());
+        jsmap.put("pageSize",repb.getPageSize());
+        jsmap.put("totalCounts",repb.getTotalCounts());
+        jsmap.put("content",repb.getContent());
+        return jsmap;
     }
 
-
-    public void update(T entity){
-        service.update(entity);
+    @RequestMapping("/update")
+    public void update(@RequestBody T entity){
+        baseService.update(entity);
     }
 
-    public void add(T entity){
-        service.add(entity);
+    @RequestMapping("/add")
+    public void add(@RequestBody T entity){
+        baseService.add(entity);
     }
     /**
      * 根据主键删除
@@ -40,10 +69,9 @@ public  class BaseController<T> {
      *
      *
      */
-
-    public void delete(T entity){
-        service.delete(entity);
-
+    @RequestMapping("/delete")
+    public void delete(@RequestBody T entity){
+        baseService.delete(entity);
     }
 
 

@@ -21,24 +21,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class KnowledgeController extends BaseController<Knowledge> {
+public class KnowledgeController{
 
     @Autowired
     KnowledgeService knowledgeService;
 
 
-    @RequestMapping("/select.form")
+    @RequestMapping("/selectPage.form")
     @ResponseBody
     public PageBean selectPage(){
-        PageBean<Knowledge> pageBean=new PageBean<Knowledge>();
-       // Knowledge aa=new Knowledge();
-         List<Knowledge> list =new ArrayList<Knowledge>();
-        //list.add(aa);
+        PageBean pageBean=new PageBean();
         pageBean.setCurrentPage(1);
         pageBean.setPageSize(8);
-        pageBean.setContent(list);
-        knowledgeService.query(pageBean);
+        pageBean=knowledgeService.queryAllKnowledge(pageBean);
         return pageBean;
+    }
+
+    @RequestMapping("/addKnowledge.form")
+    @ResponseBody
+    public void add(Knowledge k){
+        knowledgeService.addKnowledge(k);
+
     }
 
 
