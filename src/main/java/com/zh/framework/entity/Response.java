@@ -1,6 +1,5 @@
 package com.zh.framework.entity;
 
-import java.util.List;
 
 /**
  * created by lihuibo on 17-8-28 上午10:05
