@@ -4,40 +4,40 @@ import java.util.List;
 
 public class PageBean<T> {
 
-    private int  page;
-    private int total;
-    private int  records;
-    private List<T> rows;
+    private int  pageSize;
+    private int totalPages;
+    private int  currentPage;
+    private List<T> content;
 
-    public int getRecords() {
-        return records;
+    public int getPageSize() {
+        return pageSize;
     }
 
-    public void setRecords(int records) {
-        this.records = records;
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 
-    public int getTotal() {
-        return total;
+    public int getTotalPages() {
+        return totalPages;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
     }
 
-    public int getPage() {
-        return page;
+    public int getCurrentPage() {
+        return currentPage;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
-    public List<T> getRows() {
-        return rows;
+    public List<T> getContent() {
+        return content;
     }
 
-    public void setRows(List<T> rows) {
-        this.rows = rows;
+    public void setContent(List<T> content) {
+        this.content = content;
     }
 }

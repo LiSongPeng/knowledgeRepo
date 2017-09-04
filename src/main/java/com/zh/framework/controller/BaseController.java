@@ -7,53 +7,44 @@ import com.zh.framework.mapper.BaseMapper;
 import com.zh.framework.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 public  class BaseController<T> {
 
     @Autowired
-    //BaseMapper<T> service;
-
-    BaseService<T> service;
-    /**
-     * 普通查询
-     *
-     * @param tableName 执行查询的表的名称
-     *
-     */
-    public List<T> query(String tableName){
-        List<T> list=service.query(tableName);
-        return list;
-    };
-
+    private BaseService<T> service;
     /**
      * 分页查询
      *
-     * @param pageNumber 请求的页码
+     * @param pageBean 查询的信息。包括分页等。
      *
      */
-    public PageBean<T> pagedQuery(int pageNumber){
+    public PageBean<T> query(PageBean<T> pageBean){
 
-       // PageBean aa=service.pagedQuery(tableName,pageNumber,pageSize);
-        PageBean aa=null;
-
-        return aa;
-
-    };
+        return service.query(pageBean);
+    }
 
 
+    public void update(T entity){
+        service.update(entity);
+    }
+
+    public void add(T entity){
+        service.add(entity);
+    }
     /**
      * 根据主键删除
      *
-     * @param tableName 执行删除的表的名称
-     * @param id 删除信息的主键
+     * @param entity 要删除的实体条件信息
+     *
      *
      */
 
-    public void delete(String tableName,String id){
-        service.delete(tableName,id);
+    public void delete(T entity){
+        service.delete(entity);
 
-    };
+    }
 
 
 
