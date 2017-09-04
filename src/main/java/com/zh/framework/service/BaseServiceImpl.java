@@ -4,18 +4,30 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.mapper.BaseMapper;
+import com.zh.framework.util.GenericsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("baseService")
 public class BaseServiceImpl<T> implements BaseService<T>{
     @Autowired
     private BaseMapper<T> baseMapper;
 
+
     @Override
     public PageBean<T> query(PageBean<T> pageBean) {
         PageHelper.startPage(pageBean.getCurrentPage(),pageBean.getPageSize());
-        PageInfo<T> pageInfo=new PageInfo<T>(baseMapper.query(pageBean.getContent().get(0)));
+        Map<String,Object> param=new HashMap<String, Object>() ;
+        T entity=pageBean.getContent().get(0);
+        String tbname="tb_"+GenericsUtils.getSuperClassGenricType(pageBean.getClass()).getSimpleName();
+        param.put("entity",entity);
+        param.put("tableName",tbname);
+        param.put("sidx",pageBean.getSidx());
+        param.put("sord",pageBean.getSord());
+        PageInfo<T> pageInfo=new PageInfo<T>(baseMapper.query(param));
         PageBean<T> pb=new PageBean<T>();
         pb.setTotalPages(pageInfo.getPages());
         pb.setPageSize(pageInfo.getPageSize());

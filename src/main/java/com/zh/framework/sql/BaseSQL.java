@@ -4,25 +4,31 @@ import com.zh.framework.util.GenericsUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 public class BaseSQL {
 
-    public String query(final Object entity)
+    public String query(final Map<String,Object> param)
     {
-        Class eclass=entity.getClass();
-        final String tableName="tb_"+eclass.getSimpleName().toLowerCase();
-        Field[] f=null;
-        f=eclass.getDeclaredFields();
-        final Field[] finalF = f;
         return new SQL() {{
             try {
                 SELECT("*");
-                FROM(tableName);
-                for (Field field: finalF){
-                    if (field.get(entity)!=null){
-                        WHERE(field.getName()+"=#{"+field.getName()+"}");
+                FROM(""+param.get("tableName"));
+                Object entity=param.get("entity");
+                if (param.get("entity")!=null) {
+                    Class eclass = entity.getClass();
+                    String tableName = "tb_" + eclass.getSimpleName().toLowerCase();
+                    Field[] f = null;
+                    f = eclass.getDeclaredFields();
+                    Field[] finalF = f;
+                    for (Field field : finalF) {
+                        if (field.get(entity) != null) {
+                            WHERE(field.getName() + "=#{entity." + field.getName() + "}");
+                        }
                     }
                 }
+                if (param.get("sord")!=null)
+                ORDER_BY(""+param.get("sidx")+param.get("sord"));
             }catch (IllegalAccessException iae){
                 System.out.println("base无法正确获取属性");
             }
