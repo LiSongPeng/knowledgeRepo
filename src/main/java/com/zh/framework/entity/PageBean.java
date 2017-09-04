@@ -6,7 +6,7 @@ public class PageBean<T> {
     private int  totalPages;
     private int currentPage;
     private int  pageSize;
-    private int totalCounts;
+    private long totalCounts;
     private String sidx;
     private String sord;
 
@@ -36,11 +36,11 @@ public class PageBean<T> {
         this.pageSize = pageSize;
     }
 
-    public int getTotalCounts() {
+    public long getTotalCounts() {
         return totalCounts;
     }
 
-    public void setTotalCounts(int totalCounts) {
+    public void setTotalCounts(long totalCounts) {
         this.totalCounts = totalCounts;
     }
 

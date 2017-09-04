@@ -34,6 +34,7 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         PageBean<T> pb=new PageBean<T>();
         pb.setTotalPages(pageInfo.getPages());
         pb.setPageSize(pageInfo.getPageSize());
+        pb.setTotalCounts(pageInfo.getTotal());
         pb.setCurrentPage(pageInfo.getPageNum());
         pb.setContent(pageInfo.getList());
         return pb;
