@@ -6,54 +6,73 @@ import com.zh.framework.entity.PageBean;
 import com.zh.framework.mapper.BaseMapper;
 import com.zh.framework.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.swing.text.html.parser.Entity;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public  class BaseController<T> {
 
     @Autowired
     //BaseMapper<T> service;
 
-    BaseService<T> service;
+    private BaseService<T> baseService;
     /**
      * 普通查询
      *
-     * @param tableName 执行查询的表的名称
+     * @param
      *
      */
-    public List<T> query(String tableName){
-        List<T> list=service.query(tableName);
-        return list;
-    };
 
-    /**
-     * 分页查询
-     *
-     * @param pageNumber 请求的页码
-     *
-     */
-    public PageBean<T> pagedQuery(int pageNumber){
+    @RequestMapping("/query")
+    @ResponseBody
+    public Map<String,Object> query(
+            @RequestParam("gridModel") List<T> gridModel,
+            @RequestParam("currentPages") int currentPages,
+            @RequestParam("pageSize") int pageSize,
+            @RequestParam("sord") String sord,
+            @RequestParam("sidx") String sidx
+    ){
+        PageBean<T> pageBean=new PageBean<T>();
+        pageBean.setCurrentPage(currentPages);
+        pageBean.setPageSize(pageSize);
+        pageBean.setSidx(sidx);
+        pageBean.setSord(sord);
+        Map<String,Object> jsmap=new HashMap<>();
+        PageBean<T> repb=baseService.query(pageBean);
+        jsmap.put("totalPages",repb.getTotalPages());
+        jsmap.put("currentPages",repb.getCurrentPage());
+        jsmap.put("pageSize",repb.getPageSize());
+        jsmap.put("totalCounts",repb.getTotalCounts());
+        jsmap.put("content",repb.getContent());
+        return jsmap;
+    }
 
-       // PageBean aa=service.pagedQuery(tableName,pageNumber,pageSize);
-        PageBean aa=null;
+    @RequestMapping("/update")
+    public void update(@RequestBody T entity){
+        baseService.update(entity);
+    }
 
-        return aa;
-
-    };
-
-
+    @RequestMapping("/add")
+    public void add(@RequestBody T entity){
+        baseService.add(entity);
+    }
     /**
      * 根据主键删除
      *
-     * @param tableName 执行删除的表的名称
-     * @param id 删除信息的主键
+     * @param entity 要删除的实体条件信息
+     *
      *
      */
-
-    public void delete(String tableName,String id){
-        service.delete(tableName,id);
-
-    };
+    @RequestMapping("/delete")
+    public void delete(@RequestBody T entity){
+        baseService.delete(entity);
+    }
 
 
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.framework.mapper.RoleMapper">
+    <resultMap id="roleMap" type="Role">
+        <id property="id" column="id" />
+        <result property="rName" column="rName"/>
+        <result property="deleteStatus" column="deleteStatus"/>
+        <result property="rDescription" column="rDescription"/>
+        <result property="createTime" column="createTime"/>
+        <association property="createUser" >
+            <id property="id" column="crtuId"/>
+            <result property="uName" column="crtuName"/>
+            <result property="uDescription" column="crtuDescription"/>
+        </association>
+        <collection property="resources" ofType="Resource">
+            <id property="id" column="resId"/>
+            <result property="sParentId" column="resParentId"/>
+            <result property="sName" column="resName"/>
+            <result property="sIcon" column="resIcon"/>
+        </collection>
+    </resultMap>
+
+</mapper>

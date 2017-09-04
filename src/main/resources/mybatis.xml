@@ -8,6 +8,7 @@
         <typeAlias alias="Knowledge" type="com.zh.framework.entity.Knowledge"/>
         <typeAlias alias="User" type="com.zh.framework.entity.User"/>
         <typeAlias type="com.zh.framework.entity.Resource" alias="Resource"/>
+        <typeAlias type="com.zh.framework.entity.Role" alias="Role"/>
     </typeAliases>
     <typeHandlers>
         <typeHandler handler="com.zh.framework.util.StringBlobHandler"/>
