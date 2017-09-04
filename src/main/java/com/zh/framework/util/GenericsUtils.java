@@ -69,4 +69,17 @@ public class GenericsUtils {
             return wageStrArray;
         }
     }
+    /**
+     * 根据实体得到实体的所有属性
+     * @param f,o
+     * @return
+     * @throws Exception
+     */
+    public static Object[] field2Value(Field[] f, Object o) throws Exception {
+        Object[] value = new Object[f.length];
+        for (int i = 0; i < f.length; i++) {
+            value[i] = f[i].get(o);
+        }
+        return value;
+    }
 }

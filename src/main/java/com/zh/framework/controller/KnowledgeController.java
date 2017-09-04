@@ -31,9 +31,9 @@ public class KnowledgeController extends BaseController<Knowledge> {
     @ResponseBody
     public PageBean selectPage(){
         PageBean<Knowledge> pageBean=new PageBean<Knowledge>();
-        Knowledge aa=new Knowledge();
+       // Knowledge aa=new Knowledge();
          List<Knowledge> list =new ArrayList<Knowledge>();
-        list.add(aa);
+        //list.add(aa);
         pageBean.setCurrentPage(1);
         pageBean.setPageSize(8);
         pageBean.setContent(list);
