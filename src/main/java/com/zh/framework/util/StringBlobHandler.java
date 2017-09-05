@@ -16,8 +16,9 @@ import java.sql.*;
 public class StringBlobHandler extends BaseTypeHandler<String> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
-        InputStream inputStream = new ByteArrayInputStream(parameter.getBytes());
-        ps.setBlob(i, inputStream);
+        byte[] bytes = parameter.getBytes(Charset.forName("UTF-8"));
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        ps.setBlob(i, inputStream, bytes.length);
     }
 
     @Override
