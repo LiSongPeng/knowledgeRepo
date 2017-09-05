@@ -13,6 +13,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service("baseService")
 public class BaseServiceImpl<T> implements BaseService<T>{
@@ -42,18 +43,21 @@ public class BaseServiceImpl<T> implements BaseService<T>{
     }
 
     @Override
-    public void delete(T entity) {
-        baseMapper.delete(entity);
+    public int delete(String tableName,String id) {
+        return baseMapper.delete(tableName,id);
     }
 
     @Override
-    public void add(T entity) {
-        baseMapper.add(entity);
+    public int add(String tableName,Map<String,Object> attrs) {
+        if (attrs.get("id")==null||"".equals(attrs.get("id"))){
+            attrs.put("id", UUID.randomUUID());
+        }
+       return baseMapper.add(tableName,attrs);
     }
 
     @Override
-    public void update(T entity) {
-        baseMapper.update(entity);
+    public int update(String tableName,String id,Map<String,Object> attrs) {
+        return baseMapper.update(tableName, id, attrs);
     }
 
 

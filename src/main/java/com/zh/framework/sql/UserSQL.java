@@ -13,22 +13,22 @@ public class UserSQL {
     public String query(Map<String,Object> param) {
         String sql = new SQL() {{
             User user=(User)param.get("user");
-            SELECT("u.id as uId," +
+            SELECT("u.id as id," +
                     "u.uName as uName," +
                     "u.uPassword as uPassword," +
                     "u.uDescription as uDescription," +
-                    "u.createUserId as uCreateUserId," +
-                    "u.createTime as uCreateTime," +
+                    "u.createUserId as createUserId," +
+                    "u.createTime as createTime," +
                     "u.uLastOnLine as uLastOnLine," +
                     "r.id as rId," +
                     "r.rName as rName, " +
                     "r.rDescription as rDescription");
             FROM("tb_user u");
             if (user.getId() != null && !"".equals(user.getId())) {
-                WHERE("id=#{user.id}");
+                WHERE("u.id=#{user.id}");
             }
             if (user.getuName() != null && !"".equals(user.getuName())) {
-                WHERE("uName like #{user.uName}");
+                WHERE("uName like '%"+user.getuName()+"%'");
             }
             LEFT_OUTER_JOIN("tb_role_user ru on u.id = ru.uid");
             LEFT_OUTER_JOIN("tb_role r on ru.rid = r.id");

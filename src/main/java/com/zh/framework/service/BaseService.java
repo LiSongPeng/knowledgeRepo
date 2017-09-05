@@ -7,11 +7,11 @@ import java.util.Map;
 public interface  BaseService<T> {
     public PageBean<Map<String,Object>> query(PageBean<T> pageBean);
 
-    public void delete(T entity);
+    public int delete(String tableName,String id);
 
-    public void add(T entity);
+    public int add(String tableName,Map<String,Object> attrs);
 
-    public void update(T entity);
+    public int update(String tableName,String id,Map<String,Object> attrs);
 
 
 }

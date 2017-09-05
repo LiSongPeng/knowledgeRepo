@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.parser.Entity;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public  class BaseController<T> {
 
@@ -43,12 +41,11 @@ public  class BaseController<T> {
 
     @RequestMapping("/query.form")
     @ResponseBody
-    public Map<String,Object> query(
-            @RequestParam("currentPage") int currentPage,
-            @RequestParam("pageSize") int pageSize,
-            @RequestParam("sord") String sord,
-            @RequestParam("sidx") String sidx
-    ){
+    public Map<String,Object> query(HttpServletRequest request){
+        int currentPage=Integer.parseInt(request.getParameter("currentPage"));
+        int pageSize=Integer.parseInt(request.getParameter("pageSize"));
+        String sord=request.getParameter("sord");
+        String sidx=request.getParameter("sidx");
         PageBean<T> pageBean=new PageBean<T>();
         pageBean.setCurrentPage(currentPage);
         pageBean.setPageSize(pageSize);
@@ -69,26 +66,56 @@ public  class BaseController<T> {
     }
 
     @RequestMapping("/update.form")
-    public void update(@RequestBody T entity){
-        baseService.update(entity);
+    @ResponseBody
+    public String update(HttpServletRequest request){
+        Enumeration em = request.getParameterNames();
+        String id=request.getParameter("id");
+        Map<String,Object> attrs=new HashMap<>();
+        while (em.hasMoreElements()) {
+            String name = (String) em.nextElement();
+            if ("id".equals(name)||"oper".equals(name))
+                continue;
+            String value = request.getParameter(name);
+            attrs.put(name,value);
+        }
+        int total=0;
+        total+=baseService.update(this.getTableName(),id,attrs);
+        return ""+total;
     }
 
     @RequestMapping("/add.form")
-    public void add(@RequestBody T entity){
-        baseService.add(entity);
-    }
-    /**
-     * 根据主键删除
-     *
-     * @param entity 要删除的实体条件信息
-     *
-     *
-     */
-    @RequestMapping("/delete.form")
-    public void delete(@RequestBody T entity){
-        baseService.delete(entity);
+    @ResponseBody
+    public String add(HttpServletRequest request){
+        Enumeration em = request.getParameterNames();
+        Map<String,Object> attrs=new HashMap<>();
+        while (em.hasMoreElements()) {
+            String name = (String) em.nextElement();
+            if ("oper".equals(name))
+                continue;
+            String value = request.getParameter(name);
+            attrs.put(name,value);
+        }
+        int total=baseService.add(this.getTableName(),attrs);
+        return ""+total;
     }
 
+    @RequestMapping("/delete.form")
+    @ResponseBody
+    public String delete(HttpServletRequest request){
+        String id = request.getParameter("id");
+        int total=0;
+        String[] idlist=id.split(",");
+        for (String delid:idlist) {
+            total+=baseService.delete(this.getTableName(),delid);
+        }
+        return ""+total;
+    }
+
+    public String getTableName(){
+
+        String tableName="tb_"+this.target.getClass().getSimpleName();
+        return tableName.toLowerCase();
+    }
 
 
 
