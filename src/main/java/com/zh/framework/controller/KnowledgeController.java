@@ -8,6 +8,7 @@ import com.zh.framework.service.BaseService;
 import com.zh.framework.service.KnowledgeService;
 import com.zh.framework.util.Constant;
 import com.zh.framework.util.TypeTester;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class KnowledgeController{
@@ -29,7 +32,7 @@ public class KnowledgeController{
 
     @RequestMapping("/selectPage.form")
     @ResponseBody
-    public PageBean selectPage(){
+    public PageBean selectPage(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
         PageBean pageBean=new PageBean();
         pageBean.setCurrentPage(1);
         pageBean.setPageSize(8);
@@ -39,7 +42,18 @@ public class KnowledgeController{
 
     @RequestMapping("/addKnowledge.form")
     @ResponseBody
-    public void add(Knowledge k){
+    public void add(@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId, @RequestParam(value="createTime")  String  createTime, @RequestParam(value="kAnswer")String kAnswer){
+
+        System.out.println("addKnowledge");
+        UUID uuid  =  UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
+        Knowledge k=new Knowledge();
+        k.setId(id);
+        k.setkTitle(kTitle);
+        k.setkAnswer(kAnswer);
+        k.setCreateUserId(createUserId);
+        //k.setCreateTime(createTime);
+
         knowledgeService.addKnowledge(k);
 
     }
