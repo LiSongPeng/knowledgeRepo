@@ -14,7 +14,7 @@ public class User {
     private String uDescription;
     private String createUserId;
     private Date createTime;
-    private Date uLastOnline;
+    private Date uLastOnLine;
     private List<Role> roles;
 
     public User() {
@@ -76,12 +76,12 @@ public class User {
         this.createTime = createTime;
     }
 
-    public Date getuLastOnline() {
-        return uLastOnline;
+    public Date getuLastOnLine() {
+        return uLastOnLine;
     }
 
-    public void setuLastOnline(Date uLastOnline) {
-        this.uLastOnline = uLastOnline;
+    public void setuLastOnLine(Date uLastOnLine) {
+        this.uLastOnLine = uLastOnLine;
     }
 
     public List<Role> getRoles() {

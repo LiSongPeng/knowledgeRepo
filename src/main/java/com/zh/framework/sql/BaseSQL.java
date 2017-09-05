@@ -22,14 +22,16 @@ public class BaseSQL {
                     f = eclass.getDeclaredFields();
                     Field[] finalF = f;
                     for (Field field : finalF) {
+                        field.setAccessible(true);
                         if (field.get(entity) != null) {
                             WHERE(field.getName() + "=#{entity." + field.getName() + "}");
                         }
                     }
                 }
-                if (param.get("sord")!=null)
-                ORDER_BY(""+param.get("sidx")+param.get("sord"));
+                if (param.get("sidx")!=null&&!"".equals(param.get("sidx")))
+                    ORDER_BY(""+param.get("sidx")+" "+param.get("sord"));
             }catch (IllegalAccessException iae){
+                iae.printStackTrace();
                 System.out.println("base无法正确获取属性");
             }
         }}.toString();
