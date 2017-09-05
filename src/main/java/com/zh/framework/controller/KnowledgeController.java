@@ -71,7 +71,7 @@ public class KnowledgeController{
         try{
             date =  formatter.parse(s);
         }catch(Exception e){
-            System.out.println("错误");
+            System.out.println("异常错误");
         }
 
 
