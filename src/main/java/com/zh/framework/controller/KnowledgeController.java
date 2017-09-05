@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.Date;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class KnowledgeController{
     @ResponseBody
     public PageBean selectPage(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
         PageBean pageBean=new PageBean();
-        pageBean.setCurrentPage(1);
+        pageBean.setCurrentPage(page);
         pageBean.setPageSize(8);
         pageBean=knowledgeService.queryAllKnowledge(pageBean);
         return pageBean;
@@ -42,17 +43,44 @@ public class KnowledgeController{
 
     @RequestMapping("/addKnowledge.form")
     @ResponseBody
-    public void add(@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId, @RequestParam(value="createTime")  String  createTime, @RequestParam(value="kAnswer")String kAnswer){
+    public void add(@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
 
         System.out.println("addKnowledge");
         UUID uuid  =  UUID.randomUUID();
         String id = UUID.randomUUID().toString();
         Knowledge k=new Knowledge();
+        //System.out.println(createTime);
+
+        //手动输入时间
+
+//        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd ");
+//        String s= "2011-07-09 ";
+//        Date date=null;
+//        try{
+//            date =  formatter.parse(s);
+//        }catch(Exception e){
+//            System.out.println("错误");
+//        }
+
+        //获取系统时间
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String s=formatter.format(new Date());
+
+        Date date=null;
+        try{
+            date =  formatter.parse(s);
+        }catch(Exception e){
+            System.out.println("错误");
+        }
+
+
+
         k.setId(id);
         k.setkTitle(kTitle);
         k.setkAnswer(kAnswer);
         k.setCreateUserId(createUserId);
-        //k.setCreateTime(createTime);
+        k.setCreateTime(date);
 
         knowledgeService.addKnowledge(k);
 
