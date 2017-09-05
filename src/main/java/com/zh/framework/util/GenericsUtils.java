@@ -31,6 +31,24 @@ public class GenericsUtils {
         return (Class) params[index];
     }
 
+    public static Class getInterfaceGenricType(Class clazz) {
+        Type genType = clazz.getGenericInterfaces()[0];// 得到第一个泛型接口
+        System.out.println(genType.getTypeName());
+        // 如果没有实现ParameterizedType接口，即不支持泛型，直接返回Object.class
+        if (!(genType instanceof ParameterizedType)) {
+            System.out.println("wrong1");
+            return Object.class;
+        }
+        // 返回表示此类型实际类型参数的Type对象的数组,数组里放的都是对应类型的Class, 如BuyerServiceBean extends
+        // DaoSupport<Buyer,Contact>就返回Buyer和Contact类型
+        Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
+        if (!(params[0] instanceof Class)) {
+            System.out.println(params[0].getTypeName());
+            return Object.class;
+        }
+        return (Class) params[0];
+    }
+
     public static Class getSuperClassGenricType(Class clazz) {
         return getSuperClassGenricType(clazz, 0);
     }

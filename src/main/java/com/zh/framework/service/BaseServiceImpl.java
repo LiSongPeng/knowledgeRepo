@@ -5,9 +5,12 @@ import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.mapper.BaseMapper;
 import com.zh.framework.util.GenericsUtils;
+import com.zh.framework.util.PageInfoConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,28 +19,26 @@ public class BaseServiceImpl<T> implements BaseService<T>{
     @Autowired
     private BaseMapper<T> baseMapper;
 
+    private T target;
+
+    public BaseServiceImpl() {
+    }
 
     @Override
-    public PageBean<T> query(PageBean<T> pageBean) {
-        PageHelper.startPage(pageBean.getCurrentPage(),pageBean.getPageSize());
+    public PageBean<Map<String,Object>> query(PageBean<T> pageBean) {
         Map<String,Object> param=new HashMap<String, Object>() ;
-        T entity = null;
-        if(pageBean.getContent()!=null&&pageBean.getContent().size()>0){
-            entity = pageBean.getContent().get(0);
-        }
-        String tbname="tb_"+GenericsUtils.getSuperClassGenricType(this.getClass()).getSimpleName();
+        T entity=pageBean.getContent().get(0);
+        String tbname=entity.getClass().getSimpleName();
+        tbname=("tb_"+tbname).toLowerCase();
+        System.out.println("!!!!11111"+tbname);
         param.put("entity",entity);
         param.put("tableName",tbname);
         param.put("sidx",pageBean.getSidx());
         param.put("sord",pageBean.getSord());
-        PageInfo<T> pageInfo=new PageInfo<T>(baseMapper.query(param));
-        PageBean<T> pb=new PageBean<T>();
-        pb.setTotalPages(pageInfo.getPages());
-        pb.setPageSize(pageInfo.getPageSize());
-        pb.setTotalCounts(pageInfo.getTotal());
-        pb.setCurrentPage(pageInfo.getPageNum());
-        pb.setContent(pageInfo.getList());
-        return pb;
+        PageHelper.startPage(pageBean.getCurrentPage(),pageBean.getPageSize());
+        PageInfo<Map<String,Object>> pageInfo=new PageInfo<>(baseMapper.query(param));
+        PageInfoConvertor<Map<String,Object>> picvt=new PageInfoConvertor<>(pageInfo);
+        return picvt.toPageBean();
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.Map;
 public interface BaseMapper<T> {
 
     @SelectProvider(type = BaseSQL.class, method="query")
-    public List<T> query(Map<String,Object> param);
+    public List<Map<String,Object>> query(Map<String,Object> param);
 
     @DeleteProvider(type = BaseSQL.class,method = "delete")
     public void delete(T entity);
