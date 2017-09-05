@@ -11,9 +11,9 @@
     <context:component-scan base-package="com.zh.framework.service,com.zh.framework.mapper"/>
     <!--mybatis configuration-->
     <context:property-placeholder location="classpath:config.properties"/>
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="url" value="${url}"/>
-        <property name="maxWait" value="${maxWait}"/>
+        <property name="maxWaitMillis" value="${maxWait}"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
         <!--<property name="username" value="${username}"/>-->
@@ -23,7 +23,7 @@
 
         <property name="minIdle" value="${minIdle}"/>
         <property name="initialSize" value="${initialSize}"/>
-        <property name="maxActive" value="${maxActive}"/>
+        <property name="maxTotal" value="${maxActive}"/>
         <property name="maxIdle" value="${maxIdle}"/>
     </bean>
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
