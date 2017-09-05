@@ -38,6 +38,12 @@ public class KnowldegeServiceImpl implements KnowledgeService{
         }
 
         @Override
+        public void deleteKnowledge(String id) {
+                knowledgeMapper.deleteKnowledge(id);
+
+        }
+
+        @Override
         public void updateKnowledge(Knowledge k) {
 
         }
@@ -47,10 +53,7 @@ public class KnowldegeServiceImpl implements KnowledgeService{
 
         }
 
-        @Override
-        public void deleteKnowledge(String id) {
 
-        }
 
 
 

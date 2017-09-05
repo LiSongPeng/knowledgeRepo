@@ -22,7 +22,7 @@ public interface KnowledgeMapper {
 
     public void updateKnowledgeStatus(@Param("id") String id, @Param("status") String status);
 
-    public void deleteKnowledge(String id);
+    public void deleteKnowledge(@Param("id")String id);
 
     public void addKnowledge(Knowledge k);
 

@@ -107,6 +107,6 @@
         UPDATE tb_knowledge k SET k.kUserTimeLast=#{time} WHERE k.id=#{id}
     </update>
     <delete id="deleteKnowledge">
-        DELETE FROM tb_knowledge k WHERE k.id=#{id}
+        DELETE FROM tb_knowledge WHERE tb_knowledge.id=#{id}
     </delete>
 </mapper>

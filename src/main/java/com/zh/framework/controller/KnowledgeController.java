@@ -30,7 +30,13 @@ public class KnowledgeController{
     @Autowired
     KnowledgeService knowledgeService;
 
-
+    /**
+     * 分页查询
+     *
+     * @param page 请求的页码
+     * @param rows 数据集
+     *
+     */
     @RequestMapping("/selectPage.form")
     @ResponseBody
     public PageBean selectPage(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
@@ -40,7 +46,14 @@ public class KnowledgeController{
         pageBean=knowledgeService.queryAllKnowledge(pageBean);
         return pageBean;
     }
-
+    /**
+     * 添加知识
+     *
+     * @param kTitle 知识标题
+     * @param createUserId 创建人ID
+     * @param kAnswer 知识解答
+     *
+     */
     @RequestMapping("/addKnowledge.form")
     @ResponseBody
     public void add(@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
@@ -86,9 +99,18 @@ public class KnowledgeController{
 
     }
 
+    /**
+     * 删除知识
+     *
+     * @param id 知识ID
+     */
+    @RequestMapping("/knowledgeDelete.form")
 
+    public void knowledgeDelete(@RequestParam("id") String id){
 
+        knowledgeService.deleteKnowledge(id);
 
+    }
 
 
 
@@ -98,98 +120,3 @@ public class KnowledgeController{
 
 }
 
-//    /**
-//     * 知识列表
-//     *
-//     * @param tableName 执行查询的表的名称
-//     *
-//     */
-//
-//
-//    @RequestMapping("/query.form")
-//    @ResponseBody
-//
-//    public List<Knowledge> query(String tableName) {
-//
-//        List<Knowledge> list = service.query("tb_knowledge");
-//
-//        System.out.println(list.toString());
-//
-//        return list;
-//    }
-//
-//    /**
-//     * 知识列表（分页）
-//     *
-//     * @param pageNumber 请求的页码
-//     *
-//     */
-//
-//    @GetMapping("/pagedQuery.form")
-//    @ResponseBody
-//
-//    public PageBean pagedQuery(@RequestParam("pageNumber")int pageNumber) {
-//
-//        PageBean aa=service.pagedQuery("tb_knowledge",pageNumber,2);
-//        System.out.println(aa);
-//        return aa;
-//
-//    }
-//
-//
-//    @GetMapping("/page.form")
-//    @ResponseBody
-//
-//    public PageBean page(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows) {
-//
-//
-//        //ServletContext context = ServletActionContext.getServletContext();
-//
-//        PageBean aa=service.pagedQuery("tb_knowledge",page,rows);
-//        System.out.println(aa);
-//
-//        System.out.println(aa);
-//
-//        return aa;
-//
-//    }
-//
-//
-//    /**
-//     * 知识删除
-//     *
-//     * @param tableName 要操作的数据表
-//     * @param id 主键ID
-//     *
-//     */
-//
-//    @GetMapping("/delete.form")
-//    @ResponseBody
-//
-//    public void delete(String tableName,String id) {
-//
-//
-//        service.delete("tb_knowledge","2");
-//
-//        System.out.println("delete successful!!");
-//
-//    }
-//    /**
-//     * 知识录入
-//     *
-//     * @param k 录入的数据
-//     *
-//     */
-//
-//        @GetMapping("/update.form")
-//        @ResponseBody
-//        public void updateKnowledge(Knowledge k) {
-//            Knowledge cc=new Knowledge();
-//            cc.setkTitle("你好");
-//            cc.setId("333");
-//            knowledgeService.insertKnowledge(cc);
-//
-//        }
-//
-//
-//}
