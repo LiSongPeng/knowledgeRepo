@@ -12,5 +12,7 @@ public interface UserService {
 
     PageBean<User> query(PageBean<User> pageBean);
 
-    int setUserRole(String uid,List<String> roleList);
+    int setUserRole(String uid, List<String> roleList);
+
+    User login(String username, String password);
 }
