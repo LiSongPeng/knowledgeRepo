@@ -1,6 +1,7 @@
 package com.zh.framework.sql;
 
 import com.zh.framework.util.GenericsUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.lang.reflect.Field;
@@ -36,52 +37,35 @@ public class BaseSQL {
             }
         }}.toString();
     }
-    public String delete(Object entity){
-        Class eclass=entity.getClass();
-        final String tableName="tb_"+eclass.getSimpleName().toLowerCase();
+    public String delete(@Param("tableName") String tableName,
+                         @Param("id") String id){
         return new SQL() {{
             DELETE_FROM(tableName);
             WHERE("id=#{id}");
-
         }}.toString();
     }
-    public String add(final Object entity){
-        Class eclass=entity.getClass();
-        final String tableName="tb_"+eclass.getSimpleName().toLowerCase();
-        Field[] f=null;
-        f=eclass.getDeclaredFields();
-        final Field[] finalF = f;
+    public String add(@Param("tableName") String tableName,
+                      @Param("attrs") Map<String,Object> attrs){
         return new SQL(){{
-            try {
-                INSERT_INTO(tableName);
-                for (Field field: finalF){
-                    if (field.get(entity)!=null){
-                        VALUES(field.getName(),"#{"+field.getName()+"}");
-                    }
+            INSERT_INTO(tableName);
+            for (Map.Entry<String,Object> attr: attrs.entrySet()){
+                if (attr!=null){
+                    VALUES(attr.getKey(),"#{attrs."+attr.getKey()+"}");
                 }
-            }catch (IllegalAccessException iae){
-                System.out.println("base无法正确获取属性");
             }
         }}.toString();
     }
-    public String update(final Object entity){
-        Class eclass=entity.getClass();
-        final String tableName="tb_"+eclass.getSimpleName().toLowerCase();
-        Field[] f=null;
-        f=eclass.getDeclaredFields();
-        final Field[] finalF = f;
+    public String update(@Param("tableName") String tableName,
+                         @Param("id") String id,
+                         @Param("attrs") Map<String,Object> attrs){
         return new SQL(){{
-            try {
-                UPDATE(tableName);
-                for (Field field: finalF){
-                    if (field.get(entity)!=null){
-                        SET(field.getName(),"#{"+field.getName()+"}");
-                    }
+            UPDATE(tableName);
+            for (Map.Entry<String,Object> attr: attrs.entrySet()){
+                if (attr!=null){
+                    SET(attr.getKey()+"=#{attrs."+attr.getKey()+"}");
                 }
-                WHERE("id=#{id}");
-            }catch (IllegalAccessException iae){
-                System.out.println("base无法正确获取属性");
             }
+            WHERE("id=#{id}");
         }}.toString();
     }
 }

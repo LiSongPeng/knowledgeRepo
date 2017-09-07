@@ -14,15 +14,19 @@ public interface BaseMapper<T> {
     public List<Map<String,Object>> query(Map<String,Object> param);
 
     @DeleteProvider(type = BaseSQL.class,method = "delete")
-    public void delete(T entity);
+    public int delete(@Param("tableName") String tableName,
+                       @Param("id") String id);
 
 
 
     @InsertProvider(type = BaseSQL.class,method = "add")
-    public void add(@Param("entity") T entity);
+    public int add(@Param("tableName") String tableName,
+                    @Param("attrs") Map<String,Object> attrs);
 
     @UpdateProvider(type = BaseSQL.class,method = "update")
-    public void update(@Param("entity") T entity);
+    public int update(@Param("tableName") String tableName,
+                       @Param("id") String id,
+                       @Param("attrs") Map<String,Object> attrs);
 
 
 }

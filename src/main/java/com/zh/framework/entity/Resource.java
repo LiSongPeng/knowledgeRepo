@@ -17,8 +17,6 @@ public class Resource {
     private int deleteStatus;
     private User createUser;
     private Date createTime;
-    private List<Role> Roles;
-
 
     public Resource(){}
 
@@ -102,11 +100,4 @@ public class Resource {
         this.createTime = createTime;
     }
 
-    public List<Role> getRoles() {
-        return Roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        Roles = roles;
-    }
 }
