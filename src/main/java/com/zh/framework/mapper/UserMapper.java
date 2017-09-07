@@ -3,6 +3,7 @@ package com.zh.framework.mapper;
 import com.zh.framework.entity.User;
 import com.zh.framework.sql.UserSQL;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.springframework.stereotype.Repository;
@@ -16,10 +17,12 @@ import java.util.Map;
 @Repository
 public interface UserMapper {
 
-    @SelectProvider(type = UserSQL.class,method = "query")
+    @SelectProvider(type = UserSQL.class, method = "query")
     @ResultMap("com.zh.framework.mapper.UserMapper.userMap")
-    List<User> query(Map<String,Object> param);
+    List<User> query(Map<String, Object> param);
 
-    @InsertProvider(type = UserSQL.class,method = "setUserRole")
-    int setUserRole(String uid,String rid);
+    @InsertProvider(type = UserSQL.class, method = "setUserRole")
+    int setUserRole(String uid, String rid);
+
+    User queryByNameAndPass(@Param("username") String username, @Param("password") String password);
 }

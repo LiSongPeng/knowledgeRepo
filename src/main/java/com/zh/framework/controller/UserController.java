@@ -5,10 +5,8 @@ import com.zh.framework.entity.User;
 import com.zh.framework.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +21,8 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
-public class UserController extends BaseController<User>{
+@SessionAttributes(names = "session")
+public class UserController extends BaseController<User> {
 
     @Autowired
     private UserService userService;
@@ -33,20 +32,19 @@ public class UserController extends BaseController<User>{
     }
 
 
-
     //    @RequestMapping("/userList")
 //    @ResponseBody
 //    public void query(@RequestBody JSONObject jsonObj, HttpServletResponse response){
 //
 //        System.out.println(jsonObj.toJSONString());
 //    }
-    @RequestMapping(value="/query.form")
-    public Map<String,Object> query( HttpServletRequest request){
-        int currentPage=Integer.parseInt(request.getParameter("currentPage"));
-        int pageSize=Integer.parseInt(request.getParameter("pageSize"));
-        String sord=request.getParameter("sord");
-        String sidx=request.getParameter("sidx");
-        PageBean<User> pageBean=new PageBean<User>();
+    @RequestMapping(value = "/query.form")
+    public Map<String, Object> query(HttpServletRequest request) {
+        int currentPage = Integer.parseInt(request.getParameter("currentPage"));
+        int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        String sord = request.getParameter("sord");
+        String sidx = request.getParameter("sidx");
+        PageBean<User> pageBean = new PageBean<User>();
         pageBean.setCurrentPage(currentPage);
         pageBean.setPageSize(pageSize);
         pageBean.setSidx(sidx);
@@ -59,33 +57,44 @@ public class UserController extends BaseController<User>{
             ulist.add(user);
             pageBean.setContent(ulist);
         }
-        Map<String,Object> jsmap=new HashMap<>();
-        PageBean<User> repb=userService.query(pageBean);
-        jsmap.put("totalPages",repb.getTotalPages());
-        jsmap.put("currentPage",repb.getCurrentPage());
-        jsmap.put("pageSize",repb.getPageSize());
-        jsmap.put("totalCounts",repb.getTotalCounts());
-        jsmap.put("content",repb.getContent());
+        Map<String, Object> jsmap = new HashMap<>();
+        PageBean<User> repb = userService.query(pageBean);
+        jsmap.put("totalPages", repb.getTotalPages());
+        jsmap.put("currentPage", repb.getCurrentPage());
+        jsmap.put("pageSize", repb.getPageSize());
+        jsmap.put("totalCounts", repb.getTotalCounts());
+        jsmap.put("content", repb.getContent());
         return jsmap;
     }
-    @RequestMapping(value="/edit.form")
+
+    @RequestMapping(value = "/edit.form")
     @ResponseBody
-    public String edit(HttpServletRequest request){
-        String oper=request.getParameter("oper");
-        String remsg="";
-        switch (oper){
+    public String edit(HttpServletRequest request) {
+        String oper = request.getParameter("oper");
+        String remsg = "";
+        switch (oper) {
             case "del":
-                remsg=delete(request);
+                remsg = delete(request);
                 break;
             case "add":
-                remsg=add(request);
+                remsg = add(request);
                 break;
             case "edit":
-                remsg=update(request);
+                remsg = update(request);
                 break;
             default:
-                remsg="操作有误";
+                remsg = "操作有误";
         }
         return remsg;
+    }
+
+    @RequestMapping(value = "/login.form", method = RequestMethod.POST)
+    @ResponseBody
+    public String login(@RequestParam("username") String username, @RequestParam("password") String password, ModelMap session) {
+        User user = userService.login(username, password);
+        if (user == null)
+            return "FAILED";
+        session.put("currUser", user);
+        return "SUCCESS";
     }
 }
