@@ -67,6 +67,12 @@ public  class BaseController<T> {
         return jsmap;
     }
 
+    @RequestMapping("/queryById.form")
+    @ResponseBody
+    public Map<String, Object> queryById(@RequestParam("id") String id){
+        return baseService.queryById(id,this.getTableName());
+    }
+
     @RequestMapping("/update.form")
     @ResponseBody
     public String update(HttpServletRequest request){

@@ -13,6 +13,10 @@ public interface BaseMapper<T> {
     @SelectProvider(type = BaseSQL.class, method="query")
     public List<Map<String,Object>> query(Map<String,Object> param);
 
+
+    @SelectProvider(type = BaseSQL.class, method="queryById")
+    public Map<String,Object> queryById(@Param("id") String id,@Param("tableName")  String tableName);
+
     @DeleteProvider(type = BaseSQL.class,method = "delete")
     public int delete(@Param("tableName") String tableName,
                        @Param("id") String id);

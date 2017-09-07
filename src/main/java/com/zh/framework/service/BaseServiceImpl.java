@@ -42,6 +42,10 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         PageInfoConvertor<Map<String,Object>> picvt=new PageInfoConvertor<>(pageInfo);
         return picvt.toPageBean();
     }
+    @Override
+    public Map<String,Object> queryById(String id, String tableName){
+        return baseMapper.queryById(id,tableName);
+    }
 
     @Override
     public int delete(String tableName,String id) {

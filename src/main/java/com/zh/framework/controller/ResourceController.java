@@ -38,8 +38,7 @@ public class ResourceController extends BaseController<Resource>{
 
     @RequestMapping("/selectById.form")
     @ResponseBody
-    public Resource queryById(@RequestParam("id") String id){
-
+    public Resource selectById(@RequestParam("id") String id){
         Map<String,Object> param=new HashMap<>();
         param.put("id",id);
         return resourceService.querySearch(param).get(0);

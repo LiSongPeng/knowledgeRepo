@@ -16,25 +16,32 @@ public class BaseSQL {
                 SELECT("*");
                 FROM(""+param.get("tableName"));
                 Object entity=param.get("entity");
-                if (param.get("entity")!=null) {
-                    Class eclass = entity.getClass();
-                    String tableName = "tb_" + eclass.getSimpleName().toLowerCase();
-                    Field[] f = null;
-                    f = eclass.getDeclaredFields();
-                    Field[] finalF = f;
-                    for (Field field : finalF) {
-                        field.setAccessible(true);
-                        if (field.get(entity) != null) {
-                            WHERE(field.getName() + "=#{entity." + field.getName() + "}");
-                        }
-                    }
-                }
+//                if (param.get("entity")!=null) {
+//                    Class eclass = entity.getClass();
+//                    String tableName = "tb_" + eclass.getSimpleName().toLowerCase();
+//                    Field[] f = null;
+//                    f = eclass.getDeclaredFields();
+//                    Field[] finalF = f;
+//                    for (Field field : finalF) {
+//                        field.setAccessible(true);
+//                        if (field.get(entity) != null) {
+//                            WHERE(field.getName() + "=#{entity." + field.getName() + "}");
+//                        }
+//                    }
+//                }
                 if (param.get("sidx")!=null&&!"".equals(param.get("sidx")))
                     ORDER_BY(""+param.get("sidx")+" "+param.get("sord"));
-            }catch (IllegalAccessException iae){
+            }catch (Exception iae){
                 iae.printStackTrace();
                 System.out.println("base无法正确获取属性");
             }
+        }}.toString();
+    }
+    public String queryById(String id,String tableName){
+        return new SQL(){{
+            SELECT("*");
+            FROM(""+tableName);
+            WHERE("id=#{id}");
         }}.toString();
     }
     public String delete(@Param("tableName") String tableName,
