@@ -87,7 +87,8 @@ public class KnowledgeIndexHandler extends Handler {
 
     public void buildAIndex(Knowledge k) throws IOException {
         Document doc = new Document();
-        doc.add(new Field(Constant.INDEX_ID, k.getId(), TextField.TYPE_STORED));
+//        doc.add(new Field(Constant.INDEX_ID, k.getId(), TextField.TYPE_STORED));
+        doc.add(new StringField(Constant.INDEX_ID, k.getId(), Field.Store.YES));
         doc.add(new Field(Constant.K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
         doc.add(new Field(Constant.K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
         doc.add(new StoredField(Constant.K_USE_COUNT, k.getkUseCount()));
@@ -98,7 +99,8 @@ public class KnowledgeIndexHandler extends Handler {
 
     public void updateIndex(Knowledge k) throws Exception {
         Document newDoc = new Document();
-        newDoc.add(new Field(Constant.INDEX_ID, k.getId(), TextField.TYPE_STORED));
+//        newDoc.add(new Field(Constant.INDEX_ID, k.getId(), TextField.TYPE_STORED));
+        newDoc.add(new StringField(Constant.INDEX_ID, k.getId(), Field.Store.YES));
         newDoc.add(new Field(Constant.K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
         newDoc.add(new Field(Constant.K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
         newDoc.add(new StoredField(Constant.K_USE_COUNT, k.getkUseCount()));
@@ -111,7 +113,8 @@ public class KnowledgeIndexHandler extends Handler {
         Document doc;
         for (int i = 0; i < list.size(); i++) {
             doc = new Document();
-            doc.add(new Field(Constant.INDEX_ID, list.get(i).getId(), TextField.TYPE_STORED));
+//            doc.add(new Field(Constant.INDEX_ID, list.get(i).getId(), TextField.TYPE_STORED));
+            doc.add(new StringField(Constant.INDEX_ID, list.get(i).getId(), Field.Store.YES));
             doc.add(new Field(Constant.K_TITLE, list.get(i).getkTitle(), TextField.TYPE_STORED));
             doc.add(new Field(Constant.K_ANSWER, list.get(i).getkAnswer(), TextField.TYPE_STORED));
             doc.add(new StoredField(Constant.K_USE_COUNT, list.get(i).getkUseCount()));
