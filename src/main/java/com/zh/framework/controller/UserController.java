@@ -87,16 +87,15 @@ public class UserController extends BaseController<User> {
 
     @RequestMapping(value = "/login.form", method = RequestMethod.POST)
     @ResponseBody
-    public User login(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletRequest request) {
+    public User login(@RequestParam("username") String username, @RequestParam("password") String password/*, HttpServletRequest request*/) {
         User user = userService.login(username, password);
-        request.getSession().setAttribute("currUser", user);
+//        request.getSession().setAttribute("currUser", user);
         return user;
     }
-
-    @RequestMapping(value = "/quit.form")
+/*    @RequestMapping(value = "/quit.form")
     @ResponseBody
     public String quit(HttpServletRequest request) {
         request.getSession().setAttribute("currUser", null);
         return "SUCCESS";
-    }
+    }*/
 }
