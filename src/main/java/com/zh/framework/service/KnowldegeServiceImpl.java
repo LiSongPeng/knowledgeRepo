@@ -34,6 +34,21 @@ public class KnowldegeServiceImpl implements KnowledgeService {
         return pb;
     }
 
+
+    @Override
+    public PageBean querySomeKnowledge(PageBean pageBean) {
+        PageHelper.startPage(pageBean.getCurrentPage(), pageBean.getPageSize());
+
+        PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(knowledgeMapper.querySomeKnowledge());
+        PageBean pb = new PageBean();
+        pb.setTotalPages(pageInfo.getPages());
+        pb.setPageSize(pageInfo.getPageSize());
+        pb.setTotalCounts((int) pageInfo.getTotal());
+        pb.setCurrentPage(pageInfo.getPageNum());
+        pb.setContent(pageInfo.getList());
+        return pb;
+    }
+
     @Override
     public void addKnowledge(Knowledge k) {
         knowledgeMapper.addKnowledge(k);

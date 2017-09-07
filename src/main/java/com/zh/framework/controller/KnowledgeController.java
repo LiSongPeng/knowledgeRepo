@@ -5,6 +5,7 @@ import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.entity.Response;
 import com.zh.framework.service.BaseService;
+import com.zh.framework.service.KnowledgeRepoService;
 import com.zh.framework.service.KnowledgeService;
 import com.zh.framework.util.Constant;
 import com.zh.framework.util.TypeTester;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,8 +32,14 @@ public class KnowledgeController{
 
     @Autowired
     KnowledgeService knowledgeService;
+    private KnowledgeRepoService knowledgeRepoService;
 
-    /**
+    @Resource(name = "knowledgeRepoService")
+    public void setKnowledgeRepoService(KnowledgeRepoService knowledgeRepoService) {
+        this.knowledgeRepoService = knowledgeRepoService;
+    }
+
+    /**k
      * 分页查询
      *
      * @param page 请求的页码
@@ -46,6 +55,27 @@ public class KnowledgeController{
         pageBean=knowledgeService.queryAllKnowledge(pageBean);
         return pageBean;
     }
+    /**
+     * 条件查询（用于知识审批）
+     *
+     * @param page 请求的页码
+     * @param rows 数据集
+     *
+     */
+    @RequestMapping("/selectPage2.form")
+    @ResponseBody
+    public PageBean selectPage2(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
+
+        PageBean pageBean=new PageBean();
+        pageBean.setCurrentPage(page);
+        pageBean.setPageSize(8);
+        pageBean=knowledgeService.querySomeKnowledge(pageBean);
+        return pageBean;
+
+
+    }
+
+
     /**
      * 添加知识
      *
@@ -95,8 +125,13 @@ public class KnowledgeController{
         k.setCreateUserId(createUserId);
         k.setCreateTime(date);
 
-        knowledgeService.addKnowledge(k);
 
+        knowledgeService.addKnowledge(k);
+        try {
+            knowledgeRepoService.buildAIndex(k);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -142,7 +177,11 @@ public class KnowledgeController{
         k.setCreateUserId(createUserId);
         k.setkAnswer(kAnswer);
         knowledgeService.updateKnowledge(id,kTitle,createUserId,kAnswer);
-
+        try {
+            knowledgeRepoService.updateIndex(k);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -174,6 +213,11 @@ public class KnowledgeController{
 
             if(k.getkApprStatus().equals(Knowledge.DELETE_WAITING)){
                 knowledgeService.deleteKnowledge(id);
+                try {
+                    knowledgeRepoService.removeIndex(id);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }else if(k.getkApprStatus().equals(Knowledge.INSERT_WAITING)){
                 knowledgeService.updateKnowledgeStatus(id,Knowledge.APPROVED);
             }else if(k.getkApprStatus().equals(Knowledge.UPDATE_WAITING)){
