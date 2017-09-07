@@ -5,12 +5,9 @@ import com.zh.framework.entity.User;
 import com.zh.framework.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,11 +87,16 @@ public class UserController extends BaseController<User> {
 
     @RequestMapping(value = "/login.form", method = RequestMethod.POST)
     @ResponseBody
-    public String login(@RequestParam("username") String username, @RequestParam("password") String password, HttpSession session) {
+    public User login(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletRequest request) {
         User user = userService.login(username, password);
-        if (user == null)
-            return "FAILED";
-        session.setAttribute("currUser", user);
+        request.getSession().setAttribute("currUser", user);
+        return user;
+    }
+
+    @RequestMapping(value = "/quit.form")
+    @ResponseBody
+    public String quit(HttpServletRequest request) {
+        request.getSession().setAttribute("currUser", null);
         return "SUCCESS";
     }
 }
