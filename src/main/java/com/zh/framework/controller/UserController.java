@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,6 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
-@SessionAttributes(names = "session")
 public class UserController extends BaseController<User> {
 
     @Autowired
@@ -90,11 +90,11 @@ public class UserController extends BaseController<User> {
 
     @RequestMapping(value = "/login.form", method = RequestMethod.POST)
     @ResponseBody
-    public String login(@RequestParam("username") String username, @RequestParam("password") String password, ModelMap session) {
+    public String login(@RequestParam("username") String username, @RequestParam("password") String password, HttpSession session) {
         User user = userService.login(username, password);
         if (user == null)
             return "FAILED";
-        session.put("currUser", user);
+        session.setAttribute("currUser", user);
         return "SUCCESS";
     }
 }
