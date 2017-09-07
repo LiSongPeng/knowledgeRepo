@@ -32,6 +32,7 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         String tbname=entity.getClass().getSimpleName();
         tbname=("tb_"+tbname).toLowerCase();
         System.out.println("!!!!11111"+tbname);
+        System.out.println("!!!!11111"+entity);
         param.put("entity",entity);
         param.put("tableName",tbname);
         param.put("sidx",pageBean.getSidx());
@@ -40,6 +41,10 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         PageInfo<Map<String,Object>> pageInfo=new PageInfo<>(baseMapper.query(param));
         PageInfoConvertor<Map<String,Object>> picvt=new PageInfoConvertor<>(pageInfo);
         return picvt.toPageBean();
+    }
+    @Override
+    public Map<String,Object> queryById(String id, String tableName){
+        return baseMapper.queryById(id,tableName);
     }
 
     @Override

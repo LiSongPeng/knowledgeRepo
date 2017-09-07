@@ -15,9 +15,9 @@ public class ResourceSQL {
             SELECT("s.id as id," +
                     "s.sParentId as sParentId," +
                     "s.sName as sName," +
-                    "s.sType," +
-                    "s.sUrl," +
-                    "s.sIcon," +
+                    "s.sType as sType," +
+                    "s.sUrl as sUrl," +
+                    "s.sIcon as sIcon," +
                     "s.sIndex," +
                     "s.deleteStatus," +
                     "s.createTime," +
@@ -42,12 +42,12 @@ public class ResourceSQL {
             SELECT("s.id as id," +
                     "s.sParentId as sParentId," +
                     "s.sName as sName," +
-                    "s.sType," +
-                    "s.sUrl," +
-                    "s.sIcon," +
-                    "s.sIndex," +
-                    "s.deleteStatus," +
-                    "s.createTime," +
+                    "s.sType as sType," +
+                    "s.sUrl as sUrl," +
+                    "s.sIcon as sIcon," +
+                    "s.sIndex as sIndex," +
+                    "s.deleteStatus as deleteStatus," +
+                    "s.createTime as createTime," +
                     "u.id as crtuId," +
                     "u.uName as crtuName");
             FROM("tb_resource s");

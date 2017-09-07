@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,11 +38,9 @@ public class ResourceController extends BaseController<Resource>{
 
     @RequestMapping("/selectById.form")
     @ResponseBody
-    Resource queryById(@RequestBody String id){
-
+    public Resource selectById(@RequestParam("id") String id){
         Map<String,Object> param=new HashMap<>();
         param.put("id",id);
-        Map<String,Object> map=new HashMap<>();
         return resourceService.querySearch(param).get(0);
     }
 }

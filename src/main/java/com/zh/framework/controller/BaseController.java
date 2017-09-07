@@ -55,10 +55,8 @@ public  class BaseController<T> {
         pageBean.setPageSize(pageSize);
         pageBean.setSidx(sidx);
         pageBean.setSord(sord);
-        if(pageBean.getContent()==null||pageBean.getContent().size()==0){
-            pageBean.setContent(new ArrayList<T>());
-            pageBean.getContent().add(this.target);
-        }
+        pageBean.setContent(new ArrayList<T>());
+        pageBean.getContent().add(this.target);
         Map<String,Object> jsmap=new HashMap<>();
         PageBean<Map<String,Object>> repb=baseService.query(pageBean);
         jsmap.put("totalPages",repb.getTotalPages());
@@ -67,6 +65,12 @@ public  class BaseController<T> {
         jsmap.put("totalCounts",repb.getTotalCounts());
         jsmap.put("content",repb.getContent());
         return jsmap;
+    }
+
+    @RequestMapping("/queryById.form")
+    @ResponseBody
+    public Map<String, Object> queryById(@RequestParam("id") String id){
+        return baseService.queryById(id,this.getTableName());
     }
 
     @RequestMapping("/update.form")
