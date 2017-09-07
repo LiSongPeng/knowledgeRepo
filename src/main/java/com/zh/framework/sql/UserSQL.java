@@ -17,6 +17,7 @@ public class UserSQL {
                     "u.uName as uName," +
                     "u.uPassword as uPassword," +
                     "u.uDescription as uDescription," +
+                    "u.deleteStatus as uDeleteStatus," +
                     "u.createUserId as createUserId," +
                     "u.createTime as createTime," +
                     "u.uLastOnLine as uLastOnLine," +

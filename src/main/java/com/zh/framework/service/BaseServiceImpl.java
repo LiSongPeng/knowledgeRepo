@@ -50,7 +50,8 @@ public class BaseServiceImpl<T> implements BaseService<T>{
     @Override
     public int add(String tableName,Map<String,Object> attrs) {
         if (attrs.get("id")==null||"".equals(attrs.get("id"))){
-            attrs.put("id", UUID.randomUUID());
+            String uuid=UUID.randomUUID().toString();
+            attrs.put("id",uuid );
         }
        return baseMapper.add(tableName,attrs);
     }

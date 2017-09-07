@@ -4,13 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zh.framework.mapper.UserMapper">
     <resultMap id="userMap" type="User">
-        <id property="id" column="uId" />
+        <id property="id" column="id" />
         <result property="uName" column="uName"/>
         <result property="uPassword" column="uPassword"/>
         <result property="deleteStatus" column="uDeleteStatus"/>
         <result property="uDescription" column="uDescription"/>
-        <result property="createUserId" column="uCreateUserId"/>
-        <result property="createTime" column="uCreateTime" />
+        <result property="createUserId" column="createUserId"/>
+        <result property="createTime" column="createTime" />
         <result property="uLastOnLine" column="uLastOnLine" />
         <collection property="roles" ofType="Role" >
             <id property="id" column="rid"/>

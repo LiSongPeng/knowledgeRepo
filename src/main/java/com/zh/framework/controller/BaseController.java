@@ -7,6 +7,7 @@ import com.zh.framework.entity.User;
 import com.zh.framework.mapper.BaseMapper;
 import com.zh.framework.service.BaseService;
 import com.zh.framework.util.GenericsUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.parser.Entity;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.*;
 
 public  class BaseController<T> {
@@ -58,7 +62,7 @@ public  class BaseController<T> {
         Map<String,Object> jsmap=new HashMap<>();
         PageBean<Map<String,Object>> repb=baseService.query(pageBean);
         jsmap.put("totalPages",repb.getTotalPages());
-        jsmap.put("currentPages",repb.getCurrentPage());
+        jsmap.put("currentPage",repb.getCurrentPage());
         jsmap.put("pageSize",repb.getPageSize());
         jsmap.put("totalCounts",repb.getTotalCounts());
         jsmap.put("content",repb.getContent());
@@ -90,11 +94,14 @@ public  class BaseController<T> {
         Map<String,Object> attrs=new HashMap<>();
         while (em.hasMoreElements()) {
             String name = (String) em.nextElement();
+            System.out.println("name:name");
             if ("oper".equals(name))
                 continue;
             String value = request.getParameter(name);
             attrs.put(name,value);
         }
+        Date crttime=new Date(System.currentTimeMillis());
+        attrs.put("createTime",crttime);
         int total=baseService.add(this.getTableName(),attrs);
         return ""+total;
     }

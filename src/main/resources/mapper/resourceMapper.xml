@@ -17,14 +17,7 @@
         <association property="createUser"  javaType="User" >
             <id property="id" column="crtuId" />
             <result property="uName" column="crtuName"/>
-            <result property="uDescription" column="crtuDescription"/>
         </association>
-        <collection property="roles" ofType="Role">
-            <id property="id" column="rId"/>
-            <result property="rName" column="rName"/>
-            <result property="rDescription" column="rDescription"/>
-            <result property="createTime" column="rCreateTime"/>
-        </collection>
     </resultMap>
     
     <!--<insert id="add" parameterType="Resource">-->

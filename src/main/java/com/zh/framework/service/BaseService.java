@@ -1,6 +1,7 @@
 package com.zh.framework.service;
 
 import com.zh.framework.entity.PageBean;
+import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 

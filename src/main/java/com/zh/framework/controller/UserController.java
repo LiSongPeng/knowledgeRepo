@@ -62,7 +62,7 @@ public class UserController extends BaseController<User>{
         Map<String,Object> jsmap=new HashMap<>();
         PageBean<User> repb=userService.query(pageBean);
         jsmap.put("totalPages",repb.getTotalPages());
-        jsmap.put("currentPages",repb.getCurrentPage());
+        jsmap.put("currentPage",repb.getCurrentPage());
         jsmap.put("pageSize",repb.getPageSize());
         jsmap.put("totalCounts",repb.getTotalCounts());
         jsmap.put("content",repb.getContent());

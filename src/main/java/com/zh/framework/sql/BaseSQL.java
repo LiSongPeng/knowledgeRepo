@@ -62,7 +62,7 @@ public class BaseSQL {
             UPDATE(tableName);
             for (Map.Entry<String,Object> attr: attrs.entrySet()){
                 if (attr!=null){
-                    SET(attr.getKey(),"#{attrs."+attr.getKey()+"}");
+                    SET(attr.getKey()+"=#{attrs."+attr.getKey()+"}");
                 }
             }
             WHERE("id=#{id}");
