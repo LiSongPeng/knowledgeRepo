@@ -69,4 +69,19 @@ public class ResourceSQL {
             WHERE("sr.rid=#{roleid}");
         }}.toString();
     }
+    public String queryByUser(@Param("userid") String userid){
+        return new SQL(){{
+            SELECT("s.id as id," +
+                    "s.sParentId as sParentId" +
+                    "s.sName as sName" +
+                    "s.sType," +
+                    "s.sUrl" +
+                    "s.sIcon" +
+                    "s.sIndex");
+            FROM("tb_role_user ru");
+            LEFT_OUTER_JOIN("tb_resources_role sr on ru.rid = sr.rid");
+            LEFT_OUTER_JOIN("tb_resource s on sr.sid = s.id");
+            WHERE("ru.uid=#{userid}");
+        }}.toString();
+    }
 }
