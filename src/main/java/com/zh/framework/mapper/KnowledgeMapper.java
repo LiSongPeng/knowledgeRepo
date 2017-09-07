@@ -18,15 +18,21 @@ public interface KnowledgeMapper {
 
     public void updateUseCount(@Param("count") int count, @Param("id") String id);
 
-    public void updateKnowledge(Knowledge k);
+    //public void updateKnowledge(@Param("k")Knowledge k);
+
+    public void updateKnowledge(@Param("id")String id,@Param("kTitle")String kTitle,@Param("createUserId")String createUserId,@Param("kAnswer")String kAnswer);
 
     public void updateKnowledgeStatus(@Param("id") String id, @Param("status") String status);
 
-    public void deleteKnowledge(String id);
+    public void deleteKnowledge(@Param("id")String id);
 
     public void addKnowledge(Knowledge k);
 
     public void updateLastUseTime(@Param("time") Date time, @Param("id") String id);
 
     public List<Knowledge> queryAllKnowledge();
+
+    public List<Knowledge> querySomeKnowledge();
+
+    public void updateAppr(@Param("id")String id,@Param("kApprUserId")String kApprUserId,@Param("kApprMemo")String kApprMemo,@Param("kApprTime")Date kApprTime);
 }

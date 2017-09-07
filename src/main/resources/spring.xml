@@ -16,11 +16,7 @@
         <property name="maxWaitMillis" value="${maxWait}"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
-        <!--<property name="username" value="${username}"/>-->
-        <!--<property name="password" value="${password}"/>-->
-
         <property name="driverClassName" value="${driver}"/>
-
         <property name="minIdle" value="${minIdle}"/>
         <property name="initialSize" value="${initialSize}"/>
         <property name="maxTotal" value="${maxActive}"/>

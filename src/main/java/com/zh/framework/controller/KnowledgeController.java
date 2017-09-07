@@ -5,6 +5,7 @@ import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.entity.Response;
 import com.zh.framework.service.BaseService;
+import com.zh.framework.service.KnowledgeRepoService;
 import com.zh.framework.service.KnowledgeService;
 import com.zh.framework.util.Constant;
 import com.zh.framework.util.TypeTester;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.Date;
+import java.io.IOException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,140 +32,215 @@ public class KnowledgeController{
 
     @Autowired
     KnowledgeService knowledgeService;
+    private KnowledgeRepoService knowledgeRepoService;
 
+    @Resource(name = "knowledgeRepoService")
+    public void setKnowledgeRepoService(KnowledgeRepoService knowledgeRepoService) {
+        this.knowledgeRepoService = knowledgeRepoService;
+    }
 
+    /**k
+     * 分页查询
+     *
+     * @param page 请求的页码
+     * @param rows 数据集
+     *
+     */
     @RequestMapping("/selectPage.form")
     @ResponseBody
     public PageBean selectPage(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
         PageBean pageBean=new PageBean();
-        pageBean.setCurrentPage(1);
+        pageBean.setCurrentPage(page);
         pageBean.setPageSize(8);
         pageBean=knowledgeService.queryAllKnowledge(pageBean);
         return pageBean;
     }
+    /**
+     * 条件查询（用于知识审批）
+     *
+     * @param page 请求的页码
+     * @param rows 数据集
+     *
+     */
+    @RequestMapping("/selectPage2.form")
+    @ResponseBody
+    public PageBean selectPage2(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
 
+        PageBean pageBean=new PageBean();
+        pageBean.setCurrentPage(page);
+        pageBean.setPageSize(8);
+        pageBean=knowledgeService.querySomeKnowledge(pageBean);
+        return pageBean;
+
+
+    }
+
+
+    /**
+     * 添加知识
+     *
+     * @param kTitle 知识标题
+     * @param createUserId 创建人ID
+     * @param kAnswer 知识解答
+     *
+     */
     @RequestMapping("/addKnowledge.form")
     @ResponseBody
-    public void add(@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId, @RequestParam(value="createTime")  String  createTime, @RequestParam(value="kAnswer")String kAnswer){
+    public void add(@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
 
         System.out.println("addKnowledge");
         UUID uuid  =  UUID.randomUUID();
         String id = UUID.randomUUID().toString();
         Knowledge k=new Knowledge();
+        //System.out.println(createTime);
+
+        //手动输入时间
+
+//        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd ");
+//        String s= "2011-07-09 ";
+//        Date date=null;
+//        try{
+//            date =  formatter.parse(s);
+//        }catch(Exception e){
+//            System.out.println("错误");
+//        }
+
+        //获取系统时间
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String s=formatter.format(new Date());
+
+        Date date=null;
+        try{
+            date =  formatter.parse(s);
+        }catch(Exception e){
+            System.out.println("异常错误");
+        }
+
+
+
         k.setId(id);
         k.setkTitle(kTitle);
         k.setkAnswer(kAnswer);
         k.setCreateUserId(createUserId);
-        //k.setCreateTime(createTime);
+        k.setCreateTime(date);
+
 
         knowledgeService.addKnowledge(k);
+        try {
+            knowledgeRepoService.buildAIndex(k);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除知识（删除待审批）
+     *
+     * @param id 知识ID
+     */
+    @RequestMapping("/knowledgeDelete.form")
+    @ResponseBody
+    public void knowledgeDelete(@RequestParam("id") String id){
+
+        knowledgeService.updateKnowledgeStatus(id,Knowledge.DELETE_WAITING);
 
     }
 
+    /**
+     * 根据id查询知识
+     *
+     * @param id 知识ID
+     */
+    @RequestMapping("/queryKnowledgeById.form")
+    @ResponseBody
+    public Knowledge queryKnowledgeById(@RequestParam("id") String id){
+
+        return knowledgeService.queryKnowledgeById(id);
+
+    }
+
+    /**
+     * 编辑更新知识
+     *
+     * @param kTitle 知识标题
+     * @param createUserId 创建人ID
+     * @param kAnswer 知识解答
+     */
+    @RequestMapping("/updateKnowledge.form")
+    @ResponseBody
+    public void updateKnowledge(@RequestParam(value="id") String id,@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
+        System.out.println(id+kTitle);
+        Knowledge k=new Knowledge();
+        k.setId(id);
+        k.setkTitle(kTitle);
+        k.setCreateUserId(createUserId);
+        k.setkAnswer(kAnswer);
+        knowledgeService.updateKnowledge(id,kTitle,createUserId,kAnswer);
+        try {
+            knowledgeRepoService.updateIndex(k);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 知识审批
+     *
+     * @param id 知识ID
+     */
+    @RequestMapping("/knowledgeApprova.form")
+    @ResponseBody
+    public void knowledgeApprova(@RequestParam("id") String id,@RequestParam("kApprUserId") String kApprUserId,@RequestParam("kApprMemo") String kApprMemo,@RequestParam("button") String button){
+
+        Knowledge k=knowledgeService.queryKnowledgeById(id);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String s=formatter.format(new Date());
+
+        Date date=null;
+        try{
+            date =  formatter.parse(s);
+        }catch(Exception e){
+            System.out.println("异常错误");
+        }
+        System.out.println(id+kApprUserId+kApprMemo);
+        knowledgeService.updateAppr(id,kApprUserId,kApprMemo,date);
+
+        if(button.equals("通过")){
+
+
+            if(k.getkApprStatus().equals(Knowledge.DELETE_WAITING)){
+                knowledgeService.deleteKnowledge(id);
+                try {
+                    knowledgeRepoService.removeIndex(id);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if(k.getkApprStatus().equals(Knowledge.INSERT_WAITING)){
+                knowledgeService.updateKnowledgeStatus(id,Knowledge.APPROVED);
+            }else if(k.getkApprStatus().equals(Knowledge.UPDATE_WAITING)){
+                knowledgeService.updateKnowledgeStatus(id,Knowledge.APPROVED);
+            }
+
+        }else if(button.equals("不通过")){
+
+            knowledgeService.updateKnowledgeStatus(id,Knowledge.UNAPPROVED);
+
+        }
 
 
 
 
 
 
+
+
+    }
 
 
 
 
 }
 
-//    /**
-//     * 知识列表
-//     *
-//     * @param tableName 执行查询的表的名称
-//     *
-//     */
-//
-//
-//    @RequestMapping("/query.form")
-//    @ResponseBody
-//
-//    public List<Knowledge> query(String tableName) {
-//
-//        List<Knowledge> list = service.query("tb_knowledge");
-//
-//        System.out.println(list.toString());
-//
-//        return list;
-//    }
-//
-//    /**
-//     * 知识列表（分页）
-//     *
-//     * @param pageNumber 请求的页码
-//     *
-//     */
-//
-//    @GetMapping("/pagedQuery.form")
-//    @ResponseBody
-//
-//    public PageBean pagedQuery(@RequestParam("pageNumber")int pageNumber) {
-//
-//        PageBean aa=service.pagedQuery("tb_knowledge",pageNumber,2);
-//        System.out.println(aa);
-//        return aa;
-//
-//    }
-//
-//
-//    @GetMapping("/page.form")
-//    @ResponseBody
-//
-//    public PageBean page(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows) {
-//
-//
-//        //ServletContext context = ServletActionContext.getServletContext();
-//
-//        PageBean aa=service.pagedQuery("tb_knowledge",page,rows);
-//        System.out.println(aa);
-//
-//        System.out.println(aa);
-//
-//        return aa;
-//
-//    }
-//
-//
-//    /**
-//     * 知识删除
-//     *
-//     * @param tableName 要操作的数据表
-//     * @param id 主键ID
-//     *
-//     */
-//
-//    @GetMapping("/delete.form")
-//    @ResponseBody
-//
-//    public void delete(String tableName,String id) {
-//
-//
-//        service.delete("tb_knowledge","2");
-//
-//        System.out.println("delete successful!!");
-//
-//    }
-//    /**
-//     * 知识录入
-//     *
-//     * @param k 录入的数据
-//     *
-//     */
-//
-//        @GetMapping("/update.form")
-//        @ResponseBody
-//        public void updateKnowledge(Knowledge k) {
-//            Knowledge cc=new Knowledge();
-//            cc.setkTitle("你好");
-//            cc.setId("333");
-//            knowledgeService.insertKnowledge(cc);
-//
-//        }
-//
-//
-//}
