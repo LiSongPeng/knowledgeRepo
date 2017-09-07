@@ -70,35 +70,13 @@
     </insert>
 
 
-
+    <update id="updateAppr">
+        UPDATE tb_knowledge k SET k.kApprTime=#{kApprTime},k.kApprUserId=#{kApprUserId},k.kApprMemo=#{kApprMemo} WHERE k.id=#{id}
+    </update>
 
 
     <update id="updateKnowledge" parameterType="Knowledge">
-        UPDATE tb_knowledge k SET
-
-            k.kTitle=#{kTitle},
-
-
-            k.kAnswer=#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},
-
-
-            k.kApprStatus=#{kApprStatus},
-
-
-            k.kApprUserId=#{kApprUserId},
-
-
-            k.kApprTime=#{kApprTime},
-
-
-            k.kApprMemo=#{kApprMemo},
-
-
-            k.createUserId=#{createUserId},
-
-
-            k.createTime=#{createTime}
-
+        UPDATE tb_knowledge k SET k.kTitle=#{kTitle},k.kAnswer=#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},k.createUserId=#{createUserId} WHERE k.id=#{id}
     </update>
     <update id="updateKnowledgeStatus">
         UPDATE tb_knowledge k SET k.kApprStatus=#{status} WHERE k.id=#{id}

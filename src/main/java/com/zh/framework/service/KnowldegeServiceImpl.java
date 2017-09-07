@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service("knowledgeService")
@@ -47,14 +48,23 @@ public class KnowldegeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public void updateKnowledge(Knowledge k) {
-
+    public void updateKnowledge(String id,String kTitle,String createUserId,String kAnswer){
+        knowledgeMapper.updateKnowledge(id,kTitle,createUserId,kAnswer);
     }
 
     @Override
     public void updateKnowledgeStatus(String id, String status) {
+        knowledgeMapper.updateKnowledgeStatus(id,status);
 
     }
 
+    @Override
+    public Knowledge queryKnowledgeById(String id) {
+        return knowledgeMapper.queryKnowledgeById(id);
+    }
 
+    @Override
+    public void updateAppr(String id, String kApprUserId, String kApprMemo, Date kApprTime) {
+        knowledgeMapper.updateAppr(id, kApprUserId, kApprMemo, kApprTime);
+    }
 }

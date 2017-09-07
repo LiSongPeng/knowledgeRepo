@@ -100,20 +100,100 @@ public class KnowledgeController{
     }
 
     /**
-     * 删除知识
+     * 删除知识（删除待审批）
      *
      * @param id 知识ID
      */
     @RequestMapping("/knowledgeDelete.form")
-
+    @ResponseBody
     public void knowledgeDelete(@RequestParam("id") String id){
 
-        knowledgeService.deleteKnowledge(id);
+        knowledgeService.updateKnowledgeStatus(id,Knowledge.DELETE_WAITING);
+
+    }
+
+    /**
+     * 根据id查询知识
+     *
+     * @param id 知识ID
+     */
+    @RequestMapping("/queryKnowledgeById.form")
+    @ResponseBody
+    public Knowledge queryKnowledgeById(@RequestParam("id") String id){
+
+        return knowledgeService.queryKnowledgeById(id);
+
+    }
+
+    /**
+     * 编辑更新知识
+     *
+     * @param kTitle 知识标题
+     * @param createUserId 创建人ID
+     * @param kAnswer 知识解答
+     */
+    @RequestMapping("/updateKnowledge.form")
+    @ResponseBody
+    public void updateKnowledge(@RequestParam(value="id") String id,@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
+        System.out.println(id+kTitle);
+        Knowledge k=new Knowledge();
+        k.setId(id);
+        k.setkTitle(kTitle);
+        k.setCreateUserId(createUserId);
+        k.setkAnswer(kAnswer);
+        knowledgeService.updateKnowledge(id,kTitle,createUserId,kAnswer);
 
     }
 
 
+    /**
+     * 知识审批
+     *
+     * @param id 知识ID
+     */
+    @RequestMapping("/knowledgeApprova.form")
+    @ResponseBody
+    public void knowledgeApprova(@RequestParam("id") String id,@RequestParam("kApprUserId") String kApprUserId,@RequestParam("kApprMemo") String kApprMemo,@RequestParam("button") String button){
 
+        Knowledge k=knowledgeService.queryKnowledgeById(id);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String s=formatter.format(new Date());
+
+        Date date=null;
+        try{
+            date =  formatter.parse(s);
+        }catch(Exception e){
+            System.out.println("异常错误");
+        }
+        System.out.println(id+kApprUserId+kApprMemo);
+        knowledgeService.updateAppr(id,kApprUserId,kApprMemo,date);
+
+        if(button.equals("通过")){
+
+
+            if(k.getkApprStatus().equals(Knowledge.DELETE_WAITING)){
+                knowledgeService.deleteKnowledge(id);
+            }else if(k.getkApprStatus().equals(Knowledge.INSERT_WAITING)){
+                knowledgeService.updateKnowledgeStatus(id,Knowledge.APPROVED);
+            }else if(k.getkApprStatus().equals(Knowledge.UPDATE_WAITING)){
+                knowledgeService.updateKnowledgeStatus(id,Knowledge.APPROVED);
+            }
+
+        }else if(button.equals("不通过")){
+
+            knowledgeService.updateKnowledgeStatus(id,Knowledge.UNAPPROVED);
+
+        }
+
+
+
+
+
+
+
+
+    }
 
 
 
