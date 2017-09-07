@@ -31,6 +31,10 @@ public class ResourceServiceImpl implements ResourceService {
         return resourceMapper.query(param);
     }
 
+    public List<Resource> queryByUser(String userid){
+        return resourceMapper.queryByUser(userid);
+    }
+
     private int toTreeDataList(String parentId,int level,List<TreeGridData> totalList){
         List<Resource> list= resourceMapper.queryByPid(parentId);
         for(Resource res:list){
