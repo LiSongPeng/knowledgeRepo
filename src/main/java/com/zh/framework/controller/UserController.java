@@ -99,4 +99,6 @@ public class UserController extends BaseController<User> {
         request.getSession().setAttribute("currUser", null);
         return "SUCCESS";
     }
+
+
 }

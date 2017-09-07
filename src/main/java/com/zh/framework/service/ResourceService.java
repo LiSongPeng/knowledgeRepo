@@ -12,4 +12,5 @@ import java.util.Map;
 public interface ResourceService {
     public List<TreeGridData> queryAsTree();
     public List<Resource> querySearch(Map<String,Object> param);
+    public List<Resource> queryByUser(String userid);
 }
