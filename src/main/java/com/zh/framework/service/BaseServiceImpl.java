@@ -32,6 +32,7 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         String tbname=entity.getClass().getSimpleName();
         tbname=("tb_"+tbname).toLowerCase();
         System.out.println("!!!!11111"+tbname);
+        System.out.println("!!!!11111"+entity);
         param.put("entity",entity);
         param.put("tableName",tbname);
         param.put("sidx",pageBean.getSidx());

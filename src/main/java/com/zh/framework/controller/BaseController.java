@@ -55,10 +55,8 @@ public  class BaseController<T> {
         pageBean.setPageSize(pageSize);
         pageBean.setSidx(sidx);
         pageBean.setSord(sord);
-        if(pageBean.getContent()==null||pageBean.getContent().size()==0){
-            pageBean.setContent(new ArrayList<T>());
-            pageBean.getContent().add(this.target);
-        }
+        pageBean.setContent(new ArrayList<T>());
+        pageBean.getContent().add(this.target);
         Map<String,Object> jsmap=new HashMap<>();
         PageBean<Map<String,Object>> repb=baseService.query(pageBean);
         jsmap.put("totalPages",repb.getTotalPages());
