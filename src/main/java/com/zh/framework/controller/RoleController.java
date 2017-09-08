@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Letg4 on 2017/9/7.
@@ -44,7 +46,10 @@ public class RoleController extends BaseController<Role> {
 
     @GetMapping("getResources.form")
     @ResponseBody
-    public List<String> getResources(@RequestParam("roleId") String roleId) {
-        return resourceService.getResources(roleId);
+    public Map<String,Object> getResources(@RequestParam("roleId") String roleId) {
+        Map<String ,Object> map=new HashMap<>();
+        map.put("allResource",resourceService.queryAsTree());
+        map.put("roleResource",resourceService.getResources(roleId));
+        return map;
     }
 }

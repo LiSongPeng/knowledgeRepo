@@ -105,11 +105,11 @@ public  class BaseController<T> {
         while (em.hasMoreElements()) {
             String name = (String) em.nextElement();
             if (attrnames.contains(name)) {
-                System.out.println("包含这个:"+name);
                 String value = request.getParameter(name);
                 attrs.put(name, value);
             }
         }
+        attrs.put("createUserId",request.getParameter("createUserId"));
         Date crttime=new Date(System.currentTimeMillis());
         attrs.put("createTime",crttime);
         String total=baseService.add(this.getTableName(),attrs);
