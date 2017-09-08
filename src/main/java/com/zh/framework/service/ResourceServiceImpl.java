@@ -29,10 +29,13 @@ public class ResourceServiceImpl implements ResourceService {
         return totalList;
     }
 
+
+    @Override
     public List<Resource> querySearch(Map<String, Object> param) {
         return resourceMapper.query(param);
     }
 
+    @Override
     public List<Resource> queryByUser(String userid) {
         return resourceMapper.queryByUser(userid);
     }
