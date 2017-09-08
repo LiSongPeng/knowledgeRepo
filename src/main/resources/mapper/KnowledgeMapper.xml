@@ -17,8 +17,8 @@
         <result property="createTime" column="createTime"/>
     </resultMap>
     <insert id="addKnowledge" parameterType="Knowledge">
-        INSERT INTO tb_knowledge(id,kTitle,kAnswer,createTime,createUserId) VALUES (
-          #{id},#{kTitle},#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},#{createTime},#{createUserId}
+        INSERT INTO tb_knowledge(id,kTitle,kAnswer,kUserTimeLast,createTime,createUserId) VALUES (
+          #{id},#{kTitle},#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},#{kUserTimeLast},#{createTime},#{createUserId}
         )
     </insert>
     <select id="queryAllKnowledge" resultMap="knowledgeMap">

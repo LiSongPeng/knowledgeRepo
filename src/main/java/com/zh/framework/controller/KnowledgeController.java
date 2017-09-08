@@ -124,6 +124,7 @@ public class KnowledgeController{
         k.setkAnswer(kAnswer);
         k.setCreateUserId(createUserId);
         k.setCreateTime(date);
+        k.setkUserTimeLast(date);
 
 
         knowledgeService.addKnowledge(k);
@@ -177,6 +178,7 @@ public class KnowledgeController{
         k.setCreateUserId(createUserId);
         k.setkAnswer(kAnswer);
         knowledgeService.updateKnowledge(id,kTitle,createUserId,kAnswer);
+        knowledgeService.updateKnowledgeStatus(id,Knowledge.UPDATE_WAITING);
         try {
             knowledgeRepoService.updateIndex(k);
         } catch (Exception e) {
