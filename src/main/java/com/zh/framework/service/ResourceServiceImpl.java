@@ -21,31 +21,40 @@ public class ResourceServiceImpl implements ResourceService {
     @Autowired
     private ResourceMapper resourceMapper;
 
-    public List<TreeGridData> queryAsTree(){
-        Map<String,Object> param=new HashMap<>();
-        List<Resource> querylist= resourceMapper.query(param);
-        List<TreeGridData> totalList=new ArrayList<>();
-        toTreeDataList(null,1,totalList);
+    public List<TreeGridData> queryAsTree() {
+        Map<String, Object> param = new HashMap<>();
+        List<Resource> querylist = resourceMapper.query(param);
+        List<TreeGridData> totalList = new ArrayList<>();
+        toTreeDataList(null, 1, totalList);
         return totalList;
     }
 
-    public List<Resource> querySearch(Map<String,Object> param){
+    public List<Resource> querySearch(Map<String, Object> param) {
         return resourceMapper.query(param);
     }
 
-    public List<Resource> queryByUser(String userid){
+    public List<Resource> queryByUser(String userid) {
         return resourceMapper.queryByUser(userid);
     }
 
-    private int toTreeDataList(String parentId,int level,List<TreeGridData> totalList){
-        List<Resource> list= resourceMapper.queryByPid(parentId);
-        for(Resource res:list){
-            TreeGridData treedata= new TreeGridData(res);
+    @Override
+    public List<String> getResources(String roleId) {
+        List<Resource> list = resourceMapper.queryByRole(roleId);
+        List<String> result = new ArrayList<>();
+        for (Resource resource : list)
+            result.add(resource.getId());
+        return result;
+    }
+
+    private int toTreeDataList(String parentId, int level, List<TreeGridData> totalList) {
+        List<Resource> list = resourceMapper.queryByPid(parentId);
+        for (Resource res : list) {
+            TreeGridData treedata = new TreeGridData(res);
             treedata.setLevel(level);
             treedata.setExpanded(true);
             treedata.setLoaded(true);
             totalList.add(treedata);
-            treedata.setLeaf(toTreeDataList(res.getId(),level+1,totalList)==0);
+            treedata.setLeaf(toTreeDataList(res.getId(), level + 1, totalList) == 0);
         }
         return list.size();
     }
