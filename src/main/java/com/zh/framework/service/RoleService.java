@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface RoleService {
     List<Role> queryRoleOption();
+    int setUserRole(String rid,List<String> sids);
 }

@@ -67,23 +67,26 @@ public class UserController extends BaseController<User> {
     @Override
     @RequestMapping(value = "/add.form")
     @ResponseBody
-    public String add(HttpServletRequest request){
+    public Map<String, Object> add(HttpServletRequest request){
         List<String> list=new ArrayList<>();
-        String userid= super.add(request);
+        String userid= (String) super.add(request).get("total");
         String rolestr= request.getParameter("uRole");
         String[] rolearr=rolestr.split(",");
         Collections.addAll(list,rolearr);
 
         userService.setUserRole(userid,list);
-        return userid;
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",userid);
+        return result;
     }
 
     @Override
     @RequestMapping(value = "/update.form")
     @ResponseBody
-    public String update(HttpServletRequest request){
+    public Map<String, Object> update(HttpServletRequest request){
         List<String> list=new ArrayList<>();
-        String userid= super.add(request);
+         super.update(request).get("total");
+        String userid=request.getParameter("id");
         String rolestr= request.getParameter("uRole");
         String[] rolearr=rolestr.split(",");
         Collections.addAll(list,rolearr);
