@@ -14,11 +14,35 @@ public class RoleSQL {
         }}.toString();
     }
 
-    public String setUserRole(@Param("rid") String rid,@Param("sid") String sid){
+    public String clearRoleRes(@Param("rid") String rid){
+        return new SQL(){{
+            DELETE_FROM("tb_resources_role");
+            WHERE("rid=#{rid}");
+        }}.toString();
+    }
+
+    public String setRoleRes(@Param("rid") String rid,@Param("sid") String sid){
         return new SQL(){{
             INSERT_INTO("tb_resources_role");
             VALUES("rid","#{rid}");
             VALUES("sid","#{sid}");
         }}.toString();
     }
+
+    public String getUserRole(@Param("uid") String uid){
+        return new SQL(){{
+            SELECT("rid");
+            FROM("tb_role_user");
+            WHERE("uid=#{uid}");
+        }}.toString();
+    }
+
+    public String clearUserRole( String uid){
+        return new SQL(){{
+            DELETE_FROM("tb_role_user");
+            WHERE("uid=#{uid}");
+        }}.toString();
+    }
+
+
 }

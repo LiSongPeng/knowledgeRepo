@@ -48,6 +48,10 @@ public class UserServiceImpl implements UserService {
         }
         return totalsuc;
     }
+    @Override
+    public int clearUserRole(String uid){
+        return userMapper.clearUserRole(uid);
+    }
 
 
 

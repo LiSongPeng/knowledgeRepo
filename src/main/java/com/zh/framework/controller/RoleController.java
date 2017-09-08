@@ -45,6 +45,8 @@ public class RoleController extends BaseController<Role> {
         return list;
     }
 
+
+
     @GetMapping("/getResources.form")
     @ResponseBody
     public List<String> getResources(@RequestParam("roleId") String roleId) {
@@ -52,14 +54,21 @@ public class RoleController extends BaseController<Role> {
         return resourceService.getResources(roleId);
     }
 
+    @RequestMapping("/getUserRole.form")
+    @ResponseBody
+    public List<String> getUserRole(@RequestParam("uid") String uid){
+        return roleService.getUserRole(uid);
+    }
+
+
     @RequestMapping("/setRoleRes.form")
     @ResponseBody
     public List<Integer> setRoleRes(@RequestParam("resIds") String resIds,@RequestParam("roleId") String roleId) throws IOException {
         ObjectMapper mapper=new ObjectMapper();
         JavaType javaType=mapper.getTypeFactory().constructCollectionType(ArrayList.class,String.class);
         List<String> list=mapper.readValue(resIds,javaType);
-        System.out.println(resIds);
-        int total= roleService.setUserRole(roleId ,list);
+        roleService.clearRoleRes(roleId);
+        int total= roleService.setRoleRes(roleId ,list);
         List<Integer> totallist=new ArrayList<>();
         totallist.add(total);
         return totallist;
