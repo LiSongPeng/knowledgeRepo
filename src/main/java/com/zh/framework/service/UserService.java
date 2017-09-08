@@ -14,5 +14,6 @@ public interface UserService {
 
     int setUserRole(String uid, List<String> roleList);
 
+
     User login(String username, String password);
 }

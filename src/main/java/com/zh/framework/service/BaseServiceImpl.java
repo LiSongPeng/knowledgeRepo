@@ -53,12 +53,11 @@ public class BaseServiceImpl<T> implements BaseService<T>{
     }
 
     @Override
-    public int add(String tableName,Map<String,Object> attrs) {
-        if (attrs.get("id")==null||"".equals(attrs.get("id"))){
-            String uuid=UUID.randomUUID().toString();
-            attrs.put("id",uuid );
-        }
-       return baseMapper.add(tableName,attrs);
+    public String add(String tableName,Map<String,Object> attrs) {
+        String uuid=UUID.randomUUID().toString();
+        attrs.put("id",uuid );
+        baseMapper.add(tableName,attrs);
+       return (String)attrs.get("id");
     }
 
     @Override

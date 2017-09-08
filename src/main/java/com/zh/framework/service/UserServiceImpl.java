@@ -41,12 +41,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int setUserRole(String uid, List<String> roleList) {
+        userMapper.clearUserRole(uid);
         int totalsuc = 0;
         for (String rid : roleList) {
             totalsuc += userMapper.setUserRole(uid, rid);
         }
         return totalsuc;
     }
+
+
 
     @Override
     public User login(String username, String password) {

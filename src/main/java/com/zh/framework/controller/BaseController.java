@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.util.*;
 
@@ -95,19 +96,24 @@ public  class BaseController<T> {
     @ResponseBody
     public String add(HttpServletRequest request){
         Enumeration em = request.getParameterNames();
+        Field[] fields = target.getClass().getDeclaredFields();
+        List<String> attrnames=new ArrayList<>();
+        for(Field field:fields){
+            attrnames.add(field.getName());
+        }
         Map<String,Object> attrs=new HashMap<>();
         while (em.hasMoreElements()) {
             String name = (String) em.nextElement();
-            System.out.println("name:name");
-            if ("oper".equals(name))
-                continue;
-            String value = request.getParameter(name);
-            attrs.put(name,value);
+            if (attrnames.contains(name)) {
+                System.out.println("包含这个:"+name);
+                String value = request.getParameter(name);
+                attrs.put(name, value);
+            }
         }
         Date crttime=new Date(System.currentTimeMillis());
         attrs.put("createTime",crttime);
-        int total=baseService.add(this.getTableName(),attrs);
-        return ""+total;
+        String total=baseService.add(this.getTableName(),attrs);
+        return total;
     }
 
     @RequestMapping("/delete.form")

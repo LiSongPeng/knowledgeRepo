@@ -2,16 +2,15 @@ package com.zh.framework.controller;
 
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.entity.User;
+import com.zh.framework.service.BaseService;
+import com.zh.framework.service.RoleService;
 import com.zh.framework.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Letg4 on 2017/9/3.
@@ -23,6 +22,7 @@ public class UserController extends BaseController<User> {
 
     @Autowired
     private UserService userService;
+
 
     public UserController() {
         super(new User());
@@ -64,26 +64,33 @@ public class UserController extends BaseController<User> {
         return jsmap;
     }
 
-    @RequestMapping(value = "/edit.form")
+    @Override
+    @RequestMapping(value = "/add.form")
     @ResponseBody
-    public String edit(HttpServletRequest request) {
-        String oper = request.getParameter("oper");
-        String remsg = "";
-        switch (oper) {
-            case "del":
-                remsg = delete(request);
-                break;
-            case "add":
-                remsg = add(request);
-                break;
-            case "edit":
-                remsg = update(request);
-                break;
-            default:
-                remsg = "操作有误";
-        }
-        return remsg;
+    public String add(HttpServletRequest request){
+        List<String> list=new ArrayList<>();
+        String userid= super.add(request);
+        String rolestr= request.getParameter("uRole");
+        String[] rolearr=rolestr.split(",");
+        Collections.addAll(list,rolearr);
+
+        userService.setUserRole(userid,list);
+        return userid;
     }
+
+    @Override
+    @RequestMapping(value = "/update.form")
+    @ResponseBody
+    public String update(HttpServletRequest request){
+        List<String> list=new ArrayList<>();
+        String userid= super.add(request);
+        String rolestr= request.getParameter("uRole");
+        String[] rolearr=rolestr.split(",");
+        Collections.addAll(list,rolearr);
+        userService.setUserRole(request.getParameter("id"),list);
+        return super.update(request);
+    }
+
 
     @RequestMapping(value = "/login.form", method = RequestMethod.POST)
     @ResponseBody

@@ -12,7 +12,6 @@
         <association property="createUser" >
             <id property="id" column="crtuId"/>
             <result property="uName" column="crtuName"/>
-            <result property="uDescription" column="crtuDescription"/>
         </association>
         <collection property="resources" ofType="Resource">
             <id property="id" column="resId"/>

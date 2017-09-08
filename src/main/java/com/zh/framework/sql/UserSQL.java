@@ -2,6 +2,7 @@ package com.zh.framework.sql;
 
 import com.zh.framework.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;
@@ -22,8 +23,7 @@ public class UserSQL {
                     "u.createTime as createTime," +
                     "u.uLastOnLine as uLastOnLine," +
                     "r.id as rId," +
-                    "r.rName as rName, " +
-                    "r.rDescription as rDescription");
+                    "r.rName as rName" );
             FROM("tb_user u");
             if (user.getId() != null && !"".equals(user.getId())) {
                 WHERE("u.id=#{user.id}");
@@ -41,11 +41,18 @@ public class UserSQL {
         return sql;
     }
 
-    public String setUserRole(Map<String,Object> param){
+    public String setUserRole(@Param("uid") String uid,@Param("rid") String rid){
         return new SQL(){{
             INSERT_INTO("tb_role_user");
             VALUES("uid","#{uid}");
             VALUES("rid","#{rid}");
+        }}.toString();
+    }
+
+    public String clearUserRole(String uid){
+        return new SQL(){{
+            DELETE_FROM("tb_role_user");
+            WHERE("uid=#{uid}");
         }}.toString();
     }
 }
