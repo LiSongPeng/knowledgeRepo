@@ -108,6 +108,7 @@ public  class BaseController<T> {
             String name = (String) em.nextElement();
             if (attrnames.contains(name)) {
                 String value = request.getParameter(name);
+                System.out.println(name+":::"+value);
                 attrs.put(name, value);
             }
         }
