@@ -1,5 +1,7 @@
 package com.zh.framework.controller;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.entity.User;
 import com.zh.framework.service.BaseService;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -67,28 +70,31 @@ public class UserController extends BaseController<User> {
     @Override
     @RequestMapping(value = "/add.form")
     @ResponseBody
-    public String add(HttpServletRequest request){
-        List<String> list=new ArrayList<>();
-        String userid= super.add(request);
-        String rolestr= request.getParameter("uRole");
-        String[] rolearr=rolestr.split(",");
-        Collections.addAll(list,rolearr);
-
-        userService.setUserRole(userid,list);
-        return userid;
+    public Map<String, Object> add(HttpServletRequest request){
+        String userid= (String) super.add(request).get("total");
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",userid);
+        return result;
     }
 
     @Override
     @RequestMapping(value = "/update.form")
     @ResponseBody
-    public String update(HttpServletRequest request){
-        List<String> list=new ArrayList<>();
-        String userid= super.add(request);
-        String rolestr= request.getParameter("uRole");
-        String[] rolearr=rolestr.split(",");
-        Collections.addAll(list,rolearr);
-        userService.setUserRole(request.getParameter("id"),list);
+    public Map<String, Object> update(HttpServletRequest request){
         return super.update(request);
+    }
+
+    @RequestMapping("/setUserRole.form")
+    @ResponseBody
+    public Map<String, Object> setUserRole(@RequestParam("uid") String uid,@RequestParam("rids") String rids) throws IOException {
+        ObjectMapper mapper=new ObjectMapper();
+        JavaType javaType=mapper.getTypeFactory().constructCollectionType(ArrayList.class,String.class);
+        List<String> list=mapper.readValue(rids,javaType);
+        userService.clearUserRole(uid);
+        int total=userService.setUserRole(uid,list);
+        Map<String,Object> map=new HashMap<>();
+        map.put("total",total);
+        return map;
     }
 
 

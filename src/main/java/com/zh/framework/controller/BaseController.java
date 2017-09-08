@@ -76,7 +76,7 @@ public  class BaseController<T> {
 
     @RequestMapping("/update.form")
     @ResponseBody
-    public String update(HttpServletRequest request){
+    public Map<String,Object> update(HttpServletRequest request){
         Enumeration em = request.getParameterNames();
         String id=request.getParameter("id");
         Map<String,Object> attrs=new HashMap<>();
@@ -89,12 +89,14 @@ public  class BaseController<T> {
         }
         int total=0;
         total+=baseService.update(this.getTableName(),id,attrs);
-        return ""+total;
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",total);
+        return result;
     }
 
     @RequestMapping("/add.form")
     @ResponseBody
-    public String add(HttpServletRequest request){
+    public Map<String, Object> add(HttpServletRequest request){
         Enumeration em = request.getParameterNames();
         Field[] fields = target.getClass().getDeclaredFields();
         List<String> attrnames=new ArrayList<>();
@@ -106,6 +108,7 @@ public  class BaseController<T> {
             String name = (String) em.nextElement();
             if (attrnames.contains(name)) {
                 String value = request.getParameter(name);
+                System.out.println(name+":::"+value);
                 attrs.put(name, value);
             }
         }
@@ -113,19 +116,23 @@ public  class BaseController<T> {
         Date crttime=new Date(System.currentTimeMillis());
         attrs.put("createTime",crttime);
         String total=baseService.add(this.getTableName(),attrs);
-        return total;
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",total);
+        return result;
     }
 
     @RequestMapping("/delete.form")
     @ResponseBody
-    public String delete(HttpServletRequest request){
+    public Map<String, Object> delete(HttpServletRequest request){
         String id = request.getParameter("id");
         int total=0;
         String[] idlist=id.split(",");
         for (String delid:idlist) {
             total+=baseService.delete(this.getTableName(),delid);
         }
-        return ""+total;
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",total);
+        return result;
     }
 
     public String getTableName(){

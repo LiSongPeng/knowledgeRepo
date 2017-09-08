@@ -21,4 +21,25 @@ public class RoleServiceImpl implements RoleService{
 
         return roleMapper.queryRoleOption();
     }
+
+    @Override
+    public int setRoleRes(String rid, List<String> sids) {
+        int total=0;
+        for (String sid:sids) {
+            total+=roleMapper.setRoleRes(rid,sid);
+        }
+        return total;
+    }
+
+    @Override
+    public List<String> getUserRole(String uid) {
+        return roleMapper.getUserRole(uid);
+    }
+
+    @Override
+    public int clearRoleRes(String rid) {
+        return roleMapper.clearRoleRes(rid);
+    }
+
+
 }

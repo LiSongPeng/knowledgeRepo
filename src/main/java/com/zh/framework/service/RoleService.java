@@ -1,7 +1,6 @@
 package com.zh.framework.service;
 
 import com.zh.framework.entity.Role;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -10,4 +9,7 @@ import java.util.List;
  */
 public interface RoleService {
     List<Role> queryRoleOption();
+    int setRoleRes(String rid,List<String> sids);
+    List<String> getUserRole(String uid);
+    int clearRoleRes( String rid);
 }

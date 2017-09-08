@@ -21,8 +21,8 @@ public interface UserMapper {
     @InsertProvider(type = UserSQL.class, method = "setUserRole")
     int setUserRole(@Param("uid") String uid,@Param("rid") String rid);
 
-    @DeleteProvider(type = UserSQL.class, method ="clearUserRole" )
-    void clearUserRole(String uid);
+    @DeleteProvider(type = UserSQL.class,method = "clearUserRole")
+    int clearUserRole( String uid);
 
     User queryByNameAndPass(@Param("username") String username, @Param("password") String password);
 }
