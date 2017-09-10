@@ -15,7 +15,8 @@ public class User {
     private String uPassword;
     private int deleteStatus;
     private String uDescription;
-    private String createUserId;
+//    private String createUserId;
+    private User createUser;
     private Date createTime;
     private Date uLastOnLine;
     private List<Role> roles;
@@ -63,13 +64,13 @@ public class User {
         this.uDescription = uDescription;
     }
 
-    public String getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(String createUserId) {
-        this.createUserId = createUserId;
-    }
+//    public String getCreateUserId() {
+//        return createUserId;
+//    }
+//
+//    public void setCreateUserId(String createUserId) {
+//        this.createUserId = createUserId;
+//    }
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
@@ -98,4 +99,13 @@ public class User {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+    public User getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(User createUser) {
+        this.createUser = createUser;
+    }
+
 }

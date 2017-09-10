@@ -68,6 +68,7 @@ public  class BaseController<T> {
         return jsmap;
     }
 
+
     @RequestMapping("/queryById.form")
     @ResponseBody
     public Map<String, Object> queryById(@RequestParam("id") String id){
@@ -112,7 +113,7 @@ public  class BaseController<T> {
                 attrs.put(name, value);
             }
         }
-        attrs.put("createUserId",request.getParameter("createUserId"));
+        attrs.put("createUserId",request.getHeader("Current-UserId"));
         Date crttime=new Date(System.currentTimeMillis());
         attrs.put("createTime",crttime);
         String total=baseService.add(this.getTableName(),attrs);

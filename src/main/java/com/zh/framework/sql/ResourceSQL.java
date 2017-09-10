@@ -28,6 +28,9 @@ public class ResourceSQL {
             if (param.get("id") != null && !"".equals(param.get("id"))) {
                 WHERE("s.id=#{id}");
             }
+            if (param.get("sType") != null && !"".equals(param.get("sType"))) {
+                WHERE("s.sType=#{sType}");
+            }
             if (param.get("sParentId") != null && !"".equals(param.get("sParentId"))) {
                 WHERE("s.sParentId=#{sParentId}");
             }

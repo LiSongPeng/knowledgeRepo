@@ -9,9 +9,13 @@
         <result property="uPassword" column="uPassword"/>
         <result property="deleteStatus" column="uDeleteStatus"/>
         <result property="uDescription" column="uDescription"/>
-        <result property="createUserId" column="createUserId"/>
+        <!--<result property="createUserId" column="createUserId"/>-->
         <result property="createTime" column="createTime"/>
         <result property="uLastOnLine" column="uLastOnLine"/>
+        <association property="createUser" javaType="User">
+            <id property="id" column="crtuId"/>
+            <result property="uName" column="crtuName"/>
+        </association>
         <collection property="roles" ofType="Role">
             <id property="id" column="rid"/>
             <result property="rName" column="rName"/>

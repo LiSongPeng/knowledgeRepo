@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +26,9 @@ import java.util.Map;
 public class RoleController extends BaseController<Role> {
 
     @Autowired
-    RoleService roleService;
+    private RoleService roleService;
     @Autowired
-    ResourceService resourceService;
+    private ResourceService resourceService;
 
 
 
@@ -35,17 +36,33 @@ public class RoleController extends BaseController<Role> {
         super(new Role());
     }
 
-    @RequestMapping("/getRoleOption.form")
+
+    @RequestMapping("/queryList.form")
     @ResponseBody
-    public List<Role> getRoleOption() {
-        StringBuffer sbuf = new StringBuffer();
-        List<Role> list = roleService.queryRoleOption();
-        return list;
+    public Map<String,Object> queryList(HttpServletRequest request) {
+        Map<String,Object> param=new HashMap<>();
+        String rName=request.getParameter("rName");
+        param.put("rName",rName);
+        Map<String,Object> result=new HashMap<>();
+        result.put("content",roleService.queryRoleList(param));
+        return result;
+    }
+
+    @Override
+    @RequestMapping("/roleUpdate/query.form")
+    @ResponseBody
+    public Map<String,Object> query(HttpServletRequest request){
+        return super.query(request);
+    }
+    @Override
+    @RequestMapping("/roleUpdate/update.form")
+    @ResponseBody
+    public Map<String,Object> update(HttpServletRequest request){
+        return super.update(request);
     }
 
 
-
-    @GetMapping("/getResources.form")
+    @GetMapping("/roleAuth/getResources.form")
     @ResponseBody
     public Map<String, Object> getResources(@RequestParam("roleId") String roleId) {
         List<Resource> reslist= resourceService.querySearch(new HashMap<String,Object>());
@@ -63,14 +80,9 @@ public class RoleController extends BaseController<Role> {
         return result;
     }
 
-    @RequestMapping("/getUserRole.form")
-    @ResponseBody
-    public List<String> getUserRole(@RequestParam("uid") String uid){
-        return roleService.getUserRole(uid);
-    }
 
 
-    @RequestMapping("/setRoleRes.form")
+    @RequestMapping("/roleAuth/setRoleRes.form")
     @ResponseBody
     public List<Integer> setRoleRes(@RequestParam("resIds") String resIds,@RequestParam("roleId") String roleId) throws IOException {
         ObjectMapper mapper=new ObjectMapper();

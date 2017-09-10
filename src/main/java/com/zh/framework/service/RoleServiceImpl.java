@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Letg4 on 2017/9/7.
@@ -20,6 +21,11 @@ public class RoleServiceImpl implements RoleService{
     public List<Role> queryRoleOption() {
 
         return roleMapper.queryRoleOption();
+    }
+
+    @Override
+    public List<Role> queryRoleList(Map<String,Object> param) {
+        return roleMapper.queryRoleList(param);
     }
 
     @Override

@@ -19,9 +19,10 @@ public class UserSQL {
                     "u.uPassword as uPassword," +
                     "u.uDescription as uDescription," +
                     "u.deleteStatus as uDeleteStatus," +
-                    "u.createUserId as createUserId," +
                     "u.createTime as createTime," +
                     "u.uLastOnLine as uLastOnLine," +
+                    "crtu.id as crtuId," +
+                    "crtu.uName as crtuName," +
                     "r.id as rId," +
                     "r.rName as rName" );
             FROM("tb_user u");
@@ -31,6 +32,7 @@ public class UserSQL {
             if (user.getuName() != null && !"".equals(user.getuName())) {
                 WHERE("uName like '%"+user.getuName()+"%'");
             }
+            LEFT_OUTER_JOIN("tb_user crtu on u.createUserId=crtu.id");
             LEFT_OUTER_JOIN("tb_role_user ru on u.id = ru.uid");
             LEFT_OUTER_JOIN("tb_role r on ru.rid = r.id");
             if (param.get("sidx") != null && !"".equals(param.get("sidx"))) {

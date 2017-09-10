@@ -37,7 +37,7 @@ public class BaseSQL {
             }
         }}.toString();
     }
-    public String queryById(String id,String tableName){
+    public String queryById(@Param("id") String id,@Param("tableName") String tableName){
         return new SQL(){{
             SELECT("*");
             FROM(""+tableName);
