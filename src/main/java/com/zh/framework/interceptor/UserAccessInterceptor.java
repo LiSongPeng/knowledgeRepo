@@ -60,6 +60,7 @@ public class UserAccessInterceptor extends HandlerInterceptorAdapter {
 
         List<Resource> userres= resourceService.queryByUser(cuid);
         for(Resource resource: userres){
+            System.out.println("资源名:"+resource.getsName());
             String resurl= resource.getsUrl();
             //资源url为空，直接进行下个判断
             if (resurl==null||"".equals(resurl)){

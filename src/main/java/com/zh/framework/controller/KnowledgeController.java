@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
+@RequestMapping("/kno")
 public class KnowledgeController{
 
     @Autowired
@@ -124,6 +125,7 @@ public class KnowledgeController{
         k.setkAnswer(kAnswer);
         k.setCreateUserId(createUserId);
         k.setCreateTime(date);
+        k.setkUserTimeLast(date);
 
 
         knowledgeService.addKnowledge(k);
@@ -177,6 +179,7 @@ public class KnowledgeController{
         k.setCreateUserId(createUserId);
         k.setkAnswer(kAnswer);
         knowledgeService.updateKnowledge(id,kTitle,createUserId,kAnswer);
+        knowledgeService.updateKnowledgeStatus(id,Knowledge.UPDATE_WAITING);
         try {
             knowledgeRepoService.updateIndex(k);
         } catch (Exception e) {
