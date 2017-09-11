@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,25 @@ public class ResourceController extends BaseController<Resource>{
         return map;
     }
 
-    @RequestMapping("/selectById.form")
+    @RequestMapping(value = {"/resourceAdd/getResOptions.form","/resourceUpdate/getResOptions.form"})
+    @ResponseBody
+    public Map<String,Object> getResOptions(){
+        Map<String,Object> param=new HashMap<String,Object>();
+        param.put("sType",0);
+        List<Resource> reslist= resourceService.querySearch(param);
+        List<Map<String,String>> allres=new ArrayList<>();
+        for(Resource res : reslist){
+            Map<String,String> resmap=new HashMap<>();
+            resmap.put("id",res.getId());
+            resmap.put("text",res.getsName());
+            allres.add(resmap);
+        }
+        Map<String,Object> result=new HashMap<String,Object>();
+        result.put("resOptions",allres);
+        return result;
+    }
+
+    @RequestMapping("/resourceUpdate/selectById.form")
     @ResponseBody
     public Resource selectById(@RequestParam("id") String id){
         Map<String,Object> param=new HashMap<>();
@@ -50,11 +69,18 @@ public class ResourceController extends BaseController<Resource>{
         return resourceService.querySearch(param).get(0);
     }
 
+    @Override
+    @RequestMapping("/resourceUpdate/update.form")
+    @ResponseBody
+    public Map<String,Object> update(HttpServletRequest request){
+        return super.update(request);
+    }
+
+
     @RequestMapping("/getUserRes.form")
     @ResponseBody
-    public List<Resource> getUserRes(@Param("userid")String userid){
-        System.out.println(userid+"123123123");
-
+    public List<Resource> getUserRes(HttpServletRequest request){
+        String userid =request.getHeader("Current-UserID");
         return resourceService.queryByUser(userid);
     }
 }

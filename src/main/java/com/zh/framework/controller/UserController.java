@@ -3,6 +3,7 @@ package com.zh.framework.controller;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zh.framework.entity.PageBean;
+import com.zh.framework.entity.Role;
 import com.zh.framework.entity.User;
 import com.zh.framework.service.BaseService;
 import com.zh.framework.service.RoleService;
@@ -25,6 +26,8 @@ public class UserController extends BaseController<User> {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
 
     public UserController() {
@@ -78,13 +81,33 @@ public class UserController extends BaseController<User> {
     }
 
     @Override
-    @RequestMapping(value = "/update.form")
+    @RequestMapping(value = "/userUpdate/update.form")
     @ResponseBody
     public Map<String, Object> update(HttpServletRequest request){
         return super.update(request);
     }
 
-    @RequestMapping("/setUserRole.form")
+
+    @Override
+    @RequestMapping("/userUpdate/queryById.form")
+    @ResponseBody
+    public Map<String, Object> queryById(@RequestParam("id") String id){
+        return super.queryById(id);
+    }
+
+
+    @RequestMapping("/userRole/getUserRole.form")
+    @ResponseBody
+    public Map<String,Object> getUserRole(@RequestParam("uid") String uid){
+        List<Role> list = roleService.queryRoleOption();
+        List<String> userRolelist = roleService.getUserRole(uid);
+        Map<String,Object> result=new HashMap<>();
+        result.put("allRole",list);
+        result.put("userRole",userRolelist);
+        return result;
+    }
+
+    @RequestMapping("/userRole/setUserRole.form")
     @ResponseBody
     public Map<String, Object> setUserRole(@RequestParam("uid") String uid,@RequestParam("rids") String rids) throws IOException {
         ObjectMapper mapper=new ObjectMapper();

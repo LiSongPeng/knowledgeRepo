@@ -3,14 +3,15 @@ package com.zh.framework.controller;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zh.framework.entity.Role;
-import com.zh.framework.service.BaseService;
 import com.zh.framework.service.ResourceService;
 import com.zh.framework.service.RoleService;
+import com.zh.framework.entity.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,43 +26,63 @@ import java.util.Map;
 public class RoleController extends BaseController<Role> {
 
     @Autowired
-    RoleService roleService;
+    private RoleService roleService;
+    @Autowired
     private ResourceService resourceService;
 
-    @Resource(name = "resourceService")
-    public void setResourceService(ResourceService resourceService) {
-        this.resourceService = resourceService;
-    }
+
 
     public RoleController() {
         super(new Role());
     }
 
-    @RequestMapping("/getRoleOption.form")
+
+    @RequestMapping("/queryList.form")
     @ResponseBody
-    public List<Role> getRoleOption() {
-        StringBuffer sbuf = new StringBuffer();
-        List<Role> list = roleService.queryRoleOption();
-        return list;
+    public Map<String,Object> queryList(HttpServletRequest request) {
+        Map<String,Object> param=new HashMap<>();
+        String rName=request.getParameter("rName");
+        param.put("rName",rName);
+        Map<String,Object> result=new HashMap<>();
+        result.put("content",roleService.queryRoleList(param));
+        return result;
+    }
+
+    @Override
+    @RequestMapping("/roleUpdate/query.form")
+    @ResponseBody
+    public Map<String,Object> query(HttpServletRequest request){
+        return super.query(request);
+    }
+    @Override
+    @RequestMapping("/roleUpdate/update.form")
+    @ResponseBody
+    public Map<String,Object> update(HttpServletRequest request){
+        return super.update(request);
+    }
+
+
+    @GetMapping("/roleAuth/getResources.form")
+    @ResponseBody
+    public Map<String, Object> getResources(@RequestParam("roleId") String roleId) {
+        List<Resource> reslist= resourceService.querySearch(new HashMap<String,Object>());
+        List<Map<String,String>> allres=new ArrayList<>();
+        for(Resource res : reslist){
+            Map<String,String> resmap=new HashMap<>();
+            resmap.put("sId",res.getId());
+            resmap.put("sName",res.getsName());
+            resmap.put("sParentId",res.getsParentId());
+            allres.add(resmap);
+        }
+        Map<String,Object> result=new HashMap<>();
+        result.put("allRes",allres);
+        result.put("roleRes",resourceService.getResources(roleId));
+        return result;
     }
 
 
 
-    @GetMapping("/getResources.form")
-    @ResponseBody
-    public List<String> getResources(@RequestParam("roleId") String roleId) {
-
-        return resourceService.getResources(roleId);
-    }
-
-    @RequestMapping("/getUserRole.form")
-    @ResponseBody
-    public List<String> getUserRole(@RequestParam("uid") String uid){
-        return roleService.getUserRole(uid);
-    }
-
-
-    @RequestMapping("/setRoleRes.form")
+    @RequestMapping("/roleAuth/setRoleRes.form")
     @ResponseBody
     public List<Integer> setRoleRes(@RequestParam("resIds") String resIds,@RequestParam("roleId") String roleId) throws IOException {
         ObjectMapper mapper=new ObjectMapper();
