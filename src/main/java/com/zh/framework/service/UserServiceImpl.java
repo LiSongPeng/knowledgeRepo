@@ -9,10 +9,7 @@ import com.zh.framework.util.PageInfoConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Letg4 on 2017/9/2.
@@ -48,15 +45,18 @@ public class UserServiceImpl implements UserService {
         }
         return totalsuc;
     }
+
     @Override
-    public int clearUserRole(String uid){
+    public int clearUserRole(String uid) {
         return userMapper.clearUserRole(uid);
     }
 
 
-
     @Override
     public User login(String username, String password) {
-        return userMapper.queryByNameAndPass(username, password);
+        User user = userMapper.queryByNameAndPass(username, password);
+        if (user != null)
+            userMapper.updateLastLoginTime(user.getId(), new Date());
+        return user;
     }
 }

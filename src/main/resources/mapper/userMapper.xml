@@ -89,4 +89,7 @@
     <select id="queryByNameAndPass" resultMap="userMap">
     SELECT * FROM tb_user WHERE tb_user.uName=#{username} AND tb_user.uPassword=#{password}
 </select>
+    <update id="updateLastLoginTime">
+        UPDATE tb_user SET tb_user.uLastOnLine=#{date} WHERE tb_user.id=#{id}
+    </update>
 </mapper>

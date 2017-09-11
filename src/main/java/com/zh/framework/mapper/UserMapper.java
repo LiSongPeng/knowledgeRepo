@@ -5,6 +5,7 @@ import com.zh.framework.sql.UserSQL;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,4 +26,6 @@ public interface UserMapper {
     int clearUserRole( String uid);
 
     User queryByNameAndPass(@Param("username") String username, @Param("password") String password);
+
+    void updateLastLoginTime(@Param("id") String id, @Param("date") Date date);
 }
