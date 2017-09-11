@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
+@RequestMapping("/kno")
 public class KnowledgeController{
 
     @Autowired
