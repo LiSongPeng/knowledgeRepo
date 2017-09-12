@@ -1,15 +1,18 @@
 package com.zh.framework.service;
 
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.mapper.KnowledgeMapper;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +40,10 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
     @Override
     public PageBean querySomeKnowledge(PageBean pageBean) {
+
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.getSerializationConfig().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+
         PageHelper.startPage(pageBean.getCurrentPage(), pageBean.getPageSize());
 
         PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(knowledgeMapper.querySomeKnowledge());
