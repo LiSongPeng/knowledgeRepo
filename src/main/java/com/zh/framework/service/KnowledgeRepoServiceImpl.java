@@ -97,6 +97,8 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public Knowledge viewKnowledgeDetail(String id) throws Exception {
         Knowledge k = knowledgeMapper.queryKnowledgeById(id);
+        k.setCreateUserId(knowledgeMapper.queryUserNameById(k.getCreateUserId()));
+        k.setkApprUserId(knowledgeMapper.queryUserNameById(k.getkApprUserId()));
         knowledgeMapper.updateUseCount(k.getkUseCount() + 1, id);
         knowledgeMapper.updateLastUseTime(new Date(), id);
         k.setkUseCount(k.getkUseCount() + 1);
