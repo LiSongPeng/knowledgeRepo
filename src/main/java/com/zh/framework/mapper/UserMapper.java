@@ -22,6 +22,9 @@ public interface UserMapper {
     @InsertProvider(type = UserSQL.class, method = "setUserRole")
     int setUserRole(@Param("uid") String uid,@Param("rid") String rid);
 
+    @UpdateProvider(type = UserSQL.class,method = "updateLastOnline")
+    int updateLastOnline(@Param("uid") String uid);
+
     @DeleteProvider(type = UserSQL.class,method = "clearUserRole")
     int clearUserRole( String uid);
 

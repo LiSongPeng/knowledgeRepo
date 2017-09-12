@@ -43,6 +43,14 @@ public class UserSQL {
         return sql;
     }
 
+    public String updateLastOnline(@Param("uid") String uid){
+        return new SQL(){{
+            UPDATE("tb_user");
+            SET("uLastOnline = now()");
+            WHERE("id=#{uid}");
+        }}.toString();
+    }
+
     public String setUserRole(@Param("uid") String uid,@Param("rid") String rid){
         return new SQL(){{
             INSERT_INTO("tb_role_user");

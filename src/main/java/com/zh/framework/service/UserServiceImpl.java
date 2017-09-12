@@ -51,6 +51,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.clearUserRole(uid);
     }
 
+    @Override
+    public int updateLastOnline(String uid) {
+        return userMapper.updateLastOnline(uid);
+    }
+
 
     @Override
     public User login(String username, String password) {

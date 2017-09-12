@@ -16,5 +16,7 @@ public interface UserService {
 
     int clearUserRole(String uid);
 
+    int updateLastOnline(String uid);
+
     User login(String username, String password);
 }
