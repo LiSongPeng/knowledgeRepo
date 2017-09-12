@@ -47,6 +47,21 @@ public class RoleController extends BaseController<Role> {
         result.put("content",roleService.queryRoleList(param));
         return result;
     }
+    @Override
+    @RequestMapping("/roleAdd/add.form")
+    @ResponseBody
+    public Map<String,Object> add(HttpServletRequest request){
+        return super.add(request);
+    }
+
+    @RequestMapping("/roleAdd/check.form")
+    @ResponseBody
+    public Map<String,Object> check(){
+        Map<String,Object> result=new HashMap<>();
+        result.put("msg","成功");
+        return result;
+    }
+
 
     @Override
     @RequestMapping("/roleUpdate/query.form")
