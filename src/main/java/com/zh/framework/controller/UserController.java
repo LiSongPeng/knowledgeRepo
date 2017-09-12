@@ -71,14 +71,20 @@ public class UserController extends BaseController<User> {
     }
 
     @Override
-    @RequestMapping(value = "/add.form")
+    @RequestMapping(value = "/userAdd/add.form")
     @ResponseBody
     public Map<String, Object> add(HttpServletRequest request){
-        String userid= (String) super.add(request).get("total");
+        return super.add(request);
+    }
+
+    @RequestMapping(value = "/userAdd/check.form")
+    @ResponseBody
+    public Map<String, Object> check(){
         Map<String,Object> result=new HashMap<>();
-        result.put("total",userid);
+        result.put("msg","成功");
         return result;
     }
+
 
     @Override
     @RequestMapping(value = "/userUpdate/update.form")

@@ -60,6 +60,12 @@ public class ResourceController extends BaseController<Resource>{
         result.put("resOptions",allres);
         return result;
     }
+    @Override
+    @RequestMapping("/resourceAdd/add.form")
+    @ResponseBody
+    public Map<String,Object> add(HttpServletRequest request){
+        return super.add(request);
+    }
 
     @RequestMapping("/resourceUpdate/selectById.form")
     @ResponseBody
