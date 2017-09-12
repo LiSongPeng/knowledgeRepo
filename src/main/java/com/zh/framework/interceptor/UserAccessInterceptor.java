@@ -22,7 +22,7 @@ public class UserAccessInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,Object handler) throws Exception{
-        String prefix="/knowledgeRepo";
+        String contextPath=request.getContextPath();
 
         String getResUrl="/resource/getUserRes.form";
 
@@ -39,10 +39,9 @@ public class UserAccessInterceptor extends HandlerInterceptorAdapter {
 
 
 
-        String reqUri=request.getRequestURI();
+        String reqUri=request.getServletPath();
         System.out.println("cuid =  "+cuid);
-        reqUri=reqUri.substring(prefix.length());
-        System.out.println("reqUri =  "+reqUri);
+//        reqUri=reqUri.substring(contextPath.length());
 
         //放行登录请求
         if (reqUri.equals(loginUrl)){
