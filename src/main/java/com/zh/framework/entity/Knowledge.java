@@ -1,5 +1,9 @@
 package com.zh.framework.entity;
 
+
+
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import java.util.Date;
 
 /**
@@ -81,7 +85,7 @@ public class Knowledge {
     public void setkApprUserId(String kApprUserId) {
         this.kApprUserId = kApprUserId;
     }
-
+    @JsonSerialize(using = CustomDateSerializer.class)
     public Date getkApprTime() {
         return kApprTime;
     }

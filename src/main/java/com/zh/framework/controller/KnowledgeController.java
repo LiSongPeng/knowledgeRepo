@@ -1,6 +1,7 @@
 package com.zh.framework.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.zh.framework.entity.CustomDateSerializer;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.entity.Response;
@@ -10,6 +11,7 @@ import com.zh.framework.service.KnowledgeService;
 import com.zh.framework.util.Constant;
 import com.zh.framework.util.TypeTester;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/kno")
-public class KnowledgeController{
+public class KnowledgeController {
 
     @Autowired
     KnowledgeService knowledgeService;
@@ -64,6 +66,7 @@ public class KnowledgeController{
      *
      */
     @RequestMapping("/selectPage2.form")
+
     @ResponseBody
     public PageBean selectPage2(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
 
