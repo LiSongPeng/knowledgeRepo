@@ -91,7 +91,7 @@
     <delete id="deleteKnowledge">
         DELETE FROM tb_knowledge WHERE tb_knowledge.id=#{id}
     </delete>
-    <select id="queryUserNameById">
+    <select id="queryUserNameById" resultType="java.lang.String">
         SELECT tb_user.uName FROM tb_user WHERE tb_user.id=#{userId}
     </select>
 </mapper>
