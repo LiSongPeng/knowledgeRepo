@@ -132,11 +132,7 @@ public class KnowledgeController  extends BaseController<Knowledge>{
 
 
         knowledgeService.addKnowledge(k);
-        try {
-            knowledgeRepoService.buildAIndex(k);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     /**
@@ -148,6 +144,13 @@ public class KnowledgeController  extends BaseController<Knowledge>{
     @ResponseBody
     public void knowledgeDelete(@RequestParam("id") String id){
 
+
+
+        try {
+            knowledgeRepoService.buildAIndex(knowledgeService.queryKnowledgeById(id));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         knowledgeService.updateKnowledgeStatus(id,Knowledge.DELETE_WAITING);
 
     }
@@ -216,6 +219,12 @@ public class KnowledgeController  extends BaseController<Knowledge>{
         knowledgeService.updateAppr(id,cuid,kApprMemo,date);
 
         if(button.equals("通过")){
+
+            try {
+                knowledgeRepoService.buildAIndex(k);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
             if(k.getkApprStatus().equals(Knowledge.DELETE_WAITING)){
