@@ -85,7 +85,7 @@ public class Knowledge {
     public void setkApprUserId(String kApprUserId) {
         this.kApprUserId = kApprUserId;
     }
-    @JsonSerialize(using = CustomDateSerializer.class)
+
     public Date getkApprTime() {
         return kApprTime;
     }

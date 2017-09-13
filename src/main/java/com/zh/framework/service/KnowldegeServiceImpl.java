@@ -27,7 +27,23 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
         PageHelper.startPage(pageBean.getCurrentPage(), pageBean.getPageSize());
 
-        PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(knowledgeMapper.queryAllKnowledge());
+        List<Knowledge> list=knowledgeMapper.queryAllKnowledge();
+
+        for (Knowledge aa:list){
+
+            String uname=knowledgeMapper.queryUserNameById(aa.getCreateUserId());
+
+            aa.setCreateUserId(uname);
+
+            uname=knowledgeMapper.queryUserNameById(aa.getkApprUserId());
+
+            aa.setkApprUserId(uname);
+
+        }
+
+
+
+        PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(list);
         PageBean pb = new PageBean();
         pb.setTotalPages(pageInfo.getPages());
         pb.setPageSize(pageInfo.getPageSize());
@@ -46,7 +62,23 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
         PageHelper.startPage(pageBean.getCurrentPage(), pageBean.getPageSize());
 
-        PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(knowledgeMapper.querySomeKnowledge());
+
+        List<Knowledge> list=knowledgeMapper.querySomeKnowledge();
+
+        for (Knowledge aa:list){
+
+            String uname=knowledgeMapper.queryUserNameById(aa.getCreateUserId());
+
+            aa.setCreateUserId(uname);
+
+            uname=knowledgeMapper.queryUserNameById(aa.getkApprUserId());
+
+            aa.setkApprUserId(uname);
+
+        }
+
+
+        PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(list);
         PageBean pb = new PageBean();
         pb.setTotalPages(pageInfo.getPages());
         pb.setPageSize(pageInfo.getPageSize());
