@@ -273,10 +273,15 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
 
     @Override
     public void buildAllIndex() throws IOException {
-        List<Knowledge> list = knowledgeMapper.queryIndexableKnowledge();
+        List<Knowledge> list = knowledgeMapper.queryAllKnowledge();
+        List<Knowledge> data = new ArrayList<>();
+        for (Knowledge each : list) {
+            if (Knowledge.APPROVED.equals(each.getkApprStatus()) || Knowledge.DELETE_WAITING.equals(each.getkApprStatus()))
+                data.add(each);
+        }
         Message message = new Message();
         message.what = KnowledgeIndexHandler.BUILD_ALL;
-        message.data = list;
+        message.data = data;
         handler.sendMessage(message);
     }
 
