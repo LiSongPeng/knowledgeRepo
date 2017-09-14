@@ -4,14 +4,13 @@ import com.zh.framework.entity.Knowledge;
 import com.zh.framework.thread.Handler;
 import com.zh.framework.thread.Message;
 import com.zh.framework.util.Constant;
+import com.zh.framework.util.HtmlUtil;
 import com.zh.framework.util.TypeTester;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -83,7 +82,7 @@ public class KnowledgeIndexHandler extends Handler {
         Document doc = new Document();
         doc.add(new StringField(Constant.INDEX_ID, k.getId(), Field.Store.YES));
         doc.add(new Field(Constant.K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
-        doc.add(new Field(Constant.K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
+        doc.add(new Field(Constant.K_ANSWER, HtmlUtil.getTextFromHtml(k.getkAnswer()), TextField.TYPE_STORED));
         doc.add(new StoredField(Constant.K_USE_COUNT, k.getkUseCount()));
         doc.add(new NumericDocValuesField(Constant.K_USE_COUNT_SORT, k.getkUseCount()));
         indexWriter.addDocument(doc);
@@ -94,7 +93,7 @@ public class KnowledgeIndexHandler extends Handler {
         Document newDoc = new Document();
         newDoc.add(new StringField(Constant.INDEX_ID, k.getId(), Field.Store.YES));
         newDoc.add(new Field(Constant.K_TITLE, k.getkTitle(), TextField.TYPE_STORED));
-        newDoc.add(new Field(Constant.K_ANSWER, k.getkAnswer(), TextField.TYPE_STORED));
+        newDoc.add(new Field(Constant.K_ANSWER, HtmlUtil.getTextFromHtml(k.getkAnswer()), TextField.TYPE_STORED));
         newDoc.add(new StoredField(Constant.K_USE_COUNT, k.getkUseCount()));
         newDoc.add(new NumericDocValuesField(Constant.K_USE_COUNT_SORT, k.getkUseCount()));
         indexWriter.updateDocument(new Term(Constant.INDEX_ID, k.getId()), newDoc);
@@ -107,7 +106,7 @@ public class KnowledgeIndexHandler extends Handler {
             doc = new Document();
             doc.add(new StringField(Constant.INDEX_ID, list.get(i).getId(), Field.Store.YES));
             doc.add(new Field(Constant.K_TITLE, list.get(i).getkTitle(), TextField.TYPE_STORED));
-            doc.add(new Field(Constant.K_ANSWER, list.get(i).getkAnswer(), TextField.TYPE_STORED));
+            doc.add(new Field(Constant.K_ANSWER, HtmlUtil.getTextFromHtml(list.get(i).getkAnswer()), TextField.TYPE_STORED));
             doc.add(new StoredField(Constant.K_USE_COUNT, list.get(i).getkUseCount()));
             doc.add(new NumericDocValuesField(Constant.K_USE_COUNT_SORT, list.get(i).getkUseCount()));
             indexWriter.addDocument(doc);
