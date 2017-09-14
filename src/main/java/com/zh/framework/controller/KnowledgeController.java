@@ -52,7 +52,7 @@ public class KnowledgeController  extends BaseController<Knowledge>{
     public PageBean selectPage(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
         PageBean pageBean=new PageBean();
         pageBean.setCurrentPage(page);
-        pageBean.setPageSize(8);
+        pageBean.setPageSize(rows);
         pageBean=knowledgeService.queryAllKnowledge(pageBean);
         return pageBean;
     }
@@ -70,7 +70,7 @@ public class KnowledgeController  extends BaseController<Knowledge>{
 
         PageBean pageBean=new PageBean();
         pageBean.setCurrentPage(page);
-        pageBean.setPageSize(8);
+        pageBean.setPageSize(rows);
         pageBean=knowledgeService.querySomeKnowledge(pageBean);
         return pageBean;
 
