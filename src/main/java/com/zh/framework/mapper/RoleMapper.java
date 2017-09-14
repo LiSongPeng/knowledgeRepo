@@ -16,7 +16,7 @@ public interface RoleMapper {
     @SelectProvider(type = RoleSQL.class,method = "queryRoleOption")
     public List<Role> queryRoleOption();
     @SelectProvider(type = RoleSQL.class,method = "getUserRole")
-    public List<String> getUserRole(@Param("uid") String uid);
+    public List<String> getUserRole(@Param("uid") String uid,@Param("delStatus") int delStatus);
 
     @SelectProvider(type = RoleSQL.class,method = "queryRoleList")
     @ResultMap("com.zh.framework.mapper.RoleMapper.roleMap")

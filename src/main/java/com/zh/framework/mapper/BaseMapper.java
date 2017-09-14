@@ -32,5 +32,8 @@ public interface BaseMapper<T> {
                        @Param("id") String id,
                        @Param("attrs") Map<String,Object> attrs);
 
-
+    @UpdateProvider(type = BaseSQL.class,method = "updateDeleteStatus")
+    public int updateDeleteStatus(@Param("tableName") String tableName,
+                                     @Param("id") String id,
+                                     @Param("deleteStatus")int deleteStatus);
 }

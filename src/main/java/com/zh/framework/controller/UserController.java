@@ -106,7 +106,7 @@ public class UserController extends BaseController<User> {
     @ResponseBody
     public Map<String,Object> getUserRole(@RequestParam("uid") String uid){
         List<Role> list = roleService.queryRoleOption();
-        List<String> userRolelist = roleService.getUserRole(uid);
+        List<String> userRolelist = roleService.getUserRole(uid,-1);
         Map<String,Object> result=new HashMap<>();
         result.put("allRole",list);
         result.put("userRole",userRolelist);
