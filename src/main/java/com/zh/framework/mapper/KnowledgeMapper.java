@@ -32,6 +32,8 @@ public interface KnowledgeMapper {
 
     public List<Knowledge> queryAllKnowledge();
 
+    public List<Knowledge> queryIndexableKnowledge();
+
     public List<Knowledge> querySomeKnowledge();
 
     public void updateAppr(@Param("id") String id, @Param("kApprUserId") String kApprUserId, @Param("kApprMemo") String kApprMemo, @Param("kApprTime") Date kApprTime);

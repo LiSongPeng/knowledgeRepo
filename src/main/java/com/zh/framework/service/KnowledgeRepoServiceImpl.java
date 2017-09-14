@@ -118,8 +118,8 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
             char c = keyWord.charAt(i);
             if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':'
                     || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~'
-                    || c == '*' || c == '?' || c == '|' || c == '&' || c == ';' || c == '/'||c=='#'||c=='%'
-                    || c=='￥'||c=='`'||c==','||Character.isWhitespace(c)) {
+                    || c == '*' || c == '?' || c == '|' || c == '&' || c == ';' || c == '/' || c == '#' || c == '%'
+                    || c == '￥' || c == '`' || c == ',' || Character.isWhitespace(c)) {
                 sb.append('\\');
             }
             sb.append(c);
@@ -199,7 +199,7 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
     public List<KnowledgeIndex> searchIndexNoPage(String keyWord) throws Exception {
         if (TypeTester.isEmpty(keyWord))
             return null;
-        keyWord=escapeQueryChars(keyWord);
+        keyWord = escapeQueryChars(keyWord);
         Analyzer analyzer = new SmartChineseAnalyzer();
         MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{Constant.K_TITLE, Constant.K_ANSWER}, analyzer);
         Query query = parser.parse(keyWord);
@@ -237,7 +237,7 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
         if (TypeTester.isEmpty(keyWord))
             return null;
 //        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, indexWriter.getAnalyzer());
-        keyWord=escapeQueryChars(keyWord);
+        keyWord = escapeQueryChars(keyWord);
         if (reader.numDocs() == 0)
             return null;
         QueryParser parser = new QueryParser(Constant.K_TITLE, new SmartChineseAnalyzer());
@@ -273,7 +273,7 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
 
     @Override
     public void buildAllIndex() throws IOException {
-        List<Knowledge> list = knowledgeMapper.queryAllKnowledge();
+        List<Knowledge> list = knowledgeMapper.queryIndexableKnowledge();
         Message message = new Message();
         message.what = KnowledgeIndexHandler.BUILD_ALL;
         message.data = list;

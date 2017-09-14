@@ -94,4 +94,7 @@
     <select id="queryUserNameById" resultType="java.lang.String">
         SELECT tb_user.uName FROM tb_user WHERE tb_user.id=#{userId}
     </select>
+    <select id="queryIndexableKnowledge" resultMap="knowledgeMap">
+        SELECT * FROM tb_knowledge WHERE tb_knowledge.kApprStatus='通过' OR tb_knowledge.kApprStatus='删除待审批'
+    </select>
 </mapper>
