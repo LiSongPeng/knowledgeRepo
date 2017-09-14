@@ -38,8 +38,8 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public List<String> getUserRole(String uid) {
-        return roleMapper.getUserRole(uid);
+    public List<String> getUserRole(String uid,int delStatus) {
+        return roleMapper.getUserRole(uid,delStatus);
     }
 
     @Override

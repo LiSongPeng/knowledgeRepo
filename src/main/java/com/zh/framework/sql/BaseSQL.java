@@ -75,4 +75,13 @@ public class BaseSQL {
             WHERE("id=#{id}");
         }}.toString();
     }
+    public String updateDeleteStatus(@Param("tableName") String tableName,
+                                     @Param("id") String id,
+                                     @Param("deleteStatus")int deleteStatus){
+        return new SQL(){{
+            UPDATE(tableName);
+            SET("deleteStatus =#{deleteStatus}");
+            WHERE("id=#{id}");
+        }}.toString();
+    }
 }

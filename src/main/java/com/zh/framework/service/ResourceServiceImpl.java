@@ -4,14 +4,12 @@ import com.zh.framework.entity.Resource;
 import com.zh.framework.entity.Role;
 import com.zh.framework.entity.TreeGridData;
 import com.zh.framework.mapper.ResourceMapper;
+import com.zh.framework.mapper.RoleMapper;
 import com.zh.framework.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Letg4 on 2017/9/6.
@@ -20,6 +18,8 @@ import java.util.Map;
 public class ResourceServiceImpl implements ResourceService {
     @Autowired
     private ResourceMapper resourceMapper;
+    @Autowired
+    private RoleMapper roleMapper;
 
     public List<TreeGridData> queryAsTree() {
         Map<String, Object> param = new HashMap<>();
@@ -37,12 +37,18 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public List<Resource> queryByUser(String userid) {
+//        List <String> userroles=roleMapper.getUserRole(userid,1);
+//        Set<Resource> resSet=new HashSet<>();
+//        for(String roleid:userroles ){
+//            resSet.addAll(resourceMapper.queryByRole(roleid,1));
+//        }
+//        return new ArrayList<>(resSet);
         return resourceMapper.queryByUser(userid);
     }
 
     @Override
     public List<String> getResources(String roleId) {
-        List<Resource> list = resourceMapper.queryByRole(roleId);
+        List<Resource> list = resourceMapper.queryByRole(roleId,-1);
         List<String> result = new ArrayList<>();
         for (Resource resource : list)
             result.add(resource.getId());

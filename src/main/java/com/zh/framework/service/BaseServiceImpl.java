@@ -48,6 +48,11 @@ public class BaseServiceImpl<T> implements BaseService<T>{
     }
 
     @Override
+    public int updateDeleteStatus(String tableName, String id, int deleteStatus) {
+        return baseMapper.updateDeleteStatus(tableName,id,deleteStatus);
+    }
+
+    @Override
     public int delete(String tableName,String id) {
         return baseMapper.delete(tableName,id);
     }

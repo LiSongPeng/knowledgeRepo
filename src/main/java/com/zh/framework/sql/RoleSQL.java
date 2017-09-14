@@ -48,11 +48,15 @@ public class RoleSQL {
         }}.toString();
     }
 
-    public String getUserRole(@Param("uid") String uid){
+    public String getUserRole(@Param("uid") String uid,@Param("delStatus") int delStatus){
         return new SQL(){{
-            SELECT("rid");
-            FROM("tb_role_user");
+            SELECT("ru.rid");
+            FROM("tb_role_user ru");
+            LEFT_OUTER_JOIN("tb_role r on ru.rid=r.id");
             WHERE("uId=#{uid}");
+            if(delStatus!=-1){
+                WHERE("r.deleteStatus=#{delStatus}");
+            }
         }}.toString();
     }
 

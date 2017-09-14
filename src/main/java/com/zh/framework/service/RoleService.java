@@ -12,6 +12,6 @@ public interface RoleService {
     List<Role> queryRoleOption();
     List<Role> queryRoleList(Map<String,Object> param);
     int setRoleRes(String rid,List<String> sids);
-    List<String> getUserRole(String uid);
+    List<String> getUserRole(String uid,int delStatus);
     int clearRoleRes( String rid);
 }

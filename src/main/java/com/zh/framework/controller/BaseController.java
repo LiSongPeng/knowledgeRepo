@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
 import java.io.InputStream;
@@ -134,6 +135,29 @@ public  class BaseController<T> {
         Map<String,Object> result=new HashMap<>();
         result.put("total",total);
         return result;
+    }
+
+    @RequestMapping("/updateDeleteStatus.form")
+    @ResponseBody
+    public Map<String, Object> updateDeleteStatus(HttpServletRequest request, HttpServletResponse response)throws IOException{
+        String id = request.getParameter("id");
+        int delstts = Integer.parseInt(request.getParameter("deleteStatus"));
+        Map<String,Object> result=new HashMap<>();
+        if (delstts==0||delstts==1){
+            if( baseService.updateDeleteStatus(this.getTableName(),id,delstts)>0){
+                result.put("deleteStatus",delstts);
+                result.put("msg","修改成功");
+               return result;
+            }else {
+                response.sendError(500);
+                result.put("msg","修改失败");
+                return result;
+            }
+        }else {
+            response.sendError(400);
+            result.put("msg","参数超出范围");
+            return result;
+        }
     }
 
     public String getTableName(){
