@@ -145,7 +145,7 @@ public class Knowledge {
         result = 31 * result + kTitle.hashCode();
         result = 31 * result + kAnswer.hashCode();
         result = 31 * result + kUseCount;
-        result = 31 * result + kUserTimeLast.hashCode();
+        //result = 31 * result + kUserTimeLast.hashCode();
         result = 31 * result + kApprStatus.hashCode();
         result = 31 * result + (kApprUserId != null ? kApprUserId.hashCode() : 0);
         result = 31 * result + (kApprTime != null ? kApprTime.hashCode() : 0);
