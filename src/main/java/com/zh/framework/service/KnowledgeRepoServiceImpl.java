@@ -119,7 +119,7 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
             if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':'
                     || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~'
                     || c == '*' || c == '?' || c == '|' || c == '&' || c == ';' || c == '/'||c=='#'||c=='%'
-                    || Character.isWhitespace(c)) {
+                    || c=='￥'||c=='`'||c==','||Character.isWhitespace(c)) {
                 sb.append('\\');
             }
             sb.append(c);
