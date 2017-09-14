@@ -30,9 +30,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
 
 /**
  * created by lihuibo on 17-8-28 上午9:58
@@ -99,6 +97,8 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public Knowledge viewKnowledgeDetail(String id) throws Exception {
         Knowledge k = knowledgeMapper.queryKnowledgeById(id);
+        k.setCreateUserId(knowledgeMapper.queryUserNameById(k.getCreateUserId()));
+        k.setkApprUserId(knowledgeMapper.queryUserNameById(k.getkApprUserId()));
         knowledgeMapper.updateUseCount(k.getkUseCount() + 1, id);
         knowledgeMapper.updateLastUseTime(new Date(), id);
         k.setkUseCount(k.getkUseCount() + 1);
@@ -225,13 +225,17 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
             reader = newReader;
         IndexSearcher indexSearcher = new IndexSearcher(reader);
         ScoreDoc[] scoreDocs = indexSearcher.search(query, 6, sort).scoreDocs;
-        List<String> hintList = new ArrayList<>();
+        Set<String> hashSet = new HashSet<>();
         Document doc;
         String kTitle;
         for (int i = 0; i < scoreDocs.length; i++) {
             doc = indexSearcher.doc(scoreDocs[i].doc);
             kTitle = doc.get(Constant.K_TITLE);
-            hintList.add(kTitle);
+            hashSet.add(kTitle);
+        }
+        List<String> hintList = new ArrayList<>();
+        for (String each : hashSet) {
+            hintList.add(each);
         }
         return hintList;
     }

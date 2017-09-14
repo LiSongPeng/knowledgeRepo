@@ -21,17 +21,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/kno")
-public class KnowledgeController {
+public class KnowledgeController  extends BaseController<Knowledge>{
 
     @Autowired
     KnowledgeService knowledgeService;
@@ -90,9 +88,11 @@ public class KnowledgeController {
      */
     @RequestMapping("/addKnowledge.form")
     @ResponseBody
-    public void add(@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
+    public void add(HttpServletRequest request,@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
 
         System.out.println("addKnowledge");
+        String cuid=request.getHeader("Current-UserId");
+        System.out.println("用户ID:"+cuid);
         UUID uuid  =  UUID.randomUUID();
         String id = UUID.randomUUID().toString();
         Knowledge k=new Knowledge();
@@ -126,17 +126,13 @@ public class KnowledgeController {
         k.setId(id);
         k.setkTitle(kTitle);
         k.setkAnswer(kAnswer);
-        k.setCreateUserId(createUserId);
+        k.setCreateUserId(cuid);
         k.setCreateTime(date);
         k.setkUserTimeLast(date);
 
 
         knowledgeService.addKnowledge(k);
-        try {
-            knowledgeRepoService.buildAIndex(k);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     /**
@@ -148,6 +144,13 @@ public class KnowledgeController {
     @ResponseBody
     public void knowledgeDelete(@RequestParam("id") String id){
 
+
+
+        try {
+            knowledgeRepoService.buildAIndex(knowledgeService.queryKnowledgeById(id));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         knowledgeService.updateKnowledgeStatus(id,Knowledge.DELETE_WAITING);
 
     }
@@ -198,8 +201,9 @@ public class KnowledgeController {
      */
     @RequestMapping("/knowledgeApprova.form")
     @ResponseBody
-    public void knowledgeApprova(@RequestParam("id") String id,@RequestParam("kApprUserId") String kApprUserId,@RequestParam("kApprMemo") String kApprMemo,@RequestParam("button") String button){
+    public void knowledgeApprova(HttpServletRequest request,@RequestParam("id") String id,@RequestParam("kApprUserId") String kApprUserId,@RequestParam("kApprMemo") String kApprMemo,@RequestParam("button") String button){
 
+        String cuid=request.getHeader("Current-UserId");
         Knowledge k=knowledgeService.queryKnowledgeById(id);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
@@ -212,9 +216,15 @@ public class KnowledgeController {
             System.out.println("异常错误");
         }
         System.out.println(id+kApprUserId+kApprMemo);
-        knowledgeService.updateAppr(id,kApprUserId,kApprMemo,date);
+        knowledgeService.updateAppr(id,cuid,kApprMemo,date);
 
         if(button.equals("通过")){
+
+            try {
+                knowledgeRepoService.buildAIndex(k);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
             if(k.getkApprStatus().equals(Knowledge.DELETE_WAITING)){
@@ -246,6 +256,20 @@ public class KnowledgeController {
     }
 
 
+    @Override
+    @RequestMapping(value = "/knowledgeAdd/add.form")
+    @ResponseBody
+    public Map<String, Object> add(HttpServletRequest request){
+        return super.add(request);
+    }
+
+    @RequestMapping(value = "/knowledgeAdd/check.form")
+    @ResponseBody
+    public Map<String, Object> check(){
+        Map<String,Object> result=new HashMap<>();
+        result.put("msg","成功");
+        return result;
+    }
 
 
 }

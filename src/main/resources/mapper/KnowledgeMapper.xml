@@ -17,8 +17,8 @@
         <result property="createTime" column="createTime"/>
     </resultMap>
     <insert id="addKnowledge" parameterType="Knowledge">
-        INSERT INTO tb_knowledge(id,kTitle,kAnswer,kUserTimeLast,createTime,createUserId) VALUES (
-          #{id},#{kTitle},#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},#{kUserTimeLast},#{createTime},#{createUserId}
+        INSERT INTO tb_knowledge(id,kTitle,kAnswer,createTime,createUserId) VALUES (
+          #{id},#{kTitle},#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},#{createTime},#{createUserId}
         )
     </insert>
     <select id="queryAllKnowledge" resultMap="knowledgeMap">
@@ -63,8 +63,6 @@
     </update>
 
 
-
-
     <insert id="insertKnowledge1" parameterType="Knowledge">
     INSERT INTO tb_knowledge(kTitle,kAnswer,kUseCount,kApprStatus,kApprUserId,kApprTime,kApprMemo,createUserId,createTime)
     VALUES (#{kTitle},#{kAnswer,typeHandler=com.zh.framework.util.StringBlobHandler},#{kUseCount},#{kApprStatus},#{kApprUserId},#{kApprTime},#{kApprMemo},#{createUserId},#{createTime})
@@ -93,4 +91,7 @@
     <delete id="deleteKnowledge">
         DELETE FROM tb_knowledge WHERE tb_knowledge.id=#{id}
     </delete>
+    <select id="queryUserNameById" resultType="java.lang.String">
+        SELECT tb_user.uName FROM tb_user WHERE tb_user.id=#{userId}
+    </select>
 </mapper>
