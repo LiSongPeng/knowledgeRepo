@@ -106,11 +106,32 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
         return k;
     }
 
+    /**
+     * 转义字符串中特殊字符以供Lucene查询
+     *
+     * @param keyWord 转义关键字中的特殊字符
+     * @return 转义后的字符串
+     */
+    private String escapeQueryChars(String keyWord) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < keyWord.length(); i++) {
+            char c = keyWord.charAt(i);
+            if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':'
+                    || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~'
+                    || c == '*' || c == '?' || c == '|' || c == '&' || c == ';' || c == '/'||c=='#'||c=='%'
+                    || Character.isWhitespace(c)) {
+                sb.append('\\');
+            }
+            sb.append(c);
+        }
+        return sb.toString();
+    }
 
     @Override
     public PageInfo<KnowledgeIndex> searchIndex(String keyWord, int page, int pageSize, int orderBy, int order) throws Exception {
         if (TypeTester.isEmpty(keyWord) || TypeTester.isNegative(page) || TypeTester.isNegative(pageSize))
             return null;
+        keyWord = escapeQueryChars(keyWord);
         Analyzer analyzer = new SmartChineseAnalyzer();
         MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{Constant.K_TITLE, Constant.K_ANSWER}, analyzer);
         boolean reverse = order == 1 ? true : false;
@@ -178,6 +199,7 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
     public List<KnowledgeIndex> searchIndexNoPage(String keyWord) throws Exception {
         if (TypeTester.isEmpty(keyWord))
             return null;
+        keyWord=escapeQueryChars(keyWord);
         Analyzer analyzer = new SmartChineseAnalyzer();
         MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{Constant.K_TITLE, Constant.K_ANSWER}, analyzer);
         Query query = parser.parse(keyWord);
@@ -215,6 +237,7 @@ public class KnowledgeRepoServiceImpl implements KnowledgeRepoService {
         if (TypeTester.isEmpty(keyWord))
             return null;
 //        MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{K_TITLE, K_ANSWER}, indexWriter.getAnalyzer());
+        keyWord=escapeQueryChars(keyWord);
         if (reader.numDocs() == 0)
             return null;
         QueryParser parser = new QueryParser(Constant.K_TITLE, new SmartChineseAnalyzer());
