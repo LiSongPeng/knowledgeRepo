@@ -63,13 +63,21 @@ public class ResourceSQL {
         }}.toString();
     }
 
-    public String queryByRole(@Param("roleid") String roleid){
+    public String queryByRole(@Param("roleid") String roleid,@Param("delStatus") int delStatus){
         return new SQL(){{
             SELECT("s.id as id," +
-                    "s.sName as sName");
+                    "s.sParentId as sParentId," +
+                    "s.sName as sName," +
+                    "s.sType," +
+                    "s.sUrl," +
+                    "s.sIcon," +
+                    "s.sIndex");
             FROM("tb_resources_role sr");
             LEFT_OUTER_JOIN("tb_resource s on sr.sid = s.id");
             WHERE("sr.rid=#{roleid}");
+            if(delStatus!=-1){
+                WHERE("s.deleteStatus=#{delStatus}");
+            }
         }}.toString();
     }
     public String queryByUser(@Param("userid") String userid){
@@ -83,8 +91,11 @@ public class ResourceSQL {
                     "s.sIndex");
             FROM("tb_resources_role sr ");
             LEFT_OUTER_JOIN("tb_role_user ru on sr.rid = ru.rid");
+            LEFT_OUTER_JOIN("tb_role r on sr.rid=r.id");
             LEFT_OUTER_JOIN("tb_resource s on sr.sid = s.id");
             WHERE("ru.uid=#{userid}");
+            WHERE("s.deleteStatus=1");
+            WHERE("r.deleteStatus=1");
         }}.toString();
     }
 }

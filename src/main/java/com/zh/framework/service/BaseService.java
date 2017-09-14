@@ -14,4 +14,6 @@ public interface  BaseService<T> {
     public int update(String tableName,String id,Map<String,Object> attrs);
 
     public Map<String,Object> queryById(String id, String tableName);
+
+    public int updateDeleteStatus( String tableName, String id, int deleteStatus);
 }

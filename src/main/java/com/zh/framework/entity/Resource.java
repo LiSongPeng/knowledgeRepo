@@ -116,4 +116,13 @@ public class Resource {
         this.createTime = createTime;
     }
 
+    @Override
+    public boolean equals(Object obj){
+        return obj instanceof Resource&& this.id != null && this.id.equals(((Resource)obj).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return 1;
+    }
 }

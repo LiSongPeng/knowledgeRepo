@@ -27,5 +27,5 @@ public interface ResourceMapper {
     List<Resource> queryByUser(@Param("userid") String userid);
 
     @SelectProvider(type = ResourceSQL.class,method = "queryByRole")
-    List<Resource> queryByRole(@Param("roleid") String roleid);
+    List<Resource> queryByRole(@Param("roleid") String roleid,@Param("delStatus") int delStatus);
 }
