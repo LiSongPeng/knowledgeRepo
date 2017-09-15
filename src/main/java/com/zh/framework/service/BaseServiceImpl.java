@@ -63,7 +63,7 @@ public class BaseServiceImpl<T> implements BaseService<T>{
         String uuid=UUID.randomUUID().toString();
         attrs.put("id",uuid );
         baseMapper.add(tableName,attrs);
-       return (String)attrs.get("id");
+        return (String)attrs.get("id");
     }
 
     @Override

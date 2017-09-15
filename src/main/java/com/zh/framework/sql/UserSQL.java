@@ -18,29 +18,38 @@ public class UserSQL {
                     "u.uName as uName," +
                     "u.uPassword as uPassword," +
                     "u.uDescription as uDescription," +
-                    "u.deleteStatus as uDeleteStatus," +
+                    "u.deleteStatus as deleteStatus," +
                     "u.createTime as createTime," +
                     "u.uLastOnLine as uLastOnLine," +
                     "crtu.id as crtuId," +
-                    "crtu.uName as crtuName," +
-                    "r.id as rId," +
-                    "r.rName as rName" );
+                    "crtu.uName as crtuName" );
             FROM("tb_user u");
             if (user.getId() != null && !"".equals(user.getId())) {
                 WHERE("u.id=#{user.id}");
             }
             if (user.getuName() != null && !"".equals(user.getuName())) {
-                WHERE("uName like '%"+user.getuName()+"%'");
+                WHERE("u.uName like '%"+user.getuName()+"%'");
             }
+            WHERE("u.deleteStatus=1");
             LEFT_OUTER_JOIN("tb_user crtu on u.createUserId=crtu.id");
-            LEFT_OUTER_JOIN("tb_role_user ru on u.id = ru.uid");
-            LEFT_OUTER_JOIN("tb_role r on ru.rid = r.id");
             if (param.get("sidx") != null && !"".equals(param.get("sidx"))) {
-                ORDER_BY("" + param.get("sidx") + " " + param.get("sord"));
+                if("createUser".equals(((String)param.get("sidx")).replace(" ",""))){
+                    ORDER_BY("crtuName" + " " + param.get("sord"));
+                }else {
+                    ORDER_BY("" + param.get("sidx") + " " + param.get("sord"));
+                }
             }
         }}.toString();
         System.out.println(sql);
         return sql;
+    }
+
+    public String checkRepeat(@Param("column")String column,@Param("value") String value){
+        return new SQL(){{
+            SELECT("COUNT(*)");
+            FROM("tb_user");
+            WHERE(column+"=#{value}");
+        }}.toString();
     }
 
     public String updateLastOnline(@Param("uid") String uid){

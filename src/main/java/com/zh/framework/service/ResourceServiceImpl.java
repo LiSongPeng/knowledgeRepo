@@ -23,7 +23,6 @@ public class ResourceServiceImpl implements ResourceService {
 
     public List<TreeGridData> queryAsTree() {
         Map<String, Object> param = new HashMap<>();
-        List<Resource> querylist = resourceMapper.query(param);
         List<TreeGridData> totalList = new ArrayList<>();
         toTreeDataList(null, 1, totalList);
         return totalList;
@@ -47,8 +46,13 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public int checkRepeat(String column, String value) {
+        return resourceMapper.checkRepeat(column,value);
+    }
+
+    @Override
     public List<String> getResources(String roleId) {
-        List<Resource> list = resourceMapper.queryByRole(roleId,-1);
+        List<Resource> list = resourceMapper.queryByRole(roleId,1);
         List<String> result = new ArrayList<>();
         for (Resource resource : list)
             result.add(resource.getId());

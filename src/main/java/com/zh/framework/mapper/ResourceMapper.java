@@ -28,4 +28,8 @@ public interface ResourceMapper {
 
     @SelectProvider(type = ResourceSQL.class,method = "queryByRole")
     List<Resource> queryByRole(@Param("roleid") String roleid,@Param("delStatus") int delStatus);
+
+    @SelectProvider(type = ResourceSQL.class, method = "checkRepeat")
+    int checkRepeat(@Param("column")String column,@Param("value") String value);
+
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -55,7 +56,12 @@ public class UserController extends BaseController<User> {
         if ("true".equals(request.getParameter("search"))) {
             User user = new User();
             user.setId(request.getParameter("id"));
-            user.setuName(request.getParameter("uName"));
+            String uName=request.getParameter("uName");
+            //按用户名查询时过滤前后空格
+            if (uName!=null){
+                uName=uName.replaceAll("^\\s*","").replaceAll("\\s*$","");
+            }
+            user.setuName(uName);
             List<User> ulist = new ArrayList<>();
             ulist.add(user);
             pageBean.setContent(ulist);
@@ -71,9 +77,27 @@ public class UserController extends BaseController<User> {
     }
 
     @Override
+    @RequestMapping(value = "/delete.form")
+    @ResponseBody
+    public Map<String, Object> delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String id=request.getParameter("id");
+        return super.updateDeleteStatus(id,0,response);
+    }
+
     @RequestMapping(value = "/userAdd/add.form")
     @ResponseBody
-    public Map<String, Object> add(HttpServletRequest request){
+    public Map<String, Object> add(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String uName=request.getParameter("uName");
+        Map<String,Object> result=new HashMap<>();
+        if (uName==null||"".equals(uName)){
+            result.put("msg","用户名不能为空");
+            return result;
+        }
+        if (userService.checkRepeat("uName",uName)>0){
+            response.sendError(40011);
+            result.put("msg","用户名已存在");
+            return result;
+        }
         return super.add(request);
     }
 
@@ -86,10 +110,25 @@ public class UserController extends BaseController<User> {
     }
 
 
-    @Override
     @RequestMapping(value = "/userUpdate/update.form")
     @ResponseBody
-    public Map<String, Object> update(HttpServletRequest request){
+    public Map<String, Object> update(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String uName=request.getParameter("uName");
+        Map<String,Object> result=new HashMap<>();
+        if (uName==null||"".equals(uName)){
+            result.put("msg","用户名不能为空");
+            response.sendError(40012);
+            return result;
+        }
+        //检验用户名是否改变，没改不查重
+        Map<String,Object> orgUser=super.queryById(request.getParameter("id"));
+        if (!uName.equals(orgUser.get("uName"))){
+            if (userService.checkRepeat("uName",uName)>0){
+                response.sendError(40011);
+                result.put("msg","用户名已存在");
+                return result;
+            }
+        }
         return super.update(request);
     }
 
@@ -106,7 +145,7 @@ public class UserController extends BaseController<User> {
     @ResponseBody
     public Map<String,Object> getUserRole(@RequestParam("uid") String uid){
         List<Role> list = roleService.queryRoleOption();
-        List<String> userRolelist = roleService.getUserRole(uid,-1);
+        List<String> userRolelist = roleService.getUserRole(uid,1);
         Map<String,Object> result=new HashMap<>();
         result.put("allRole",list);
         result.put("userRole",userRolelist);

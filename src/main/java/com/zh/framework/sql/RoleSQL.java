@@ -30,6 +30,22 @@ public class RoleSQL {
             if(param.get("rName")!=null&&!"".equals(param.get("rName"))){
                 WHERE("r.rName like '%"+param.get("rName")+"%'");
             }
+            WHERE("r.deleteStatus=1");
+            if (param.get("sidx") != null && !"".equals(param.get("sidx"))) {
+                if("createUser".equals(((String)param.get("sidx")).replace(" ",""))){
+                    ORDER_BY("crtuName" + " " + param.get("sord"));
+                }else {
+                    ORDER_BY("" + param.get("sidx") + " " + param.get("sord"));
+                }
+            }
+        }}.toString();
+    }
+
+    public String checkRepeat(@Param("column")String column,@Param("value") String value){
+        return new SQL(){{
+            SELECT("COUNT(*)");
+            FROM("tb_role");
+            WHERE(column+"=#{value}");
         }}.toString();
     }
 

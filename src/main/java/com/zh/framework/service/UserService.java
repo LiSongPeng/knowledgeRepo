@@ -14,6 +14,8 @@ public interface UserService {
 
     int setUserRole(String uid, List<String> roleList);
 
+    int checkRepeat(String column,String value);
+
     int clearUserRole(String uid);
 
     int updateLastOnline(String uid);

@@ -89,6 +89,7 @@ public  class BaseController<T> {
             String value = request.getParameter(name);
             attrs.put(name,value);
         }
+        attrs.remove("createUserId");
         int total=0;
         total+=baseService.update(this.getTableName(),id,attrs);
         Map<String,Object> result=new HashMap<>();
@@ -125,7 +126,7 @@ public  class BaseController<T> {
 
     @RequestMapping("/delete.form")
     @ResponseBody
-    public Map<String, Object> delete(HttpServletRequest request){
+    public Map<String, Object> delete(HttpServletRequest request,HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
         int total=0;
         String[] idlist=id.split(",");
@@ -139,13 +140,11 @@ public  class BaseController<T> {
 
     @RequestMapping("/updateDeleteStatus.form")
     @ResponseBody
-    public Map<String, Object> updateDeleteStatus(HttpServletRequest request, HttpServletResponse response)throws IOException{
-        String id = request.getParameter("id");
-        int delstts = Integer.parseInt(request.getParameter("deleteStatus"));
+    public Map<String, Object> updateDeleteStatus(@RequestParam("id") String id,@RequestParam("deleteStatus") int deleteStatus, HttpServletResponse response)throws IOException{
         Map<String,Object> result=new HashMap<>();
-        if (delstts==0||delstts==1){
-            if( baseService.updateDeleteStatus(this.getTableName(),id,delstts)>0){
-                result.put("deleteStatus",delstts);
+        if (deleteStatus==0||deleteStatus==1){
+            if( baseService.updateDeleteStatus(this.getTableName(),id,deleteStatus)>0){
+                result.put("deleteStatus",deleteStatus);
                 result.put("msg","修改成功");
                return result;
             }else {

@@ -28,7 +28,14 @@ public class UserServiceImpl implements UserService {
         if (pageBean.getContent().size() == 0)
             pageBean.getContent().add(new User());
         Map<String, Object> map = new HashMap<>();
-        map.put("user", pageBean.getContent().get(0));
+        User user=pageBean.getContent().get(0);
+        String uName=user.getuName();
+        //按用户名查询时过滤前后空格
+        if (uName!=null){
+            uName=uName.replaceAll("^\\s*","").replaceAll("\\s*$","");
+        }
+        user.setuName(uName);
+        map.put("user", user);
         map.put("sidx", pageBean.getSidx());
         map.put("sord", pageBean.getSord());
         PageInfo<User> pageInfo = new PageInfo<>(userMapper.query(map));
@@ -44,6 +51,11 @@ public class UserServiceImpl implements UserService {
             totalsuc += userMapper.setUserRole(uid, rid);
         }
         return totalsuc;
+    }
+
+    @Override
+    public int checkRepeat(String column, String value) {
+        return userMapper.checkRepeat(column,value);
     }
 
     @Override

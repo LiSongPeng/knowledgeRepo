@@ -11,6 +11,7 @@ import java.util.Map;
 public interface RoleService {
     List<Role> queryRoleOption();
     List<Role> queryRoleList(Map<String,Object> param);
+    int checkRepeat(String column,String value);
     int setRoleRes(String rid,List<String> sids);
     List<String> getUserRole(String uid,int delStatus);
     int clearRoleRes( String rid);

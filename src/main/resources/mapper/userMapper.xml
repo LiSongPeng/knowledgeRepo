@@ -7,7 +7,7 @@
         <id property="id" column="id"/>
         <result property="uName" column="uName"/>
         <result property="uPassword" column="uPassword"/>
-        <result property="deleteStatus" column="uDeleteStatus"/>
+        <result property="deleteStatus" column="deleteStatus"/>
         <result property="uDescription" column="uDescription"/>
         <!--<result property="createUserId" column="createUserId"/>-->
         <result property="createTime" column="createTime"/>

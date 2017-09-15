@@ -29,6 +29,11 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
+    public int checkRepeat(String column, String value) {
+        return roleMapper.checkRepeat(column,value);
+    }
+
+    @Override
     public int setRoleRes(String rid, List<String> sids) {
         int total=0;
         for (String sid:sids) {

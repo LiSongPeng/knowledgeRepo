@@ -60,10 +60,22 @@ public class ResourceController extends BaseController<Resource>{
         result.put("resOptions",allres);
         return result;
     }
-    @Override
+
     @RequestMapping("/resourceAdd/add.form")
     @ResponseBody
-    public Map<String,Object> add(HttpServletRequest request){
+    public Map<String,Object> add(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String sName=request.getParameter("sName");
+        Map<String,Object> result=new HashMap<>();
+        if (sName==null||"".equals(sName)){
+            result.put("msg","资源名不能为空");
+            response.sendError(40012);
+            return result;
+        }
+        if (resourceService.checkRepeat("sName",sName)>0){
+            response.sendError(40011);
+            result.put("msg","资源名已存在");
+            return result;
+        }
         return super.add(request);
     }
 
@@ -75,10 +87,26 @@ public class ResourceController extends BaseController<Resource>{
         return resourceService.querySearch(param).get(0);
     }
 
-    @Override
     @RequestMapping("/resourceUpdate/update.form")
     @ResponseBody
-    public Map<String,Object> update(HttpServletRequest request){
+    public Map<String,Object> update(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String sName=request.getParameter("sName");
+        Map<String,Object> result=new HashMap<>();
+        if (sName==null||"".equals(sName)){
+            result.put("msg","资源名不能为空");
+            return result;
+        }
+        // 检验资源名是否改变，没改则不用查重
+        Map<String,Object> param=new HashMap<>();
+        param.put("id",request.getParameter("id"));
+        Resource orgRes= resourceService.querySearch(param).get(0);
+        if (!orgRes.getsName().equals(sName)){
+            if (resourceService.checkRepeat("sName",sName)>0){
+                response.sendError(40011);
+                result.put("msg","资源名已存在");
+                return result;
+            }
+        }
         return super.update(request);
     }
 
@@ -88,5 +116,13 @@ public class ResourceController extends BaseController<Resource>{
     public List<Resource> getUserRes(HttpServletRequest request){
         String userid =request.getHeader("Current-UserID");
         return resourceService.queryByUser(userid);
+    }
+
+    @Override
+    @RequestMapping(value = "/delete.form")
+    @ResponseBody
+    public Map<String, Object> delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String id=request.getParameter("id");
+        return super.updateDeleteStatus(id,0,response);
     }
 }

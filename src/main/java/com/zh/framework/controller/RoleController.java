@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,15 +43,32 @@ public class RoleController extends BaseController<Role> {
     public Map<String,Object> queryList(HttpServletRequest request) {
         Map<String,Object> param=new HashMap<>();
         String rName=request.getParameter("rName");
+        if (rName!=null){
+            rName=rName.replaceAll("^\\s*","").replaceAll("\\s*$","");
+        }
         param.put("rName",rName);
+        param.put("sidx",request.getParameter("sidx"));
+        param.put("sord",request.getParameter("sord"));
         Map<String,Object> result=new HashMap<>();
         result.put("content",roleService.queryRoleList(param));
         return result;
     }
-    @Override
+
     @RequestMapping("/roleAdd/add.form")
     @ResponseBody
-    public Map<String,Object> add(HttpServletRequest request){
+    public Map<String,Object> add(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String rName=request.getParameter("rName");
+        Map<String,Object> result=new HashMap<>();
+        if (rName==null||"".equals(rName)){
+            result.put("msg","角色名不能为空");
+            response.sendError(40012);
+            return result;
+        }
+        if (roleService.checkRepeat("rName",rName)>0){
+            result.put("msg","角色名已存在");
+            response.sendError(40011);
+            return result;
+        }
         return super.add(request);
     }
 
@@ -69,10 +87,26 @@ public class RoleController extends BaseController<Role> {
     public Map<String,Object> query(HttpServletRequest request){
         return super.query(request);
     }
-    @Override
+
     @RequestMapping("/roleUpdate/update.form")
     @ResponseBody
-    public Map<String,Object> update(HttpServletRequest request){
+    public Map<String,Object> update(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String rName=request.getParameter("rName");
+        Map<String,Object> result=new HashMap<>();
+        if (rName==null||"".equals(rName)){
+            result.put("msg","角色名不能为空");
+            return result;
+        }
+        //检验用户名是否改变，没改不查重
+        Map<String,Object> orgUser=super.queryById(request.getParameter("id"));
+        if (!rName.equals(orgUser.get("rName"))){
+
+        }
+        if (roleService.checkRepeat("rName",rName)>0){
+            response.sendError(40011);
+            result.put("msg","角色名已存在");
+            return result;
+        }
         return super.update(request);
     }
 
@@ -108,5 +142,13 @@ public class RoleController extends BaseController<Role> {
         List<Integer> totallist=new ArrayList<>();
         totallist.add(total);
         return totallist;
+    }
+
+    @Override
+    @RequestMapping(value = "/delete.form")
+    @ResponseBody
+    public Map<String, Object> delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String id=request.getParameter("id");
+        return super.updateDeleteStatus(id,0,response);
     }
 }

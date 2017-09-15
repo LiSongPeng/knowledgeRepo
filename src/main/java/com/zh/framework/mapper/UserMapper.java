@@ -19,6 +19,9 @@ public interface UserMapper {
     @ResultMap("com.zh.framework.mapper.UserMapper.userMap")
     List<User> query(Map<String, Object> param);
 
+    @SelectProvider(type = UserSQL.class, method = "checkRepeat")
+    public int checkRepeat(@Param("column")String column,@Param("value") String value);
+
     @InsertProvider(type = UserSQL.class, method = "setUserRole")
     int setUserRole(@Param("uid") String uid,@Param("rid") String rid);
 

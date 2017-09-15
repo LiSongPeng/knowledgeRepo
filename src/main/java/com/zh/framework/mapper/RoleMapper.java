@@ -18,6 +18,10 @@ public interface RoleMapper {
     @SelectProvider(type = RoleSQL.class,method = "getUserRole")
     public List<String> getUserRole(@Param("uid") String uid,@Param("delStatus") int delStatus);
 
+    @SelectProvider(type = RoleSQL.class, method = "checkRepeat")
+    public int checkRepeat(@Param("column")String column,@Param("value") String value);
+
+
     @SelectProvider(type = RoleSQL.class,method = "queryRoleList")
     @ResultMap("com.zh.framework.mapper.RoleMapper.roleMap")
     public List<Role> queryRoleList(Map<String,Object> param);

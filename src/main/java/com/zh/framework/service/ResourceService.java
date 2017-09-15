@@ -13,6 +13,6 @@ public interface ResourceService {
     public List<TreeGridData> queryAsTree();
     public List<Resource> querySearch(Map<String,Object> param);
     public List<Resource> queryByUser(String userid);
-
+    int checkRepeat(String column,String value);
     List<String> getResources(String roleId);
 }

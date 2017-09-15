@@ -37,9 +37,26 @@ public class ResourceSQL {
             if (param.get("sName") != null && !"".equals(param.get("sName"))) {
                 WHERE("s.sName like '%"+param.get("sName")+"%'");
             }
+            WHERE("s.deleteStatus =1");
+            if (param.get("sidx") != null && !"".equals(param.get("sidx"))) {
+                if("createUser".equals(((String)param.get("sidx")).replace(" ",""))){
+                    ORDER_BY("crtuName" + " " + param.get("sord"));
+                }else {
+                    ORDER_BY("" + param.get("sidx") + " " + param.get("sord"));
+                }
+            }
         }}.toString();
         return sql;
     }
+
+    public String checkRepeat(@Param("column")String column,@Param("value") String value){
+        return new SQL(){{
+            SELECT("COUNT(*)");
+            FROM("tb_resource");
+            WHERE(column+"=#{value}");
+        }}.toString();
+    }
+
     public String queryByPid(String pid){
         return new SQL(){{
             SELECT("s.id as id," +
@@ -60,6 +77,7 @@ public class ResourceSQL {
             }else {
                 WHERE("s.sParentId=#{pid}");
             }
+            WHERE("s.deleteStatus =1");
         }}.toString();
     }
 
@@ -91,9 +109,11 @@ public class ResourceSQL {
                     "s.sIndex");
             FROM("tb_resources_role sr ");
             LEFT_OUTER_JOIN("tb_role_user ru on sr.rid = ru.rid");
+            LEFT_OUTER_JOIN("tb_user u on ru.uid = u.id");
             LEFT_OUTER_JOIN("tb_role r on sr.rid=r.id");
             LEFT_OUTER_JOIN("tb_resource s on sr.sid = s.id");
             WHERE("ru.uid=#{userid}");
+            WHERE("u.deleteStatus=1");
             WHERE("s.deleteStatus=1");
             WHERE("r.deleteStatus=1");
         }}.toString();
