@@ -38,5 +38,7 @@ public interface KnowledgeMapper {
 
     public void updateAppr(@Param("id") String id, @Param("kApprUserId") String kApprUserId, @Param("kApprMemo") String kApprMemo, @Param("kApprTime") Date kApprTime);
 
-    String queryUserNameById(@Param("userId") String userId);
+    public String queryUserNameById(@Param("userId") String userId);
+
+    public List<Knowledge> search(@Param("kTitle") String kTitle);
 }

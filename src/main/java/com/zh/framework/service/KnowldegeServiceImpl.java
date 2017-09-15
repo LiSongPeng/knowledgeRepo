@@ -121,4 +121,10 @@ public class KnowldegeServiceImpl implements KnowledgeService {
     public void updateAppr(String id, String kApprUserId, String kApprMemo, Date kApprTime) {
         knowledgeMapper.updateAppr(id, kApprUserId, kApprMemo, kApprTime);
     }
+
+
+    @Override
+    public List<Knowledge> search(String searchKey) {
+        return knowledgeMapper.search(searchKey);
+    }
 }
