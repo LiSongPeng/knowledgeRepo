@@ -13,6 +13,7 @@ public class RoleSQL {
         return new SQL(){{
             SELECT("id,rName");
             FROM("tb_role");
+            WHERE("deleteStatus=1");
         }}.toString();
     }
 
