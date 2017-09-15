@@ -49,13 +49,26 @@ public class KnowledgeController  extends BaseController<Knowledge>{
      */
     @RequestMapping("/selectPage.form")
     @ResponseBody
-    public PageBean selectPage(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
+    public PageBean selectPage(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows,String kTitle){
+        System.out.println(kTitle);
         PageBean pageBean=new PageBean();
         pageBean.setCurrentPage(page);
         pageBean.setPageSize(rows);
         pageBean=knowledgeService.queryAllKnowledge(pageBean);
         return pageBean;
     }
+
+    @RequestMapping("/search.form")
+    @ResponseBody
+    public List<Knowledge> search(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows,String kTitle){
+        System.out.println(kTitle);
+        List<Knowledge> list=knowledgeService.search(kTitle);
+
+        return list;
+    }
+
+
+
     /**
      * 条件查询（用于知识审批）
      *
