@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.transform.sax.SAXSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +46,8 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
         PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(list);
         PageBean pb = new PageBean();
+        pb.setSidx(pageBean.getSidx());
+        pb .setSord(pageBean.getSord());
         pb.setTotalPages(pageInfo.getPages());
         pb.setPageSize(pageInfo.getPageSize());
         pb.setTotalCounts((int) pageInfo.getTotal());
@@ -80,12 +83,49 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
         PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(list);
         PageBean pb = new PageBean();
+        pb.setSidx(pageBean.getSidx());
+        pb .setSord(pageBean.getSord());
         pb.setTotalPages(pageInfo.getPages());
         pb.setPageSize(pageInfo.getPageSize());
         pb.setTotalCounts((int) pageInfo.getTotal());
         pb.setCurrentPage(pageInfo.getPageNum());
         pb.setContent(pageInfo.getList());
         return pb;
+    }
+
+    @Override
+    public PageBean queryKnowledgeOrder(PageBean pageBean) {
+
+        PageHelper.startPage(pageBean.getCurrentPage(), pageBean.getPageSize());
+
+        String aaa="使用次数=";
+        List<Knowledge> list=knowledgeMapper.queryKnowledgeOrder(pageBean.getSidx(),pageBean.getSord());
+
+        for (Knowledge aa:list){
+            System.out.println("使用次数="+aa.getkUseCount());
+            aaa=aaa+"#"+aa.getkUseCount();
+            String uname=knowledgeMapper.queryUserNameById(aa.getCreateUserId());
+
+            aa.setCreateUserId(uname);
+
+            uname=knowledgeMapper.queryUserNameById(aa.getkApprUserId());
+
+            aa.setkApprUserId(uname);
+
+        }
+        System.out.println(aaa);
+
+        PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(list);
+        PageBean pb = new PageBean();
+        pb.setSidx(pageBean.getSidx());
+        pb .setSord(pageBean.getSord());
+        pb.setTotalPages(pageInfo.getPages());
+        pb.setPageSize(pageInfo.getPageSize());
+        pb.setTotalCounts((int) pageInfo.getTotal());
+        pb.setCurrentPage(pageInfo.getPageNum());
+        pb.setContent(pageInfo.getList());
+        return pb;
+
     }
 
     @Override

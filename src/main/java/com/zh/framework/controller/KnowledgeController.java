@@ -49,12 +49,26 @@ public class KnowledgeController  extends BaseController<Knowledge>{
      */
     @RequestMapping("/selectPage.form")
     @ResponseBody
-    public PageBean selectPage(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows,String kTitle){
+    public PageBean selectPage(@RequestParam("sord")String sord,@RequestParam("sidx")String sidx,@RequestParam(value="page")int page,@RequestParam(value="rows")int rows,String kTitle){
         System.out.println(kTitle);
         PageBean pageBean=new PageBean();
+        pageBean.setSidx(sidx);
+        pageBean.setSord(sord);
         pageBean.setCurrentPage(page);
         pageBean.setPageSize(rows);
-        pageBean=knowledgeService.queryAllKnowledge(pageBean);
+
+
+        if (sidx != null && !"".equals(sidx) ){
+            System.out.println("排序");
+            pageBean=knowledgeService.queryKnowledgeOrder(pageBean);
+        }else {
+            System.out.println("未排序");
+            pageBean=knowledgeService.queryAllKnowledge(pageBean);
+
+        }
+
+
+
         return pageBean;
     }
 
@@ -79,12 +93,24 @@ public class KnowledgeController  extends BaseController<Knowledge>{
     @RequestMapping("/selectPage2.form")
 
     @ResponseBody
-    public PageBean selectPage2(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
+    public PageBean selectPage2(@RequestParam("sord")String sord,@RequestParam("sidx")String sidx,@RequestParam(value="page")int page,@RequestParam(value="rows")int rows){
+
 
         PageBean pageBean=new PageBean();
+        pageBean.setSidx(sidx);
+        pageBean.setSord(sord);
         pageBean.setCurrentPage(page);
         pageBean.setPageSize(rows);
-        pageBean=knowledgeService.querySomeKnowledge(pageBean);
+
+
+        if (sidx != null && !"".equals(sidx) ){
+            System.out.println("排序");
+            pageBean=knowledgeService.queryKnowledgeOrder(pageBean);
+        }else {
+            System.out.println("未排序");
+            pageBean=knowledgeService.querySomeKnowledge(pageBean);
+
+        }
         return pageBean;
 
 

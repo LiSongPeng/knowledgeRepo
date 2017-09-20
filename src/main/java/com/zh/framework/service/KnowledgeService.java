@@ -21,6 +21,8 @@ public interface KnowledgeService {
 
     public PageBean querySomeKnowledge(PageBean pageBean);
 
+    public PageBean queryKnowledgeOrder(PageBean pageBean);
+
     public void updateAppr(String id,String kApprUserId,String kApprMemo,Date kApprTime);
 
     public List<Knowledge> search(String searchKey);
