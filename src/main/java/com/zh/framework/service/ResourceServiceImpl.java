@@ -21,10 +21,10 @@ public class ResourceServiceImpl implements ResourceService {
     @Autowired
     private RoleMapper roleMapper;
 
-    public List<TreeGridData> queryAsTree() {
-        Map<String, Object> param = new HashMap<>();
+    @Override
+    public List<TreeGridData> queryAsTree(String sidx,String sord) {
         List<TreeGridData> totalList = new ArrayList<>();
-        toTreeDataList(null, 1, totalList);
+        toTreeDataList(null,sidx,sord,1, totalList);
         return totalList;
     }
 
@@ -59,15 +59,15 @@ public class ResourceServiceImpl implements ResourceService {
         return result;
     }
 
-    private int toTreeDataList(String parentId, int level, List<TreeGridData> totalList) {
-        List<Resource> list = resourceMapper.queryByPid(parentId);
+    private int toTreeDataList(String parentId,String sidx,String sord, int level, List<TreeGridData> totalList) {
+        List<Resource> list = resourceMapper.queryByPid(parentId,sidx,sord);
         for (Resource res : list) {
             TreeGridData treedata = new TreeGridData(res);
             treedata.setLevel(level);
             treedata.setExpanded(true);
             treedata.setLoaded(true);
             totalList.add(treedata);
-            treedata.setLeaf(toTreeDataList(res.getId(), level + 1, totalList) == 0);
+            treedata.setLeaf(toTreeDataList(res.getId(),sidx,sord, level + 1, totalList) == 0);
         }
         return list.size();
     }

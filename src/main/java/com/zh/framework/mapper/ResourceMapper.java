@@ -21,7 +21,9 @@ public interface ResourceMapper {
 
     @SelectProvider(type = ResourceSQL.class,method = "queryByPid")
     @ResultMap("com.zh.framework.mapper.ResourceMapper.resourceMap")
-    List<Resource> queryByPid(String pid);
+    List<Resource> queryByPid(@Param("pid")String pid,
+                              @Param("sidx")String sidx,
+                              @Param("sord") String sord);
 
     @SelectProvider(type = ResourceSQL.class,method = "queryByUser")
     List<Resource> queryByUser(@Param("userid") String userid);

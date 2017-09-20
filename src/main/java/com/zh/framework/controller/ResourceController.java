@@ -39,7 +39,9 @@ public class ResourceController extends BaseController<Resource>{
     @ResponseBody
     public Map<String,Object> query(HttpServletRequest request){
         Map<String,Object> map=new HashMap<>();
-        map.put("content",resourceService.queryAsTree());
+        String sidx=request.getParameter("sidx");
+        String sord=request.getParameter("sord");
+        map.put("content",resourceService.queryAsTree(sidx,sord));
         return map;
     }
 

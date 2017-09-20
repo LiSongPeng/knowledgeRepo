@@ -57,7 +57,9 @@ public class ResourceSQL {
         }}.toString();
     }
 
-    public String queryByPid(String pid){
+    public String queryByPid(@Param("pid")String pid,
+                             @Param("sidx")String sidx,
+                             @Param("sord") String sord){
         return new SQL(){{
             SELECT("s.id as id," +
                     "s.sParentId as sParentId," +
@@ -78,6 +80,13 @@ public class ResourceSQL {
                 WHERE("s.sParentId=#{pid}");
             }
             WHERE("s.deleteStatus =1");
+            if (sidx != null && !"".equals(sidx)) {
+                if("createUser".equals(sidx)){
+                    ORDER_BY("crtuName" + " " + sord);
+                }else {
+                    ORDER_BY("" + sidx + " " + sord);
+                }
+            }
         }}.toString();
     }
 
