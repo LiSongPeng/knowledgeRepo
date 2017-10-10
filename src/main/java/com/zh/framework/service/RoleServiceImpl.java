@@ -1,7 +1,11 @@
 package com.zh.framework.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.zh.framework.entity.PageBean;
 import com.zh.framework.entity.Role;
 import com.zh.framework.mapper.RoleMapper;
+import com.zh.framework.util.PageInfoConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +28,11 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public List<Role> queryRoleList(Map<String,Object> param) {
-        return roleMapper.queryRoleList(param);
+    public PageBean<Role> queryRoleList(Map<String,Object> param) {
+        PageHelper.startPage((Integer) param.get("currentPage"),(Integer) param.get("pageSize"));
+        PageInfo<Role> pageInfo = new PageInfo<>(roleMapper.queryRoleList(param));
+        PageInfoConvertor<Role> piconvert = new PageInfoConvertor<>(pageInfo);
+        return piconvert.toPageBean();
     }
 
     @Override

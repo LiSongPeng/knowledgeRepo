@@ -2,6 +2,7 @@ package com.zh.framework.controller;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zh.framework.entity.PageBean;
 import com.zh.framework.entity.Role;
 import com.zh.framework.service.ResourceService;
 import com.zh.framework.service.RoleService;
@@ -49,8 +50,18 @@ public class RoleController extends BaseController<Role> {
         param.put("rName",rName);
         param.put("sidx",request.getParameter("sidx"));
         param.put("sord",request.getParameter("sord"));
+        int currentPage = Integer.parseInt(request.getParameter("currentPage"));
+        int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        param.put("currentPage",currentPage);
+        param.put("pageSize",pageSize);
+
         Map<String,Object> result=new HashMap<>();
-        result.put("content",roleService.queryRoleList(param));
+        PageBean<Role> repb = roleService.queryRoleList(param);
+        result.put("totalPages", repb.getTotalPages());
+        result.put("currentPage", repb.getCurrentPage());
+        result.put("pageSize", repb.getPageSize());
+        result.put("totalCounts", repb.getTotalCounts());
+        result.put("content", repb.getContent());
         return result;
     }
 
