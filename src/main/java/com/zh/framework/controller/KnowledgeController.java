@@ -57,7 +57,7 @@ public class KnowledgeController  extends BaseController<Knowledge>{
 
         if (sidx != null && !"".equals(sidx) ){
             System.out.println("排序");
-            pageBean=knowledgeService.queryKnowledgeOrder(pageBean);
+            pageBean=knowledgeService.queryKnowledgeOrder2(pageBean);
         }else {
             System.out.println("未排序");
             pageBean=knowledgeService.queryAllKnowledge(pageBean);

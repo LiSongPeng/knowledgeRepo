@@ -30,7 +30,13 @@
     </select>
 
     <select id="queryKnowledgeOrder" resultMap="knowledgeMap">
-     SELECT * FROM tb_knowledge order by ${sidx} ${sord}
+     SELECT * FROM tb_knowledge k WHERE k.kApprStatus="录入待审批" OR k.kApprStatus="编辑待审批" OR k.kApprStatus="删除待审批" order by ${sidx} ${sord}
+
+
+    </select>
+
+    <select id="queryKnowledgeOrder2" resultMap="knowledgeMap">
+        SELECT * FROM tb_knowledge k order by ${sidx} ${sord}
 
 
     </select>

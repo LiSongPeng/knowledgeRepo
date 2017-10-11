@@ -130,6 +130,41 @@ public class KnowldegeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public PageBean queryKnowledgeOrder2(PageBean pageBean) {
+
+        PageHelper.startPage(pageBean.getCurrentPage(), pageBean.getPageSize());
+
+        String aaa="使用次数=";
+        List<Knowledge> list=knowledgeMapper.queryKnowledgeOrder2(pageBean.getSidx(),pageBean.getSord());
+
+        for (Knowledge aa:list){
+            System.out.println("使用次数="+aa.getkUseCount());
+            aaa=aaa+"#"+aa.getkUseCount();
+            String uname=knowledgeMapper.queryUserNameById(aa.getCreateUserId());
+
+            aa.setCreateUserId(uname);
+
+            uname=knowledgeMapper.queryUserNameById(aa.getkApprUserId());
+
+            aa.setkApprUserId(uname);
+
+        }
+        System.out.println(aaa);
+
+        PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(list);
+        PageBean pb = new PageBean();
+        pb.setSidx(pageBean.getSidx());
+        pb .setSord(pageBean.getSord());
+        pb.setTotalPages(pageInfo.getPages());
+        pb.setPageSize(pageInfo.getPageSize());
+        pb.setTotalCounts((int) pageInfo.getTotal());
+        pb.setCurrentPage(pageInfo.getPageNum());
+        pb.setContent(pageInfo.getList());
+        return pb;
+
+    }
+
+    @Override
     public void addKnowledge(Knowledge k) {
         knowledgeMapper.addKnowledge(k);
 

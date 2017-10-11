@@ -25,6 +25,8 @@ public interface KnowledgeService {
 
     public PageBean queryKnowledgeOrder(PageBean pageBean);
 
+    public PageBean queryKnowledgeOrder2(PageBean pageBean);
+
     public List<ApprovalRecord> queryAppar(String kid);
 
     public void addAppar(ApprovalRecord approvalRecord);

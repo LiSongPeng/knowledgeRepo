@@ -38,6 +38,9 @@ public interface KnowledgeMapper {
     public List<Knowledge> querySomeKnowledge();
 
     public List<Knowledge> queryKnowledgeOrder(@Param("sidx")String sidx,@Param("sord") String sord );
+    public List<Knowledge> queryKnowledgeOrder2(@Param("sidx")String sidx,@Param("sord") String sord );
+
+
 
     public void updateAppr(@Param("id") String id, @Param("kApprUserId") String kApprUserId, @Param("kApprMemo") String kApprMemo, @Param("kApprTime") Date kApprTime);
 
