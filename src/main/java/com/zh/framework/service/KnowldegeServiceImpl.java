@@ -3,6 +3,7 @@ package com.zh.framework.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.zh.framework.entity.ApprovalRecord;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.PageBean;
 import com.zh.framework.mapper.KnowledgeMapper;
@@ -164,7 +165,54 @@ public class KnowldegeServiceImpl implements KnowledgeService {
 
 
     @Override
-    public List<Knowledge> search(String searchKey) {
-        return knowledgeMapper.search(searchKey);
+    public PageBean search(String searchKey,String keyValue,PageBean pageBean) {
+
+
+
+        PageHelper.startPage(pageBean.getCurrentPage(), pageBean.getPageSize());
+
+        List<Knowledge> list=knowledgeMapper.search(searchKey,keyValue);
+
+        for (Knowledge aa:list){
+            String uname=knowledgeMapper.queryUserNameById(aa.getCreateUserId());
+
+            aa.setCreateUserId(uname);
+
+            uname=knowledgeMapper.queryUserNameById(aa.getkApprUserId());
+
+            aa.setkApprUserId(uname);
+
+        }
+
+
+        PageInfo<Knowledge> pageInfo = new PageInfo<Knowledge>(list);
+        PageBean pb = new PageBean();
+        pb.setSidx(pageBean.getSidx());
+        pb .setSord(pageBean.getSord());
+        pb.setTotalPages(pageInfo.getPages());
+        pb.setPageSize(pageInfo.getPageSize());
+        pb.setTotalCounts((int) pageInfo.getTotal());
+        pb.setCurrentPage(pageInfo.getPageNum());
+        pb.setContent(pageInfo.getList());
+        return pb;
+
+    }
+
+    public List<Knowledge> queryByKtitle(String kTitle){
+
+        return knowledgeMapper.queryByKtitle(kTitle);
+
+    }
+
+
+
+    @Override
+    public List<ApprovalRecord> queryAppar(String kid) {
+        return knowledgeMapper.queryAppr(kid);
+    }
+
+    @Override
+    public void addAppar(ApprovalRecord approvalRecord) {
+        knowledgeMapper.addAppr(approvalRecord.getId(),approvalRecord.getKid(), approvalRecord.getaTime(),approvalRecord.getbStatus(), approvalRecord.getaStatus(),approvalRecord.getDs());
     }
 }

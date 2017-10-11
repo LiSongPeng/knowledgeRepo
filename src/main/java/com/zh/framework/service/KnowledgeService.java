@@ -1,5 +1,7 @@
 package com.zh.framework.service;
 
+import com.sun.deploy.association.utility.AppAssociationReader;
+import com.zh.framework.entity.ApprovalRecord;
 import com.zh.framework.entity.Knowledge;
 import com.zh.framework.entity.PageBean;
 
@@ -23,7 +25,13 @@ public interface KnowledgeService {
 
     public PageBean queryKnowledgeOrder(PageBean pageBean);
 
+    public List<ApprovalRecord> queryAppar(String kid);
+
+    public void addAppar(ApprovalRecord approvalRecord);
+
     public void updateAppr(String id,String kApprUserId,String kApprMemo,Date kApprTime);
 
-    public List<Knowledge> search(String searchKey);
+    public PageBean search(String searchKey,String keyValue,PageBean pageBean);
+
+ public List<Knowledge> queryByKtitle(String kTitle);
 }
