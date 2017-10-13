@@ -31,6 +31,15 @@ public interface UserMapper {
     @DeleteProvider(type = UserSQL.class,method = "clearUserRole")
     int clearUserRole( String uid);
 
+    @SelectProvider(type = UserSQL.class, method = "selectById")
+    @ResultMap("com.zh.framework.mapper.UserMapper.userMap")
+    User selectById(String uid);
+
+    @UpdateProvider(type = UserSQL.class,method = "update")
+    public int update(@Param("id") String id,
+                      @Param("attrs") Map<String,Object> attrs);
+
+
     User queryByNameAndPass(@Param("username") String username, @Param("password") String password);
 
     void updateLastLoginTime(@Param("id") String id, @Param("date") Date date);

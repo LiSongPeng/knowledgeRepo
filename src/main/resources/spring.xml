@@ -15,7 +15,7 @@
         <property name="url" value="${url}"/>
         <property name="maxWaitMillis" value="${maxWait}"/>
         <property name="username" value="root"/>
-        <property name="password" value="123456"/>
+        <property name="password" value="lijichang"/>
 
 
         <property name="driverClassName" value="${driver}"/>

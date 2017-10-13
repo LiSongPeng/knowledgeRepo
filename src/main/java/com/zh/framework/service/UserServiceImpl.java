@@ -68,6 +68,16 @@ public class UserServiceImpl implements UserService {
         return userMapper.updateLastOnline(uid);
     }
 
+    @Override
+    public int update(String uid, Map<String, Object> attrs) {
+        return userMapper.update(uid,attrs);
+    }
+
+    @Override
+    public User selectById(String uid) {
+        return userMapper.selectById(uid);
+    }
+
 
     @Override
     public User login(String username, String password) {
