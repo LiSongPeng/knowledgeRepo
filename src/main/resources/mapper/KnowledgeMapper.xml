@@ -30,13 +30,28 @@
     </select>
 
     <select id="queryKnowledgeOrder" resultMap="knowledgeMap">
-     SELECT * FROM tb_knowledge order by ${sidx} ${sord}
+     SELECT * FROM tb_knowledge k WHERE k.kApprStatus="录入待审批" OR k.kApprStatus="编辑待审批" OR k.kApprStatus="删除待审批" order by ${sidx} ${sord}
+
+
+    </select>
+
+    <select id="queryKnowledgeOrder2" resultMap="knowledgeMap">
+        SELECT * FROM tb_knowledge k order by ${sidx} ${sord}
 
 
     </select>
 
     <select id="search" resultMap="knowledgeMap">
-        SELECT * FROM tb_knowledge k WHERE k.kTitle LIKE  "%${kTitle}%"
+        SELECT * FROM tb_knowledge k WHERE k.
+        <choose>
+            <when test="seachKey=='kTitle'">
+                kTitle
+            </when>
+            <when test="seachKey=='status'">
+                kApprStatus
+            </when>
+        </choose>
+        LIKE  "%${KeyValue}%"
     </select>
 
 
@@ -107,4 +122,32 @@
     <select id="queryIndexableKnowledge" resultMap="knowledgeMap">
         SELECT * FROM tb_knowledge WHERE tb_knowledge.kApprStatus='通过' OR tb_knowledge.kApprStatus='删除待审批'
     </select>
+
+
+
+<resultMap id="ApprMap" type="com.zh.framework.entity.ApprovalRecord">
+    <id property="id" column="id"/>
+    <result property="kid" column="kid"/>
+    <result property="aTime" column="aTime"/>
+    <result property="bStatus" column="bStatus"/>
+    <result property="aStatus" column="aStatus"/>
+    <result property="ds" column="ds"/>
+</resultMap>
+
+<select id="queryAppr" resultMap="ApprMap">
+    select * FROM tb_approvalrecord where kid=#{kid}
+
+</select>
+
+<insert id="addAppr">
+    insert into tb_approvalrecord(id,kid, aTime, bStatus, aStatus, ds) value(#{id},#{kid},#{aTime},#{bStatus},#{aStatus},#{ds})
+</insert>
+
+
+<select id="queryByKtitle" resultMap="knowledgeMap">
+    select * from tb_knowledge where kTitle=#{kTitle}
+</select>
+
+
+
 </mapper>

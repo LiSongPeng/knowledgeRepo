@@ -1,10 +1,7 @@
 package com.zh.framework.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.zh.framework.entity.CustomDateSerializer;
-import com.zh.framework.entity.Knowledge;
-import com.zh.framework.entity.PageBean;
-import com.zh.framework.entity.Response;
+import com.zh.framework.entity.*;
 import com.zh.framework.service.BaseService;
 import com.zh.framework.service.KnowledgeRepoService;
 import com.zh.framework.service.KnowledgeService;
@@ -60,7 +57,7 @@ public class KnowledgeController  extends BaseController<Knowledge>{
 
         if (sidx != null && !"".equals(sidx) ){
             System.out.println("排序");
-            pageBean=knowledgeService.queryKnowledgeOrder(pageBean);
+            pageBean=knowledgeService.queryKnowledgeOrder2(pageBean);
         }else {
             System.out.println("未排序");
             pageBean=knowledgeService.queryAllKnowledge(pageBean);
@@ -74,11 +71,36 @@ public class KnowledgeController  extends BaseController<Knowledge>{
 
     @RequestMapping("/search.form")
     @ResponseBody
-    public List<Knowledge> search(@RequestParam(value="page")int page,@RequestParam(value="rows")int rows,String kTitle){
+    public PageBean search(@RequestParam("sord")String sord,@RequestParam("sidx")String sidx,String status,@RequestParam(value="page")int page,@RequestParam(value="rows")int rows,String kTitle){
         System.out.println(kTitle);
-        List<Knowledge> list=knowledgeService.search(kTitle);
 
-        return list;
+
+
+        PageBean pageBean=new PageBean();
+        pageBean.setSidx(sidx);
+        pageBean.setSord(sord);
+        pageBean.setCurrentPage(page);
+        pageBean.setPageSize(rows);
+
+        List<Knowledge> list =new ArrayList<Knowledge>();
+        if (kTitle!=null){
+            kTitle=kTitle.replaceAll("^\\s*","").replaceAll("\\s*$","");
+
+            pageBean=knowledgeService.search("kTitle",kTitle,pageBean);
+        }else if(status!=null){
+            status=status.replaceAll("^\\s*","").replaceAll("\\s*$","");
+            pageBean=knowledgeService.search("status",status,pageBean);
+        }else {
+            //pageBean=knowledgeService.search("status",kTitle,pageBean);
+            pageBean=knowledgeService.queryKnowledgeOrder(pageBean);
+        }
+
+
+
+
+
+
+        return pageBean;
     }
 
 
@@ -127,8 +149,12 @@ public class KnowledgeController  extends BaseController<Knowledge>{
      */
     @RequestMapping("/addKnowledge.form")
     @ResponseBody
-    public void add(HttpServletRequest request,@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
+    public String add(HttpServletRequest request,@RequestParam(value="kTitle")String kTitle, @RequestParam(value="createUserId")String createUserId,  @RequestParam(value="kAnswer")String kAnswer){
 
+        String aa="0";
+
+        System.out.println(kAnswer);
+        System.out.println("*****"+knowledgeService.queryByKtitle(kTitle));
         System.out.println("addKnowledge");
         String cuid=request.getHeader("Current-UserId");
         System.out.println("用户ID:"+cuid);
@@ -169,8 +195,13 @@ public class KnowledgeController  extends BaseController<Knowledge>{
         k.setCreateTime(date);
         k.setkUserTimeLast(date);
 
+        if(knowledgeService.queryByKtitle(kTitle).size()!=0){
+            aa="1";
+        }else {knowledgeService.addKnowledge(k);}
 
-        knowledgeService.addKnowledge(k);
+        //
+
+        return aa;
 
     }
 
@@ -257,6 +288,17 @@ public class KnowledgeController  extends BaseController<Knowledge>{
         System.out.println(id+kApprUserId+kApprMemo);
         knowledgeService.updateAppr(id,cuid,kApprMemo,date);
 
+        UUID uuid  =  UUID.randomUUID();
+        String aid = UUID.randomUUID().toString();
+
+        ApprovalRecord approvalRecord=new ApprovalRecord();
+        approvalRecord.setId(aid);
+        approvalRecord.setaTime(date);
+        approvalRecord.setKid(id);
+        approvalRecord.setbStatus(k.getkApprStatus());
+        approvalRecord.setaStatus(button);
+        approvalRecord.setDs(kApprMemo);
+        knowledgeService.addAppar(approvalRecord);
         if(button.equals("通过")){
 
             try {
@@ -290,6 +332,16 @@ public class KnowledgeController  extends BaseController<Knowledge>{
 
 
 
+
+
+    }
+
+    @RequestMapping(value = "/queryAppar.form")
+    @ResponseBody
+    public List<ApprovalRecord> queryAppar(@RequestParam("id") String id){
+
+        System.out.println(id);
+        return knowledgeService.queryAppar(id);
 
 
     }

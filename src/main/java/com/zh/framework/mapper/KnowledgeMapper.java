@@ -1,5 +1,6 @@
 package com.zh.framework.mapper;
 
+import com.zh.framework.entity.ApprovalRecord;
 import com.zh.framework.entity.Knowledge;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -37,10 +38,19 @@ public interface KnowledgeMapper {
     public List<Knowledge> querySomeKnowledge();
 
     public List<Knowledge> queryKnowledgeOrder(@Param("sidx")String sidx,@Param("sord") String sord );
+    public List<Knowledge> queryKnowledgeOrder2(@Param("sidx")String sidx,@Param("sord") String sord );
+
+
 
     public void updateAppr(@Param("id") String id, @Param("kApprUserId") String kApprUserId, @Param("kApprMemo") String kApprMemo, @Param("kApprTime") Date kApprTime);
 
     public String queryUserNameById(@Param("userId") String userId);
 
-    public List<Knowledge> search(@Param("kTitle") String kTitle);
+    public List<Knowledge> search(@Param("seachKey") String seachKey,@Param("KeyValue") String KeyValue);
+
+    public List<ApprovalRecord> queryAppr(@Param("kid") String kid);
+
+    public void addAppr(@Param("id") String id,@Param("kid") String kid, @Param("aTime") Date aTime,@Param("bStatus") String bStatus, @Param("aStatus") String aStatus,@Param("ds") String ds);
+   public List<Knowledge> queryByKtitle(@Param("kTitle") String kTitle);
+
 }
