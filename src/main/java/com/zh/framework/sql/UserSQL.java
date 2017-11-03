@@ -44,6 +44,27 @@ public class UserSQL {
         return sql;
     }
 
+    public String update(@Param("id") String id,
+                         @Param("attrs") Map<String,Object> attrs){
+        return new SQL(){{
+            UPDATE("tb_user");
+            for (Map.Entry<String,Object> attr: attrs.entrySet()){
+                if (attr!=null){
+                    SET(attr.getKey()+"=#{attrs."+attr.getKey()+"}");
+                }
+            }
+            WHERE("id=#{id}");
+        }}.toString();
+    }
+
+    public String selectById(String uid){
+        return new SQL(){{
+            SELECT("*");
+            FROM("tb_user");
+            WHERE("id=#{uid}");
+        }}.toString();
+    }
+
     public String checkRepeat(@Param("column")String column,@Param("value") String value){
         return new SQL(){{
             SELECT("COUNT(*)");

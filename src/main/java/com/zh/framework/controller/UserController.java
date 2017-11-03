@@ -176,7 +176,64 @@ public class UserController extends BaseController<User> {
 //        request.getSession().setAttribute("currUser", user);
         return user;
     }
-/*    @RequestMapping(value = "/quit.form")
+
+    @RequestMapping(value = "/userPass/checkPass.form")
+    @ResponseBody
+    public Map<String,Object> checkPass(HttpServletRequest request){
+        String uid=request.getHeader("Current-UserId");
+        String originPass=request.getParameter("originPassword");
+        Map<String,Object> result=new HashMap<>();
+        User curUser=userService.selectById(uid);
+        System.out.println(originPass);
+        if (originPass.equals(curUser.getuPassword())){
+            result.put("valid",true);
+            System.out.println("123");
+        }else {
+            result.put("valid",false);
+            System.out.println("456");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/resetUserPass.form")
+    @ResponseBody
+    public Map<String,Object> resetPass(HttpServletRequest request){
+        String uid=request.getParameter("uid");
+        Map<String,Object> attrs=new HashMap<>();
+        attrs.put("uPassword","123456");
+        Map<String, Object> result = new HashMap<>();
+        if(userService.update(uid,attrs)>0) {
+            result.put("result", "success");
+        }else {
+            result.put("result","error");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/userPass/modifyPass.form")
+    @ResponseBody
+    public Map<String,Object> modifyPass(HttpServletRequest request){
+        String uid=request.getHeader("Current-UserId");
+        String originPass=request.getParameter("originPassword");
+        String newPass=request.getParameter("newPassword");
+        Map<String,Object> result=new HashMap<>();
+        User curUser=userService.selectById(uid);
+        if (curUser.getuPassword().equals(originPass)){
+            Map<String,Object> attrs=new HashMap<>();
+            attrs.put("uPassword",newPass);
+            System.out.println("hahaa");
+            if(userService.update(uid,attrs)>0){
+                result.put("valid",true);
+            }else {
+                result.put("valid",false);
+            }
+        }else {
+            result.put("valid",false);
+        }
+        return result;
+    }
+
+    /*    @RequestMapping(value = "/quit.form")
     @ResponseBody
     public String quit(HttpServletRequest request) {
         request.getSession().setAttribute("currUser", null);

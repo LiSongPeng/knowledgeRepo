@@ -12,7 +12,7 @@ import java.util.Date;
 public class Knowledge {
     public static final String INSERT_WAITING = "录入待审批";
     public static final String UPDATE_WAITING = "编辑待审批";
-    public static final String APPROVED = "通过";
+    public static final String APPROVED = "发布";
     public static final String UNAPPROVED = "不通过";
     public static final String DELETE_WAITING = "删除待审批";
     private String id;
