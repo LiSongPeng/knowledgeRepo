@@ -217,8 +217,8 @@ public class KnowledgeController  extends BaseController<Knowledge>{
 
 
         try {
-            knowledgeRepoService.buildAIndex(knowledgeService.queryKnowledgeById(id));
-        } catch (IOException e) {
+            knowledgeRepoService.removeIndex(id);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         knowledgeService.updateKnowledgeStatus(id,Knowledge.DELETE_WAITING);
@@ -256,8 +256,13 @@ public class KnowledgeController  extends BaseController<Knowledge>{
         k.setkAnswer(kAnswer);
         knowledgeService.updateKnowledge(id,kTitle,createUserId,kAnswer);
         knowledgeService.updateKnowledgeStatus(id,Knowledge.UPDATE_WAITING);
+//        try {
+//            knowledgeRepoService.updateIndex(k);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         try {
-            knowledgeRepoService.updateIndex(k);
+            knowledgeRepoService.removeIndex(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -323,7 +328,7 @@ public class KnowledgeController  extends BaseController<Knowledge>{
 
         }else if(button.equals("不通过")){
 
-            knowledgeService.updateKnowledgeStatus(id,Knowledge.UNAPPROVED);
+            //knowledgeService.updateKnowledgeStatus(id,Knowledge.UNAPPROVED);
 
         }
 
