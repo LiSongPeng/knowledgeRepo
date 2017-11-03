@@ -1,2 +1,0 @@
-INSERT INTO knowledgerepo.tb_user (id, uName, uPassword, deleteStatus, uDescription, createUserId, createTime, uLastOnLine) VALUES ('bdccb13c-db1e-432c-83eb-6731dd05759d', 'admin', '123123', 1, '', null, '2017-09-07 11:13:05', null);
-INSERT INTO knowledgerepo.tb_user (id, uName, uPassword, deleteStatus, uDescription, createUserId, createTime, uLastOnLine) VALUES ('e5af514d-7342-42ed-8081-cec6c85c5564', 'hahahaha', '123123', 1, 'qweqwe', 'bdccb13c-db1e-432c-83eb-6731dd05759d', '2017-09-11 01:27:46', null);

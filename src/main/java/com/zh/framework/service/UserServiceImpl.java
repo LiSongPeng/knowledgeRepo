@@ -82,8 +82,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User login(String username, String password) {
         User user = userMapper.queryByNameAndPass(username, password);
-        if (user != null)
+        if (user != null){
             userMapper.updateLastLoginTime(user.getId(), new Date());
+            user.setuPassword("");
+        }
         return user;
     }
 }

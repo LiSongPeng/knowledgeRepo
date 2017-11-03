@@ -111,12 +111,11 @@ public class RoleController extends BaseController<Role> {
         //检验用户名是否改变，没改不查重
         Map<String,Object> orgUser=super.queryById(request.getParameter("id"));
         if (!rName.equals(orgUser.get("rName"))){
-
-        }
-        if (roleService.checkRepeat("rName",rName)>0){
-            response.sendError(40011);
-            result.put("msg","角色名已存在");
-            return result;
+            if (roleService.checkRepeat("rName",rName)>0){
+                response.sendError(40011);
+                result.put("msg","角色名已存在");
+                return result;
+            }
         }
         return super.update(request);
     }

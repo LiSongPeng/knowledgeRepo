@@ -170,9 +170,6 @@ public class UserController extends BaseController<User> {
     @ResponseBody
     public User login(@RequestParam("username") String username, @RequestParam("password") String password/*, HttpServletRequest request*/) {
         User user = userService.login(username, password);
-        if(user!=null){
-            userService.updateLastOnline(user.getId());
-        }
 //        request.getSession().setAttribute("currUser", user);
         return user;
     }
